@@ -6,7 +6,7 @@
                     <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-1 cardHover white--text':'pt-2 pb-2 pl-2 text-body-1 primary white--text'">CALL - Callchain</v-card-title>
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
-                        <div class="text-h4 text-center">487,652</div>
+                        <div class="text-h4 text-center">120,487,652</div>
                         <div class="text-body-2 text-center">(reserv: 1 CALL)</div>
                     </v-card-text>
                 </v-card>
@@ -27,7 +27,9 @@
     </v-card>
 </template>
 <script>
+
 export default {
+    
     name: 'blance',
     data: () => ({
         headers: [{ text: 'Date', value: 'date', width: 200 }, { text: 'Event', value: 'content' }],

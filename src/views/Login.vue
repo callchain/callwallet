@@ -15,7 +15,7 @@
             <v-text-field
               outlined
               v-model="walletName"
-              label="wallet name"
+              label=""
               solo
               flat
               dense
@@ -29,7 +29,7 @@
               :type="show1 ? 'text' : 'password'"
               @click:append="show1 = !show1"
               v-model="passphrase"
-              label="passphrase"
+              label=""
               solo
               flat
               dense
@@ -68,8 +68,10 @@ export default {
     },
     /// 登录
     handleLogin() {
-      // sessionStorage.setItem('token', '23'),
-      this.resetSetItem('token', 'asd');  /// 触发
+      console.log('llll')
+      // this.resetSetItem('token', 'asd');  /// 触发
+      sessionStorage.setItem("userdata", "hello")
+      this.$store.commit('login')
       this.$router.push('./main')
     }
   },

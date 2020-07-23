@@ -38,7 +38,7 @@ export default {
         if(this.$route.path.indexOf(this.navList[index].text) != -1){
             return;
         }
-        this.$router.push('./'+ this.navList[index].text);
+        this.$router.push('./'+ this.navList[index].text.toLowerCase());
     }
   },
 }

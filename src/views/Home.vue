@@ -2,7 +2,7 @@
   <v-app>
     <v-header></v-header>
     
-    <div style="min-height: calc(100vh - 100px); padding-top: 20px; padding-bottom: 30px; background-color: #f9f9f9;">
+    <div style="min-height: calc(100vh - 100px); padding-top: 0px; padding-bottom: 30px; background-color: #f9f9f9;">
       <router-view />
       <v-bottom></v-bottom>
     </div> 

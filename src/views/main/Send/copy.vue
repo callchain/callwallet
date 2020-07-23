@@ -76,7 +76,7 @@ export default {
     }),
     methods: {
         handleBackBlance() {
-            this.$router.push('./Balance')
+            this.$router.push('./balance')
         }
     }
 }

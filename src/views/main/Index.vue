@@ -16,6 +16,7 @@
       </v-tabs>
     </div>
     
+    <!-- <NoData></NoData> -->
     <v-card
       class="mx-auto mt-2"
       max-width="1200"
@@ -29,10 +30,13 @@
 
 <script>
 import WalletContent from './Wallet/index.vue'
+import NoData from '../../components/NoData'
+
 export default {
   name: 'Main',
   components: {
-    WalletContent
+    WalletContent,
+    NoData
   },
   data: () => ({
     tab: '',

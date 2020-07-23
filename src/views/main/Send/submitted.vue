@@ -21,11 +21,11 @@ export default {
     methods: {
         // 重发
         handResend(){
-            this.$router.push('./Send')
+            this.$router.push('./send')
         },
         // 返回balance
         handleBackBlance() {
-            this.$router.push('./Balance')
+            this.$router.push('./balance')
         }
     }
 }

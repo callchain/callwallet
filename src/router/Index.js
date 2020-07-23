@@ -35,50 +35,53 @@ const routes = [
         path: '/main',
         name: 'main',
         component: () => import('../views/main/Index.vue'),
-        redirect: '/Wallet',
+        redirect: '/wallet',
+        meta: {auth: true},
         children: [
           {
-            path: '/Wallet',
+            path: '/wallet',
             name: 'Wallet',
-            redirect: '/Balance',
+            redirect: '/balance',
             component: () => import('../views/main/Wallet/index.vue'),
             children: [
-              { path: '/Balance', name: 'Balance', component: () => import('../views/main/Wallet/Balance.vue'), },
-              { path: '/History', name: 'History', component: () => import('../views/main/Wallet/History.vue'), },
-              { path: '/Contacts', name: 'Contacts', component: () => import('../views/main/Wallet/Contacts.vue'), },
-              { path: '/Security', name: 'Security', component: () => import('../views/main/Wallet/Security.vue'), }
+              { path: '/balance', name: 'Balance', component: () => import('../views/main/Wallet/Balance.vue'), meta: {auth: true} },
+              { path: '/history', name: 'History', component: () => import('../views/main/Wallet/History.vue'), meta: {auth: true} },
+              { path: '/contacts', name: 'Contacts', component: () => import('../views/main/Wallet/Contacts.vue'), meta: {auth: true} },
+              { path: '/security', name: 'Security', component: () => import('../views/main/Wallet/Security.vue'), meta: {auth: true} }
             ]
           },
           {
-            path: '/Send',
+            path: '/send',
             name: 'Send',
             component: () => import('../views/main/Send/index.vue'),
             redirect: '/send',
             children: [
-              { path: '/send', name: 'send', component: () => import('../views/main/Send/send.vue'), },
-              { path: '/sendConfirm', name: 'sendConfirm', component: () => import('../views/main/Send/sendConfirm.vue'), },
-              { path: '/submitted', name: 'submitted', component: () => import('../views/main/Send/submitted.vue'), },
-              { path: '/cleared', name: 'cleared', component: () => import('../views/main/Send/cleared.vue'), },
+              { path: '/send', name: 'send', component: () => import('../views/main/Send/send.vue'), meta: {auth: true}},
+              { path: '/sendConfirm', name: 'sendConfirm', component: () => import('../views/main/Send/sendConfirm.vue'), meta: {auth: true} },
+              { path: '/submitted', name: 'submitted', component: () => import('../views/main/Send/submitted.vue'), meta: {auth: true} },
+              { path: '/cleared', name: 'cleared', component: () => import('../views/main/Send/cleared.vue'), meta: {auth: true} },
             ]
           },
           {
-            path: '/Receive',
+            path: '/receive',
             name: 'Receive',
             component: () => import('../views/main/Receive/index.vue'),
+            meta: {auth: true}
           },
           {
-            path: '/Issue',
+            path: '/issue',
             name: 'Issue',
             component: () => import('../views/main/Issue/index.vue'),
+            meta: {auth: true}
           },
           {
-            path: '/Advanced',
+            path: '/advanced',
             name: 'Advanced',
             component: () => import('../views/main/Advanced/index.vue'),
-            redirect: '/Trust',
+            redirect: '/trust',
             children: [
-              { path: '/Trust', name: 'Trust', component: () => import('../views/main/Advanced/Trust.vue'), },
-              { path: '/Options', name: 'Options', component: () => import('../views/main/Advanced/Options.vue'), },
+              { path: '/trust', name: 'Trust', component: () => import('../views/main/Advanced/Trust.vue'), meta: {auth: true} },
+              { path: '/options', name: 'Options', component: () => import('../views/main/Advanced/Options.vue'), },
             ]
           }
         ]
@@ -91,6 +94,28 @@ const router = new VueRouter({
   mode: 'hash',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach(function(to, from, next) {
+  if (to.meta.auth) {
+    var userdata = sessionStorage.getItem("userdata");
+    if (!userdata) {
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    }
+    else
+    {
+      next()
+    }
+  }
+  else
+  {
+    next()
+  }
 })
 
 export default router

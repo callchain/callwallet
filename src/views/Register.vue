@@ -12,13 +12,13 @@
       <p class="text-subtitle-1">Callchain is global open blockchain system for everyone's token issue. One click, easy and fast asset blockchain system.</p>
       <p class="text-subtitle-1">Your Wallet is only as safe as your Wallet username and passphrase, used to encrypt your Wallet data. Choose a passphrase you can easily remember but others cannot guess. Hint: Mix letters, numbers, and symbols.
 </p>
-      <p class="text-subtitle-1">Only you have this Wallet username and passphrase and are responsible for their safekeeping. Callchain cannot recover them if you forget them! Read more</p>
+      <p class="text-subtitle-1" style="color: red;">Only you have this Wallet username and passphrase and are responsible for their safekeeping. <br/> Callchain cannot recover them if you forget them!</p>
       <div class="form-item" style="width: 400px;">
           <p class="font-weight-bold mb-1">Create Wallet username</p>
           <v-text-field
             outlined
             v-model="walletName"
-            label="Create Wallet username"
+            label=""
             solo
             flat
             dense
@@ -31,7 +31,7 @@
                 outlined
                 v-model="passphrase"
                 type="password"
-                label="Create Wallet passphrase"
+                label=""
                 solo
                 flat
                 dense
@@ -43,7 +43,7 @@
                 outlined
                 v-model="repassphrase"
                 type="password"
-                label="Re-enter passphrase"
+                label=""
                 solo
                 flat
                 dense
@@ -55,7 +55,7 @@
           <v-text-field
             outlined
             v-model="key"
-            label="Create Wallet username"
+            label=""
             solo
             flat
             dense
