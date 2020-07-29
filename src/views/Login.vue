@@ -44,11 +44,32 @@
         </v-card-text>
       </div>
     </div>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="300"
+    >
+      <v-card>
+        <v-card-title></v-card-title>
+          <v-card-text class="text-center">{{warn_text}}</v-card-text>
+            <v-card-actions class="d-flex align-center justify-center pb-5">
+                <v-btn
+                  color="primary"
+                  @click="dialog=false"
+                >
+                  OK
+                </v-btn>
+              </v-card-actions>
+          </v-card>
+      </v-dialog>
+
   </v-card>
 </template>
 
 <script>
 // @ is an alias to /src
+
+import Blob from '../api/Blob';
 
 export default {
   name: 'Login',
@@ -59,7 +80,9 @@ export default {
     walletName: '',
     passphrase: '',
     show1: false,
-    canILogin: false
+    canILogin: false,
+    dialog: false,
+    warn_text: ''
   }),
   methods: {
     /// 注册
@@ -68,11 +91,17 @@ export default {
     },
     /// 登录
     handleLogin() {
-      console.log('llll')
-      // this.resetSetItem('token', 'asd');  /// 触发
-      sessionStorage.setItem("userdata", "hello")
-      this.$store.commit('login')
-      this.$router.push('./main')
+      var data = Blob.decrypt(this.walletName, this.passphrase);
+      if (typeof data === 'string') {
+        this.warn_text = data;
+        this.dialog = true;
+        return;
+      }
+
+      sessionStorage.setItem("islogin", true);
+      this.$store.commit('setblob', data, this.walletName);
+      this.$store.commit('login');
+      this.$router.push('./main');
     }
   },
   watch: {

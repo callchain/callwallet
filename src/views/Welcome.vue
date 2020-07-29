@@ -14,7 +14,7 @@
       <p class="text-subtitle-1 font-weight-bold">Callchain Address:</p>
       <p class="text-subtitle-1">{{address}}</p>
       <p class="text-subtitle-1 font-weight-bold">Secret Account key:</p>
-      <div class="mb-3"><input :type="isShowKey?'text':'password'" readonly :value="key"></div>
+      <div class="mb-3"><input :type="isShowKey?'text':'password'" readonly :value="key" width="300px"></div>
       <v-btn width="300" class="mb-5" small color="orange darken-1" @click="isShowKey = !isShowKey" depressed>{{isShowKey?'Hide':'Show'}} secret account key</v-btn>
       <v-divider></v-divider>
       <p class="text-subtitle-1 font-weight-bold mt-5">Have you saved your Secret Account Key somewhere safe?</p>
@@ -30,14 +30,20 @@
 export default {
   name: 'Welcome',
   data: () => ({
-    address: 'cPnYSEJA455yqjf4B2i8oUb82WFsw2xD2W',
-    key: 'cPnYSEJA455yqjf4B2i8oUb82WFsw2xD2W',
+    address: '',
+    key: '',
     isShowKey: false
   }),
+  created() {
+    var params = this.$route.params;
+    console.log(params);
+    this.address = params.address;
+    this.key = params.secret;
+  },
   methods: {
    // 点击已保存
    handleSaved() {
-       this.$router.push('/main')
+       this.$router.push('/login')
    }
   },
 }

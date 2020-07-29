@@ -98,8 +98,8 @@ const router = new VueRouter({
 
 router.beforeEach(function(to, from, next) {
   if (to.meta.auth) {
-    var userdata = sessionStorage.getItem("userdata");
-    if (!userdata) {
+    var islogin = sessionStorage.getItem("islogin");
+    if (!islogin) {
       next({
         path: '/login',
         query: {

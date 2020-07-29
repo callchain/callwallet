@@ -10,7 +10,8 @@ const store = new Vuex.Store({
       username: '',
       balance: 0,
       address: '',
-      unfunded: false
+      unfunded: false,
+      blob: {}
     },
     mutations: {
       login (state) {
@@ -24,6 +25,14 @@ const store = new Vuex.Store({
       },
       online (state) {
         state.isOffline = false
+      },
+      setblob (state, blob, username) {
+        console.dir(blob);
+        console.dir(username)
+        state.blob = blob
+        state.username = username
+        state.address = blob.data.account_id
+        console.dir(state);
       }
     }
 });
