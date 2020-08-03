@@ -1,5 +1,7 @@
 <template>
     <v-card flat max-width="1085.21">
+        <NoData v-if="nofund"></NoData>
+        <div v-if="!nofund">
         <div class="d-flex align-center justify-start flex-wrap">
             <v-hover v-for="item in balance" :key="item.id" v-slot:default="{ hover }">
                 <v-card width="30%" height="140" :elevation="hover ? 6 : 2" style="margin: 15px 1.66%;">
@@ -24,11 +26,13 @@
             <v-divider></v-divider>
             <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn>
         </div>
+        </div>
     </v-card>
 </template>
 <script>
 
 import api from '../../../api/index';
+import NoData from '../../../components/NoData';
 
 export default {
     
@@ -50,6 +54,14 @@ export default {
             { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
         ]
     }),
+    components: {
+        NoData
+    },
+    computed: {
+        nofund() {
+            return this.$store.state.balance === 0
+        }
+    },
     async created() {
         var address = this.$store.state.address;
         console.log('get balance for address: ' + address);
