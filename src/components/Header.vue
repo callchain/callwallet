@@ -48,11 +48,19 @@ export default {
     },
     balance() {
       var bal = this.$store.state.balance;
-      if (bal === 0) return 'Unfunded account';
-      else return  bal + ' CALL';
+      var ret = this.balanceFormat(bal);
+      return ret;
     }
   },
   methods: {
+    balanceFormat(value) {
+      if (!value) return 'Unfunded account';
+      var str = '' + value;
+      var intPart = Number(value).toFixed(0);
+      var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
+      var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+      return intPartFormat + pointPart + ' CALL';
+    },
     handleLoginClick() {
       console.log('点击logo')
     },

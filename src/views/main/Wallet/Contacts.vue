@@ -5,7 +5,7 @@
             <v-data-table 
             calculate-widths
             :headers="headers"
-            :items="data"
+            :items="contract_list"
             sort-by="calories"
             :items-per-page="10"
             hide-default-footer
@@ -26,8 +26,7 @@
                     </v-icon>
                 </template>
             </v-data-table>
-            <v-divider></v-divider>
-            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn>
+            <!-- <v-divider></v-divider> -->
         </div>
 
         <div v-else class="add-edit">
@@ -53,7 +52,7 @@
                 dense
                 ></v-text-field>
             </div>
-            <div style="width: 300px;">
+            <!-- <div style="width: 300px;">
                 <div class="text-subtitle-1 font-weight-bold">Destination tag</div>
                 <v-text-field
                 outlined
@@ -63,7 +62,7 @@
                 flat
                 dense
                 ></v-text-field>
-            </div>
+            </div> -->
             <div class="d-inline-flex align-center">
                 <v-btn width="100px" @click="isShowAdd = false" outlined color="primary">Cancel</v-btn>
                 <v-btn width="180px" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="canIAdd? false: true">Add Contact</v-btn>
@@ -121,6 +120,11 @@ export default {
     created() {
         this.isShowAdd = false;
         this.canIAdd = false;
+    },
+    computed: {
+        contract_list() {
+            return this.$store.state.blob.data.contacts
+        }
     },
     methods: {
         /// 新增

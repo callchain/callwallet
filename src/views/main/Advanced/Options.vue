@@ -8,7 +8,7 @@
                 <v-text-field
                     style="width: 250px;"
                     outlined
-                    v-model="sendData.hostname"
+                    v-model="sendData.host"
                     solo
                     flat
                     dense
@@ -25,7 +25,7 @@
             </div>
             <v-checkbox
                 class="mt-0"
-                v-model="sendData.checked"
+                v-model="sendData.ssl"
                 label="Use secure WebSocket"
             ></v-checkbox>
         <v-btn class="ml-5 pl-10 pr-10" color="primary" @click="handleSave">Save</v-btn>
@@ -37,11 +37,15 @@ export default {
     name: 'options',
     data: () => ({
         sendData: { 
-            hostname: '', 
+            host: '', 
             port: '', 
-            checked: true 
+            ssl: false 
         }
     }),
+    created() {
+        var server = this.$store.state.server;
+        this.sendData = server;
+    },
     methods: {
         // 保存
         handleSave() {

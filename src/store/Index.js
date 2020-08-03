@@ -10,9 +10,13 @@ const store = new Vuex.Store({
       username: '',
       balance: 0,
       address: '',
-      unfunded: false,
       blob: {},
-      height: 24997812
+      height: 24997812,
+      server: {host: 's1.callchain.live', port: 5020, ssl: true},
+      balance_list: [],
+      transactions: [],
+      trustlines: [],
+      issue_list: []
     },
     mutations: {
       login (state) {
@@ -33,8 +37,17 @@ const store = new Vuex.Store({
         state.address = msg.blob.data.account_id
       },
       updateHeight(state, height) {
-        console.log('set new height=' + height);
+        console.log('set new height=' + height)
         state.height = height
+      },
+      initBalance(state, list) {
+        state.balance_list = list
+        for (var i = 0 ; i < list.length; ++i) {
+          if (list[i].currency === 'CALL') {
+            state.balance = list[i].value
+            break
+          }
+        }
       }
     }
 });

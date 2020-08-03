@@ -16,8 +16,6 @@
         </div>
         <v-btn color="primary" @click="isShowKey = true" v-if="!isShowKey" class="mt-5">Show my key</v-btn>
 
-
-
         <v-dialog
             v-model="dialog"
             max-width="600"
@@ -52,8 +50,12 @@ export default {
         isShowKey: false,
         isShow: false,
         dialog: false,
-        key: 'asdasd418513216354asd12as5d47'
+        key: ''
     }),
+    computed: {},
+    created() {
+        this.key = this.$store.state.blob.data.master_seed;
+    },
     methods: {
         /// 显示dialog
         handleShowDialog() {
