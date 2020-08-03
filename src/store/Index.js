@@ -11,7 +11,8 @@ const store = new Vuex.Store({
       balance: 0,
       address: '',
       unfunded: false,
-      blob: {}
+      blob: {},
+      height: 24997812
     },
     mutations: {
       login (state) {
@@ -26,13 +27,14 @@ const store = new Vuex.Store({
       online (state) {
         state.isOffline = false
       },
-      setblob (state, blob, username) {
-        console.dir(blob);
-        console.dir(username)
-        state.blob = blob
-        state.username = username
-        state.address = blob.data.account_id
-        console.dir(state);
+      setblob (state, msg) {
+        state.blob = msg.blob
+        state.username = msg.user
+        state.address = msg.blob.data.account_id
+      },
+      updateHeight(state, height) {
+        console.log('set new height=' + height);
+        state.height = height
       }
     }
 });

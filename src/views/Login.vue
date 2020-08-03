@@ -70,6 +70,7 @@
 // @ is an alias to /src
 
 import Blob from '../api/Blob';
+import api from '../api/index';
 
 export default {
   name: 'Login',
@@ -99,7 +100,7 @@ export default {
       }
 
       sessionStorage.setItem("islogin", true);
-      this.$store.commit('setblob', data, this.walletName);
+      this.$store.commit('setblob', {blob: data, user: this.walletName});
       this.$store.commit('login');
       this.$router.push('./main');
     }

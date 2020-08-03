@@ -101,7 +101,6 @@
 // @ is an alias to /src
 import api from '../api/index';
 import Blob from '../api/Blob';
-const call = require('call-lib');
 
 export default {
   name: 'Register',

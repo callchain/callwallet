@@ -9,14 +9,14 @@
         </v-btn>
         <v-card v-else color="#ffffff">
           <div style="width: 300px;" class="d-inline-flex align-center justify-space-between pt-2 pb-2 pl-2 pr-2">
-            <span>1243sd</span>
+            <span>{{username}}</span>
             <v-hover v-slot:default="{hover}">
               <span @click="handleLoginOut" style="cursor: pointer;" :class="hover? 'primary--text':'primary--text'">logout</span>
             </v-hover>
             
           </div>
           <v-divider></v-divider>
-          <span class="d-block pl-2 pt-2 pb-2">4,123 Call</span>
+          <span class="d-block pl-2 pt-2 pb-2">{{balance}}</span>
         </v-card>
         <span v-if="isOffline" style="position: absolute; bottom: -55px; right: 0; width: 300px; line-height: 50px; text-align: center; z-index: 9999;" class="d-inline-block black white--text">Offline</span>
       </div>
@@ -42,6 +42,14 @@ export default {
     },
     isOffline() {
       return this.$store.state.isOffline
+    },
+    username() {
+      return this.$store.state.username
+    },
+    balance() {
+      var bal = this.$store.state.balance;
+      if (bal === 0) return 'Unfunded account';
+      else return  bal + ' CALL';
     }
   },
   methods: {

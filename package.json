@@ -8,9 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "async": "^3.2.0",
     "atob": "^2.1.2",
     "btoa": "^1.2.1",
-    "call-lib": "^0.2.12",
     "core-js": "^3.6.5",
     "qrcodejs2": "0.0.2",
     "sjcl": "^1.0.8",
