@@ -37,7 +37,6 @@ function processTx(tx, address) {
 }
 
 api.on('ledger', async function(ledger) {
-    console.log('ledger msg, ledger=' + ledger.ledgerVersion);
     // update block number
     var blocknumber = ledger.ledgerVersion;
     store.commit('updateHeight', ledger.ledgerVersion);
@@ -56,10 +55,6 @@ api.on('ledger', async function(ledger) {
     }, function(err) {
         if (err) console.error(err);
     });
-
-    
-
-    
 });
 
 api.on('transactions', function(tx) {
@@ -68,9 +63,6 @@ api.on('transactions', function(tx) {
 
 api.connect().then(async function() {
     console.log('api connected');
-    console.dir(api);
-    var info = await api.getServerInfo();
-    console.dir(info);
 }).catch(function(e) {
     console.log('fail to connect api: ');
     console.dir(e);

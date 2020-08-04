@@ -4,8 +4,8 @@
         <div v-if="!nofund">
         <div class="d-flex align-center justify-start flex-wrap">
             <v-hover v-for="item in balance" :key="item.id" v-slot:default="{ hover }">
-                <v-card width="32%" height="140" :elevation="hover ? 6 : 2" style="margin: 15px 1.66%;">
-                    <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}} - {{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
+                <v-card width="32.3%" height="140" :elevation="hover ? 6 : 2" style="margin: 5px 0.5%;">
+                    <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}}-{{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
                         <div class="text-h4 text-center">{{item.value | numberFormat}}</div>
@@ -14,17 +14,17 @@
                 </v-card>
             </v-hover>
         </div>
-        <div class="font-weight-bold">Activity</div>
+        <div class="font-weight-bold" style="margin-top: 20px;">Activity</div>
         <div>
             <v-data-table
                 calculate-widths
                 :headers="headers"
-                :items="data"
-                :items-per-page="5"
+                :items="transactions"
+                :items-per-page="10"
                 hide-default-footer
             ></v-data-table>
             <v-divider></v-divider>
-            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn>
+            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Go History For More Transactions</v-btn>
         </div>
         </div>
     </v-card>
@@ -32,27 +32,15 @@
 <script>
 
 import api from '../../../api/index';
+import Parser from '../../../api/transaction-parser';
 import NoData from '../../../components/NoData';
+import * as filters from '../../../filters/Index';
 
 export default {
     
     name: 'blance',
     data: () => ({
         headers: [{ text: 'Date', value: 'date', width: 200 }, { text: 'Event', value: 'content' }],
-        // balance: [
-        //     { id: 1, currency: 'CALL', issuer: 'Callchain', balance: 0, reserve: 0.0001},
-        //     { id: 2, currency: 'CNH', issuer: 'cEJNrFNcTA6BxiSY6TKvtx', balance: 100, reserve: 0}
-        // ],
-        data: [
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-            { date: '10 minutes ago', content: 'You bought 3,934 CALL for 12,195 CNY. (price: 3.1). This order has been filled.' },
-        ]
     }),
     components: {
         NoData
@@ -63,18 +51,27 @@ export default {
         },
         balance() {
             return this.$store.state.balance_list
+        },
+        transactions() {
+            var list = this.$store.state.transactions.slice(0,10);
+            var address = this.$store.state.address;
+            var result = [];
+            for (var i = 0; i < list.length; ++i)
+            {
+                var tx = list[i];
+                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address)});
+            }
+            return result;
         }
     },
     async created() {
         var address = this.$store.state.address;
-        console.log('get balance for address: ' + address);
         try {
-            console.dir(this.$store.state);
             var height = this.$store.state.height;
-            console.log(height);
             var ret = await api.getBalances(address, {ledgerVersion: Number(height)});
             this.$store.commit("initBalance", ret);
-            console.dir(ret);
+            var result = await api.getTransactions(address, {limit: 10});
+            this.$store.commit("initTransactions", result);
         } catch (e) {
             console.dir(e);
         }

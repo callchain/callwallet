@@ -36,7 +36,6 @@ export default {
   }),
   created() {
     var params = this.$route.params;
-    console.log(params);
     this.address = params.address;
     this.key = params.secret;
   },

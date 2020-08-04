@@ -15,6 +15,7 @@ const store = new Vuex.Store({
       server: {host: 's1.callchain.live', port: 5020, ssl: true},
       balance_list: [],
       transactions: [],
+      marker: {},
       trustlines: [],
       issue_list: []
     },
@@ -37,7 +38,6 @@ const store = new Vuex.Store({
         state.address = msg.blob.data.account_id
       },
       updateHeight(state, height) {
-        console.log('set new height=' + height)
         state.height = height
       },
       initBalance(state, list) {
@@ -48,6 +48,10 @@ const store = new Vuex.Store({
             break
           }
         }
+      },
+      initTransactions(state, result) {
+        state.transactions = result.results
+        state.marker = result.marker
       }
     }
 });
