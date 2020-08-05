@@ -77,6 +77,14 @@ const routes = [
             path: '/issue',
             name: 'Issue',
             component: () => import('../views/main/Issue/index.vue'),
+            redirect: '/issue',
+            children: [
+              { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
+              { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
+              { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
+              { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
+              { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
+            ],
             meta: {auth: true}
           },
           {

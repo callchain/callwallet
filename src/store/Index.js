@@ -57,6 +57,22 @@ const store = new Vuex.Store({
         state.transactions = state.transactions.concat(result.results)
         state.marker = result.marker
       },
+      initIssues(state, list) {
+        var issues = [];
+        for (var i = 0; i < list.lines.length; ++i) {
+          var item = list.lines[i];
+          issues.push({
+            currency: item.Total.currency, 
+            total: item.Total.value, 
+            issued: item.Issued.value, 
+            fans: item.Fans, 
+            flags: item.Flags
+          });
+        }
+        state.issue_list = issues;
+      },
+
+
       newContact(state, item) {
         var contacts = state.blob.data.contacts
         contacts[item.title] = item.content
