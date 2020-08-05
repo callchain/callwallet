@@ -1,6 +1,7 @@
 <template>
     <div class="main" style="min-height: 550px;">
         <p class="text-h4">Your transaction has been submitted.</p>
+        <p>Transaction Hash: {{hash}}</p>
         <p>Your account balance wil update once the payment has cleared.</p>
         <v-divider></v-divider>
         <v-hover v-slot:default="{ hover }">
@@ -16,8 +17,16 @@
 export default {
     name: 'receive',
     data: () => ({
-        
+        hash: ''
     }),
+    created() {
+        var params = this.$route.params;
+        if (_.isEmpty(params.id)) {
+            this.$router.push('./send')
+        } else {
+            this.hash = params.id
+        }
+    },
     methods: {
         // 重发
         handResend(){

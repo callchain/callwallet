@@ -7,7 +7,7 @@
             :headers="headers"
             :items="contract_list"
             sort-by="calories"
-            :items-per-page="10"
+            :items-per-page="-1"
             hide-default-footer
             >   
                 <template v-slot:item.actions="{ item }">
@@ -35,7 +35,7 @@
                 <v-text-field
                 outlined
                 v-model="name"
-                label="name"
+                label=""
                 solo
                 flat
                 dense
@@ -46,7 +46,7 @@
                 <v-text-field
                 outlined
                 v-model="address"
-                label="address"
+                label=""
                 solo
                 flat
                 dense
@@ -65,7 +65,7 @@
             </div> -->
             <div class="d-inline-flex align-center">
                 <v-btn width="100px" @click="isShowAdd = false" outlined color="primary">Cancel</v-btn>
-                <v-btn width="180px" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="canIAdd? false: true">Add Contact</v-btn>
+                <v-btn width="180px" @click="handleConfirm" color="primary" class="ml-5" :disabled="canIAdd? false: true">{{mode === 'add' ? 'Add Contact' : 'Edit Contact'}}</v-btn>
             </div>
             <p class="text-body-2 mt-2">You don't have any contacts yet. Click on "Add contact" button in the top right corner to add a new contact.</p>
         </div>
@@ -76,7 +76,7 @@
             >
             <v-card>
                 <v-card-title></v-card-title>
-                <v-card-text class="text-center">Are you want to delete this item?</v-card-text>
+                <v-card-text class="text-center">{{warn_text}}</v-card-text>
                 <v-card-actions class="d-flex align-center justify-center pb-5">
                     <v-btn
                         color="primary"
@@ -105,66 +105,135 @@ export default {
         canIAdd: false, /// 填完 name address 才能添加
         dialog: false, /// 是否显示弹窗
         headers: [{ text: 'Name', value: 'title', width: 200, sortable: false }, { text: 'Address', value: 'content' }, { text: 'Actions', value: 'actions', width: 150, align: 'center', sortable: false },],
-        data: [
-            { title: 'gateway', content: 'cGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or' },
-            { title: 'gateway', content: 'cGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or' },
-            { title: 'gateway', content: 'cGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or' },
-            { title: 'gateway', content: 'cGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or' },
-            { title: 'gateway', content: 'cGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or' },
-        ],
         name: '',
         address: '',
-        tag: '',
-        deleteIndex: null, /// 记录删除下标
+        mode: '', // add or edit
+        warn_text: '',
+        currentItem: {}
     }),
     created() {
         this.isShowAdd = false;
         this.canIAdd = false;
+
     },
     computed: {
         contract_list() {
-            return this.$store.state.blob.data.contacts
+            var contacts = this.$store.state.blob.data.contacts;
+            console.dir(contacts);
+            var result = [];
+            Object.keys(contacts).forEach(function(key) {
+                result.push({title: key, content: contacts[key]});
+            });
+            return result;
         }
     },
     methods: {
         /// 新增
         handleShowAdd() {
             this.isShowAdd = true;
+            this.mode = 'add';
+        },
+        resetAddFace() {
+            this.isShowAdd = false;
+            this.name = '';
+            this.address = '';
+            this.mode = '';
+            this.currentItem = {};
         },
         /// 新增
-        handleAddConfirm() {
-
+        handleConfirm() {
+            var contacts = this.$store.state.blob.data.contacts;
+            if (this.mode === 'add')
+            {
+                if (contacts[this.name]) {
+                    this.dialog = true;
+                    console.log('name 1')
+                    this.warn_text = 'Same name exists';
+                    return;
+                }
+                for (var key in contacts) {
+                    var value = contacts[key];
+                    if (value === this.address) {
+                        this.dialog = true;
+                        console.log('address 1')
+                        this.warn_text = 'Same address exists';
+                        return;
+                    }
+                }
+                this.$store.commit('newContact', {title: this.name, content: this.address});
+                this.resetAddFace();
+            }
+            else if (this.mode === 'edit')
+            {
+                if (this.currentItem.title === this.name && this.currentItem.content === this.address) {
+                    this.resetAddFace();
+                    return;
+                }
+                if (this.currentItem.title !== this.name && contacts[this.name]) {
+                    this.dialog = true;
+                    console.log('name 2')
+                    console.dir(this.currentItem);
+                    console.log(this.name);
+                    this.warn_text = 'Same name exists';
+                    return;
+                }
+                if (this.currentItem.content !== this.address) {
+                    for (var key in contacts) {
+                        var value = contacts[key];
+                        if (value === this.address) {
+                            this.dialog = true;
+                            console.log('address 2')
+                            console.dir(this.currentItem);
+                            this.warn_text = 'Same address exists';
+                            return;
+                        }
+                    }
+                }
+                this.$store.commit('updateContact', {title: this.name, content: this.address, 
+                    delBefIns: this.currentItem.title !== this.name, oldtitle: this.currentItem.title});
+                this.resetAddFace();
+            }
+            
         },
         /// 编辑
         editItem (item) {
-            
+            this.isShowAdd = true;
+            this.mode = 'edit';
+            this.name = item.title;
+            this.address = item.content;
+            this.currentItem = item;
+            console.dir(item);
         },
         /// 点击显示弹窗删除
         deleteItem (item) {
-            this.deleteIndex = this.data.indexOf(this.item);
+            this.currentItem = this.item;
+            this.mode = 'del';
+            this.warn_text = 'Are you want to delete this item?';
             this.dialog = true;
         },
         /// 确认删除
         handleDialogConfirm() {
             this.dialog = false;
-            this.data.splice(this.deleteIndex, 1);
-        }
+            if (this.mode !== 'del') return;
 
+            // for delete
+            this.$store.commit('delContact', this.currentItem.title);
+            this.resetAddFace();
+        },
+        checkAdd() {
+            if(this.name != '' && this.address != ''){
+                this.canIAdd = true
+            } else {
+                this.canIAdd = false
+            }
+        }
     },
     watch: {
         name(a, b) {
-            if(this.name != '' && this.address != ''){
-                this.canIAdd = true
-            } else {
-                this.canIAdd = false
-            }
+            this.checkAdd();
         },
         address(a, b) {
-            if(this.name != '' && this.address != ''){
-                this.canIAdd = true
-            } else {
-                this.canIAdd = false
-            }
+            this.checkAdd();
         }
     }
 }

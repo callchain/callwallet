@@ -69,7 +69,7 @@ function processOrder(tx, address) {
     else
     {
         var items = changes[address];
-        if (!items) return 'unknown offer transaction';
+        if (!items) return 'Passive affected order transaction';
         var result = '';
         for (var i = 0; i < items.length; ++i) {
             if (i !== 0) result += ';';
@@ -81,7 +81,11 @@ function processOrder(tx, address) {
 }
 
 function processOrderCancellation(tx, address) {
-    var change = tx.outcome.orderbookChanges[address][0];
+    var changes = tx.outcome.orderbookChanges[address];
+    if (!changes) {
+        return 'Passive affected order cancellation transaction';
+    }
+    var change = changes[0];
     var result = 'You cancelled to ' + change.direction + ' ' + humanAmount(change.quantity) + ' for ' + humanAmount(change.totalPrice);
     return result;
 }
@@ -94,7 +98,7 @@ function processTrustline(tx, address) {
         return result;
     }
 
-    if (spec.counterparty !== address) return 'unknown trust transaction';
+    if (spec.counterparty !== address) return 'Passive trust transaction';
 
     var result = 'You have been trust by ' + tx.address + ' for ' + spec.limit + ' ' + spec.currency;
     return result;
@@ -106,7 +110,7 @@ function processSettings(tx, address) {
 
 function processIssueSet(tx, address) {
     var total = tx.specification.Total || tx.specification;
-    if (total !== address) return 'unknown issue set transaction';
+    if (total !== address) return 'Passive affected issue set transaction';
     return 'You are issuing ' + total.value + ' ' + total.currency;
 }
 

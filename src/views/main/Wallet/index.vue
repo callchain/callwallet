@@ -22,7 +22,7 @@ export default {
       navList: [
           { text: 'Balance', isActive: true },
           { text: 'History', isActive: false },
-          { text: 'Contacts', isActive: false },
+        //   { text: 'Contacts', isActive: false },
           { text: 'Security', isActive: false },
       ]
    

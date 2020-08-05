@@ -140,7 +140,7 @@ export default {
           data: {
             master_seed: wallet.secret,
             account_id: wallet.address,
-            contacts: []
+            contacts: {}
           },
           meta: {
             created: (new Date()).toJSON(),
@@ -154,30 +154,33 @@ export default {
           return;
         }
         this.$router.push({name: 'welcome', params: wallet});
+    },
+    checkLogin() {
+      var ret = (this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase);
+      console.log(ret);
+      if (this.isShowKey) {
+        ret = ret && this.key !== '';
+      }
+      console.log('ret2=' + ret);
+      this.canILogin = ret;
     }
   },
   watch: {
     passphrase(a, b) {
-        if(this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase){
-            this.canILogin = true
-        } else {
-            this.canILogin = false
-        }
+        this.checkLogin();
     },
     repassphrase(a, b) {
-        if(this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase){
-            this.canILogin = true
-        } else {
-            this.canILogin = false
-        }
+        this.checkLogin();
     },
     walletName(a, b) {
-        if(this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase){
-            this.canILogin = true
-        } else {
-            this.canILogin = false
-        }
+        this.checkLogin();
     },
+    isShowKey(a, b) {
+        this.checkLogin();
+    },
+    key(a, b) {
+        this.checkLogin();
+    }
   }
 }
 </script>

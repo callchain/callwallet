@@ -17,7 +17,7 @@ const store = new Vuex.Store({
       transactions: [],
       marker: {},
       trustlines: [],
-      issue_list: []
+      issue_list: [],
     },
     mutations: {
       login (state) {
@@ -52,6 +52,23 @@ const store = new Vuex.Store({
       initTransactions(state, result) {
         state.transactions = result.results
         state.marker = result.marker
+      },
+      updateTransactions(state, result) {
+        state.transactions = state.transactions.concat(result.results)
+        state.marker = result.marker
+      },
+      newContact(state, item) {
+        var contacts = state.blob.data.contacts
+        contacts[item.title] = item.content
+        state.blob.data.contacts = contacts
+      },
+      updateContact(state, msg) {
+        if (msg.delBefIns) {
+          delete state.blob.data.contacts[msg.oldtitle]
+        }
+        var contacts = state.blob.data.contacts
+        contacts[item.title] = item.content
+        state.blob.data.contacts = contacts
       }
     }
 });

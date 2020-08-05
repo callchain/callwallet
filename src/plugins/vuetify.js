@@ -1,5 +1,7 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify, { VSnackbar, VBtn, VIcon } from 'vuetify/lib'
+import VuetifyToast from 'vuetify-toast-snackbar'
+
 // 字体图标
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -7,9 +9,15 @@ import '@mdi/font/css/materialdesignicons.css'
 import zhHans from 'vuetify/es5/locale/zh-Hans'
 import en from 'vuetify/es5/locale/zh-Hans'
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  components: {
+    VSnackbar,
+    VBtn,
+    VIcon
+  }
+})
 
-export default new Vuetify({
+const VuetifyObj = new Vuetify({
   lang: {
     current: 'zhHans',
     locales: { en, zhHans },
@@ -31,3 +39,17 @@ export default new Vuetify({
     iconfont: 'mdi', // default - only for display purposes
   },
 })
+
+Vue.use(VuetifyToast, {
+  $vuetify: VuetifyObj.framework,
+  x: 'right',
+  y: 'bottom',
+  timeout: 3000,
+  multiLine: true,
+  showClose: false
+})
+
+export default VuetifyObj
+
+
+
