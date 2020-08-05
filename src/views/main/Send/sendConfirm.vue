@@ -39,7 +39,11 @@ export default {
             var blob = this.$store.state.blob;
             var from = blob.data.account_id;
             var secret = blob.data.master_seed;
-            var send_amount = {value: this.amount, currency: this.issuer.currency, issuer: this.issuer.counterparty ? this.issuer.counterparty : ''};
+            var send_amount = {
+                value: this.amount, 
+                currency: this.issuer.currency, 
+                issuer: this.issuer.counterparty ? this.issuer.counterparty : ''
+            };
             var payment = {
                 source: {
                     address: from,
@@ -50,11 +54,14 @@ export default {
                     amount: send_amount
                 }
             };
+            console.dir(payment);
 
             try {
                 var prepare =  await api.preparePayment(from, payment);
+                console.dir(prepare);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.tx_json, prepare.secret);
+                var signedTx = api.sign(prepare.tx_json || prepare.txJSON, prepare.secret);
+                console.dir(signedTx);
                 var tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 
@@ -69,6 +76,7 @@ export default {
                     this.$router.push({name: 'submitted', params: {id: signedTx.id}});
                 }
             } catch (e) {
+                this.$toast.error(e.message);
                 console.dir(e);
             }  
         }
