@@ -7,7 +7,7 @@
                 <v-data-table 
                     calculate-widths
                     :headers="headers"
-                    :items="data"
+                    :items="trustlines"
                     sort-by="calories"
                     :items-per-page="10"
                     hide-default-footer>   
@@ -16,35 +16,36 @@
                     </template>
                     </v-data-table>
                     <v-divider></v-divider>
-                    <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn>
+                    <!-- <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn> -->
                 </div>
             <div v-else class="add-edit ml-3 mt-1">
-                <div style="width: 300px;">
-                    <div class="text-subtitle-1 font-weight-bold">Contact name or Callchain address</div>
+                <div style="width: 30%;">
+                    <div class="text-subtitle-1 font-weight-bold">Issuer Callchain address</div>
                     <v-text-field
                     outlined
                     v-model="name"
-                    label="Contact name or Callchain address"
+                    label="Callchain address"
                     solo
                     flat
                     dense
+                    @blur="checkName"
                     ></v-text-field>
                 </div>
-                <div style="width: 300px;">
+                <div style="width: 30%;">
                     <div class="text-subtitle-1 font-weight-bold">Token</div>
-                    <v-combobox
+                    <v-select
                         v-model="select"
                         :items="items"
                         item-color="primary"
                         dense
                         outlined
                         @change="handleBlur"
-                    ></v-combobox>
+                    ></v-select>
                 </div>
                 
                 <div class="d-inline-flex align-center">
-                    <v-btn width="100px" @click="isShowAdd = false" outlined color="primary">Cancel</v-btn>
-                    <v-btn width="180px" @click="handleAddConfirm" color="primary" class="ml-5">Add Contact</v-btn>
+                    <v-btn width="40%" @click="isShowAdd = false" outlined color="primary">Cancel</v-btn>
+                    <v-btn width="60%" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="!canTrust">Trust</v-btn>
                 </div>
             </div>
 
@@ -80,47 +81,155 @@
 <script>
 
 import NoData from '../../../components/NoData';
-
+import api from '../../../api/index';
+import utils from '../../../api/utils';
 
 export default {
     name: 'contacts',
     data: () => ({
         isShowAdd: false, /// 是否能点击添加按钮
         dialog: false, /// 是否显示弹窗
-        headers: [{ text: 'Name/Address', value: 'title', width: 200, sortable: false }, { text: 'Token', value: 'token' }, { text: 'Balance', value: 'balance' }, { text: 'Actions', value: 'actions', width: 150, align: 'center', sortable: false },],
-        data: [
-            { title: 'gateway1', token: 'qtBcUoHe2zqhVFED6o9or', balance: '100,000' },
-            { title: 'gateway32', token: 'cBcUoHe2zqhVFFbgUVED6o9or', balance: '100,000' },
-            { title: 'gateway3', token: 'cGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or', balance: '100,000' },
-            { title: 'gateway4', token: 'cGa9JzqhVFFbgUVED6o9or', balance: '100,000' },
-            { title: 'gateway5', token: 'cGa9Jsd9TkqasdxcfvdfgtBo9asdor', balance: '100,000' },
+        headers: [
+            { text: 'Currency', value: 'currency', sortable: false }, 
+            { text: 'Counterparty', value: 'counterparty' }, 
+            { text: 'Limit', value: 'limit' }, 
+            { text: 'Balance', value: 'balance' }, 
+            { text: 'Actions', value: 'actions', align: 'center', sortable: false }
         ],
-        items: [{ text: 'asd', value: '1'}, { text: 'as12d', value: '2'}, { text: 'as123d', value: '3'}],
+
+        items: [],
         name: '',
         select: '', /// token
-        deleteIndex: null, /// 记录删除下标
+        items_map: {},
+
+        currentItem: {}
+
     }),
     created() {
         this.isShowAdd = false;
     },
     methods: {
         /// 确认新增
-        handleAddConfirm() {
+        async handleAddConfirm() {
+            var from = this.$store.state.address;
+            var currency = this.select;
+            var issuer = this.name;
+            var limit = this.items_map[currency].value;
+            var secret = this.$store.state.blob.data.master_seed;
+            var trustline = {
+                currency: currency,
+                counterparty: issuer,
+                limit: limit,
+                callingDisabled: true // to test
+            };
+
+             try {
+                var prepare = await api.prepareTrustline(from, trustline);
+                console.dir(prepare);
+                prepare.secret = secret;
+                var signedTx = api.sign(prepare.txJSON, prepare.secret);
+                console.dir(signedTx);
+                var tx = await api.submit(signedTx, true);
+                console.dir(tx);
+                
+                if (tx.resultCode !== 'tesSUCCESS')
+                {
+                    this.$toast.error('Fail tansaction: ' + tx.resultCode);
+                }
+                else
+                {
+                    this.$toast.success('The transaction was applied. Only final in a validated ledger');
+                    this.isShowAdd = false;
+                    // re pull list or from transactions
+                }
+            } catch (e) {
+                this.$toast.error(e.message);
+                console.dir(e);
+            }
 
         },
         /// 显示弹窗删除
         deleteItem (item) {
-            this.deleteIndex = this.data.indexOf(item);
+            console.dir(item);
+            if (Number(item.balance) !== 0) {
+                this.$toast.error("You hold " + item.currency + " with balance is " + item.balance);
+                return;
+            }
+            this.currentItem = item;
             this.dialog = true;
         },
         /// 确认删除
-        handleDialogConfirm() {
-            this.data.splice(this.deleteIndex, 1);
+        async handleDialogConfirm() {
+            var from = this.$store.state.address;
+            var secret = this.$store.state.blob.data.master_seed;
+            var trustline = {
+                currency: this.currentItem.currency,
+                counterparty: this.currentItem.counterparty,
+                limit: '0'
+            };
+
+             try {
+                var prepare = await api.prepareTrustline(from, trustline);
+                console.dir(prepare);
+                prepare.secret = secret;
+                var signedTx = api.sign(prepare.txJSON, prepare.secret);
+                console.dir(signedTx);
+                var tx = await api.submit(signedTx, true);
+                console.dir(tx);
+                
+                if (tx.resultCode !== 'tesSUCCESS')
+                {
+                    this.$toast.error('Fail tansaction: ' + tx.resultCode);
+                }
+                else
+                {
+                    this.$toast.success('The transaction was applied. Only final in a validated ledger');
+                    // re pull list or from transactions
+                }
+            } catch (e) {
+                this.$toast.error(e.message);
+                console.dir(e);
+            }
+
             this.dialog = false;
+            
         },
          /// 下拉框输入
         handleBlur() {
             console.log(this.select)
+        },
+        async checkName() {
+            if (!this.name || this.name === '') return;
+
+            this.name = this.name.trim();
+            if (!utils.isValidAddr(this.name)) {
+                this.$toast.error("Invalid Callchain address");
+                this.$nextTick(() => {
+                    this.name = '';
+                });
+                return;
+            }
+
+            var address = this.$store.state.address;
+            if (this.name === address) {
+                if (!utils.isValidAddr(this.name)) {
+                    this.$toast.error("Should not trust yourself");
+                    this.$nextTick(() => {
+                        this.name = '';
+                    });
+                    return;
+                }
+            }
+
+            // get account issues
+            var issues = await api.getAccountIssues(this.name);
+            this.items = [];
+            this.items_map = {};
+            for (var i = 0; i < issues.lines.length; ++i) {
+                var issue = issues.lines[i];
+                this.items.push(issue.Total.currency);
+                this.items_map[issue.Total.currency] = issue.Total;
+            }
         }
 
     },
@@ -130,23 +239,19 @@ export default {
     computed: {
         nofund() {
             return this.$store.state.balance === 0
+        },
+        trustlines() {
+            return this.$store.state.trustlines;
+        },
+        canTrust() {
+            return this.name && utils.isValidAddr(this.name)
+                && this.select && this.select !== '';
         }
     },
-    // watch: {
-    //     name(a, b) {
-    //         if(this.name != '' && this.address != ''){
-    //             this.canIAdd = true
-    //         } else {
-    //             this.canIAdd = false
-    //         }
-    //     },
-    //     address(a, b) {
-    //         if(this.name != '' && this.address != ''){
-    //             this.canIAdd = true
-    //         } else {
-    //             this.canIAdd = false
-    //         }
-    //     }
-    // }
+    async created() {
+        var address = this.$store.state.address;
+        var lines = await api.getTrustlines(address);
+        this.$store.commit("initTrustlines", lines);
+    }
 }
 </script>

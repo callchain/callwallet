@@ -72,6 +72,21 @@ const store = new Vuex.Store({
         state.issue_list = issues;
       },
 
+      initTrustlines(state, list) {
+        var lines = [];
+        for (var i = 0; i < list.results.length; ++i) {
+          var item = list.results[i];
+          lines.push({
+            currency: item.specification.currency,
+            counterparty: item.specification.counterparty,
+            limit: item.specification.limit,
+            balance: item.state.balance
+          });
+        }
+        state.trustlines = lines;
+        console.dir(state.trustlines)
+      },
+
 
       newContact(state, item) {
         var contacts = state.blob.data.contacts
