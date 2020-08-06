@@ -8,7 +8,7 @@
 import NoData from '../../../components/NoData';
 
 export default {
-    name: 'send',
+    name: 'send-index',
     data: () => ({
         
     }),

@@ -13,7 +13,7 @@
 </template>
 <script>
 export default {
-    name: 'receive',
+    name: 'cleared',
     data: () => ({
         
     }),

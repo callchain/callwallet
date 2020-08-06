@@ -67,7 +67,7 @@
 </template>
 <script>
 export default {
-    name: 'receive',
+    name: 'copy',
     data: () => ({
         recipient: 'Contact name or Callchain address',
         recipientReceive: '',

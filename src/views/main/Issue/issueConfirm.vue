@@ -25,6 +25,9 @@ export default {
     created() {
         var params = this.$route.params;
         this.info = params;
+        if (_.isEmpty(this.info) || !this.info.symbol || !this.info.supply) {
+            this.$router.push({name: 'issue'});
+        }
     },
     methods: {
         handleBack(){
@@ -47,7 +50,7 @@ export default {
                 console.dir(api);
                 var prepare =  await api.prepareIssueSet(from, issueSet);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.tx_json, prepare.secret);
+                var signedTx = api.sign(prepare.txJSON, prepare.secret);
                 var tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 
@@ -62,6 +65,7 @@ export default {
                     this.$router.push({name: 'issueSubmitted', params: {id: signedTx.id}});
                 }
             } catch (e) {
+                this.$toast.error(e.message);
                 console.dir(e);
             }  
         }

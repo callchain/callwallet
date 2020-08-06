@@ -18,7 +18,7 @@
 import api from '../../../api/index';
 
 export default {
-    name: 'receive',
+    name: 'send-confirm',
     data: () => ({
         recipient: '',
         amount: '',
@@ -29,6 +29,9 @@ export default {
         this.recipient = params.recipient;
         this.amount = params.amount;
         this.issuer = params.currency;
+        if (!this.recipient || !this.amount || !this.issuer) {
+            this.$router.push({name: 'send'});
+        }
     },
     methods: {
         handleBack(){
@@ -60,7 +63,7 @@ export default {
                 var prepare =  await api.preparePayment(from, payment);
                 console.dir(prepare);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.tx_json || prepare.txJSON, prepare.secret);
+                var signedTx = api.sign(prepare.txJSON, prepare.secret);
                 console.dir(signedTx);
                 var tx = await api.submit(signedTx, true);
                 console.dir(tx);

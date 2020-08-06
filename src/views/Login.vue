@@ -45,24 +45,6 @@
       </div>
     </div>
 
-    <v-dialog
-      v-model="dialog"
-      max-width="300"
-    >
-      <v-card>
-        <v-card-title></v-card-title>
-          <v-card-text class="text-center">{{warn_text}}</v-card-text>
-            <v-card-actions class="d-flex align-center justify-center pb-5">
-                <v-btn
-                  color="primary"
-                  @click="dialog=false"
-                >
-                  OK
-                </v-btn>
-              </v-card-actions>
-          </v-card>
-      </v-dialog>
-
   </v-card>
 </template>
 
@@ -81,9 +63,7 @@ export default {
     walletName: '',
     passphrase: '',
     show1: false,
-    canILogin: false,
-    dialog: false,
-    warn_text: ''
+    canILogin: false
   }),
   methods: {
     /// 注册
@@ -94,8 +74,7 @@ export default {
     handleLogin() {
       var data = Blob.decrypt(this.walletName, this.passphrase);
       if (typeof data === 'string') {
-        this.warn_text = data;
-        this.dialog = true;
+        this.$toast.error(data);
         return;
       }
 

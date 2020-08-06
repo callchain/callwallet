@@ -39,20 +39,15 @@ export default {
             this.$router.push({name: 'issueToUser', params: item});
         }
     },
-    components: {
-    },
     computed: {
         issues() {
-            console.dir(this.$store.state.issue_list);
             return this.$store.state.issue_list;
         }
     },
     async created() {
         var address = this.$store.state.address;
-        console.dir(api);
         try {
             var issues = await api.getAccountIssues(address);
-            console.dir(issues);
             this.$store.commit('initIssues', issues);
         } catch (e) {
             console.dir(e);

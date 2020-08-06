@@ -84,6 +84,7 @@ const routes = [
               { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
               { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
               { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
+              { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
             ],
             meta: {auth: true}
           },

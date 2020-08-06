@@ -7,29 +7,32 @@
             <v-divider></v-divider>
 
             <div>
-                <div style="width: 300px;">
+                <div style="width: 35%;">
                     <p class="text-subtitle-1 font-weight-bold mb-2">Recipient</p>
                     <v-text-field
                         outlined
                         v-model="recipient"
-                        label="Contract name or Callchain address"
+                        label="Recipient address"
                         solo
                         flat
                         dense
+                        @blur="checkAddress"
                     ></v-text-field>
                 </div>
-                <div style="width: 300px;">
+                <div style="width: 35%;">
                     <p class="text-subtitle-1 font-weight-bold mb-2">Recipient will receive</p>
-                    <div class="d-inline-flex">
+                    <div class="d-inline-flex" style="width: 90%;">
                         <v-text-field
                             outlined
-                            v-model="recipientReceive"
+                            v-model="amount"
                             label="Amount"
+                            type="number"
                             solo
                             flat
                             dense
+                            @keydown="inputAmount"
                         ></v-text-field>
-                        <span class="mt-2 ml-5">USDT</span>
+                        <span class="mt-2 ml-5">{{currentIssue.currency}}</span>
                     </div>
                 </div>
                 <!-- <div style="width: 300px;">
@@ -44,8 +47,8 @@
                     ></v-text-field>
                 </div> -->
                 <div class="">
-                    <v-btn outlined color="primary" @click="showStatus = 0" width="100">back</v-btn>
-                    <v-btn class="ml-5" color="primary" @click="showStatus = 0" width="180">comfirm</v-btn>
+                    <v-btn outlined color="primary" @click="goBack()" width="10%">back</v-btn>
+                    <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canSend ? false : true">comfirm</v-btn>
                 </div>
             </div>
         </div>
@@ -53,28 +56,134 @@
 </template>
 <script>
 import api from '../../../api/index';
+import utils from '../../../api/utils';
 
 export default {
-    name: 'issue to user',
+    name: 'issue-to-user',
     data: () => ({
-
         recipient: '',
-        recipientReceive: '',
+        amount: '',
         invoiceID: '',
 
-        currentIssue: {}
-
+        currentIssue: {},
     }),
     methods: {
+        goBack() {
+            this.$router.go(-1);
+        },
         async confirmIssue() {
+            // send token to user
+            var blob = this.$store.state.blob;
+            var from = blob.data.account_id;
+            var issuer = from;
+            var currency = this.currentIssue.currency;
+            var secret = blob.data.master_seed;
+
+            var send_amount = {
+                value: this.amount, 
+                currency: currency, 
+                issuer: issuer
+            };
+            var payment = {
+                source: {
+                    address: from,
+                    maxAmount: send_amount
+                },
+                destination: {
+                    address: this.recipient,
+                    amount: send_amount
+                }
+            };
+            console.dir(payment);
+
+            try {
+                var prepare =  await api.preparePayment(from, payment);
+                console.dir(prepare);
+                prepare.secret = secret;
+                var signedTx = api.sign(prepare.txJSON, prepare.secret);
+                console.dir(signedTx);
+                var tx = await api.submit(signedTx, true);
+                console.dir(tx);
+                
+                if (tx.resultCode !== 'tesSUCCESS')
+                {
+                    this.$toast.error('Fail tansaction: ' + tx.resultCode);
+                }
+                else
+                {
+                    this.$toast.success('The transaction was applied. Only final in a validated ledger');
+                    this.$router.push({name: 'issueToUserSubmitted', params: {id: signedTx.id}});
+                }
+            } catch (e) {
+                this.$toast.error(e.message);
+                console.dir(e);
+            } 
+        },
+        checkAddress() {
+            if (!this.recipient || this.recipient === '') return;
+
+            this.recipient = this.recipient.trim();
+            if (!utils.isValidAddr(this.recipient)) {
+                this.$toast.error("Recipient address is not valid Callchain address");
+                this.$nextTick(() => {
+                    this.recipient = '';
+                });
+            }
+            var address = this.$store.state.address;
+            if (this.recipient === address) {
+                this.$toast.error("Cannot issue token to youself");
+                this.$nextTick(() => {
+                    this.recipient = '';
+                });
+            }
+        },
+        inputAmount(e) {
+            if (e.key === '.') {
+                this.$nextTick(() => {
+                    this.amount = this.amount.replace(/\./g,'');
+                })
+            }
+            if (e.key === '-') {
+                this.$nextTick(() => {
+                    this.amount = this.amount.replace(/-/g,'');
+                })
+            }
         }
     },
     components: {
     },
     computed: {
+        canSend() {
+            var address = this.$store.state.address;
+            return utils.isValidAddr(this.recipient) && this.recipient !== address && Number(this.amount) > 0;
+        }
     },
-    async created() {
-        
+    created() {
+        var params = this.$route.params;
+        console.dir(params);
+        this.currentIssue = params;
+        if (_.isEmpty(this.currentIssue) || !this.currentIssue.currency)
+        {
+            this.$router.push({name: 'issue'});
+        }
+    },
+    watch: {
+        amount(newv, oldv) {
+            if (!this.amount || this.amount === '') return;
+            if (!Number(this.amount) || Number(this.amount) < 0) {
+                this.$toast.error('Only postive number is allowed');
+                this.$nextTick(() => {
+                    this.amount = oldv;
+                });
+            }
+            var left = Number(this.currentIssue.total) - Number(this.currentIssue.issued);
+            if (Number(this.amount) > left) {
+                this.$toast.error('Left issue quota for ' + this.currentIssue.currency + ' is ' + left);
+                this.$nextTick(() => {
+                    this.amount = oldv;
+                });
+            }
+        }
     }
 }
 </script>

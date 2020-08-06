@@ -77,23 +77,6 @@
     </div>
   </div>
 
-    <v-dialog
-      v-model="dialog"
-      max-width="300"
-    >
-      <v-card>
-        <v-card-title></v-card-title>
-          <v-card-text class="text-center">{{warn_text}}</v-card-text>
-            <v-card-actions class="d-flex align-center justify-center pb-5">
-                <v-btn
-                  color="primary"
-                  @click="dialog=false"
-                >
-                  OK
-                </v-btn>
-              </v-card-actions>
-          </v-card>
-      </v-dialog>
 </v-card>
 </template>
 
@@ -110,9 +93,7 @@ export default {
     repassphrase: '',
     key: '',
     isShowKey: false,
-    canILogin: false,
-    dialog: false,
-    warn_text: ''
+    canILogin: false
   }),
   methods: {
     // 点击回上一页
@@ -125,8 +106,7 @@ export default {
         var wallet;
         if (this.key !== '') {
           if (!call.CallAPI._PRIVATE.schemaValidator.isValidSecret(this.key)) {
-            this.warn_text = 'Invalid secret key';
-            this.dialog = true;
+            this.$toast.error('Invalid secret key');
             return;
           }
           wallet = api.fromSecret(this.key);
@@ -149,8 +129,7 @@ export default {
         };
         var ret = Blob.encrypt(this.walletName, this.passphrase, blob);
         if (ret !== 'OK') {
-          this.warn_text = ret;
-          this.dialog = true;
+          this.$toast.error(ret);
           return;
         }
         this.$router.push({name: 'welcome', params: wallet});

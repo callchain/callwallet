@@ -47,7 +47,7 @@
 import utils from '../../../api/utils';
 
 export default {
-    name: 'receive',
+    name: 'send',
     data: () => ({
         recipient: '',
         recipientReceive: '',
@@ -85,6 +85,12 @@ export default {
             if (!utils.isValidAddr(this.recipient))
             {
                 this.$toast.error("Invalid recipient address");
+                this.recipient = '';
+                return;
+            }
+            var address = this.$store.state.address;
+            if (this.recipient === address) {
+                this.$toast.error("Send to yourself is not unnecessary");
                 this.recipient = '';
                 return;
             }
