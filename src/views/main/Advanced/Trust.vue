@@ -19,7 +19,7 @@
                     <!-- <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn> -->
                 </div>
             <div v-else class="add-edit ml-3 mt-1">
-                <div style="width: 30%;">
+                <div style="width: 40%;">
                     <div class="text-subtitle-1 font-weight-bold">Issuer Callchain address</div>
                     <v-text-field
                     outlined
@@ -31,7 +31,7 @@
                     @blur="checkName"
                     ></v-text-field>
                 </div>
-                <div style="width: 30%;">
+                <div style="width: 40%;">
                     <div class="text-subtitle-1 font-weight-bold">Token</div>
                     <v-select
                         v-model="select"
@@ -165,7 +165,8 @@ export default {
             var trustline = {
                 currency: this.currentItem.currency,
                 counterparty: this.currentItem.counterparty,
-                limit: '0'
+                limit: '0',
+                callingDisabled: false
             };
 
              try {
