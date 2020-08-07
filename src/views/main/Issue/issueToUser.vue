@@ -98,7 +98,6 @@ export default {
             var api = this.$store.state.api;
             try {
                 var prepare =  await api.preparePayment(from, payment);
-                console.dir(prepare);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
                 console.dir(signedTx);

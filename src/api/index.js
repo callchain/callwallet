@@ -1,14 +1,6 @@
 import store from '../store/Index';
-var alib = require('async');
-
-/**
- * or null
- * @param {*} tx 
- * @param {*} address 
- */
-function processTx(tx, address) {
-    return null;
-}
+import Parser from './transaction-parser';
+import vue from '../main';
 
 export default function(server) {
     const url = (server.ssl ? 'wss://' : 'ws://') + server.host + ':' + server.port;
@@ -30,29 +22,32 @@ export default function(server) {
         console.log('server disconnect');
     });
 
-    api.on('ledger', async function(ledger) {
+    api.on('ledger', function(ledger) {
         // update block number
-        var blocknumber = ledger.ledgerVersion;
         store.commit('updateHeight', ledger.ledgerVersion);
-        var ldg = await api.getLedger({ledgerVersion: blocknumber, includeTransactions: true});
-        if (!ldg.transactionHashes ) return;
-    
-        var address = store.state.address;
-        alib.each(ldg.transactionHashes, async function(hash, cb) {
-            var tx = await api.getTransaction(hash);
-            if (!tx) return cb();
-    
-            var result = processTx(tx, address);
-            if (!result) return cb(); // no related tx
-    
-            cb();
-        }, function(err) {
-            if (err) console.error(err);
-        });
     });
     
-    api.on('transactions', function(tx) {
+    api.on('transactions', async function(tx) {
         console.dir(tx);
+        var hash = tx.transaction.hash;
+        var address = store.state.address;
+        try {
+            var info = await api.getTransaction(hash);
+            var parse = Parser[info.type] ? Parser[info.type] : Parser['default'];
+            var desc = parse(info, address);
+            if (info.outcome.result !== 'tesSUCCESS')
+            {
+                vue.$toast.error(desc);
+                return;
+            }
+            vue.$toast.success(desc);
+
+            // TODO
+
+        } catch (e) {
+            vue.$toast.error(e.message);
+            console.error(e);
+        }
     });
 
     return api;

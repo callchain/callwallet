@@ -12,12 +12,11 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-new Vue({
+const vue = new Vue({
   store,
   router,
   vuetify,
   render: h => h(App)
 }).$mount('#app')
 
-
-
+export default vue;

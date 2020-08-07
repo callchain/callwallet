@@ -125,7 +125,6 @@ export default {
             var api = this.$store.state.api;
             try {
                 var prepare = await api.prepareTrustline(from, trustline);
-                console.dir(prepare);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
                 console.dir(signedTx);
@@ -174,7 +173,6 @@ export default {
             var api = this.$store.state.api;
             try {
                 var prepare = await api.prepareTrustline(from, trustline);
-                console.dir(prepare);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
                 console.dir(signedTx);
