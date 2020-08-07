@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-      // api: new call.CallAPI({ server: 'wss://s1.callchain.live:5020' }),
+      api: new call.CallAPI({ server: 'wss://s1.callchain.live:5020' }),
       isLogin: false,
       isOffline: false,
       username: '',
@@ -23,6 +23,9 @@ const store = new Vuex.Store({
     mutations: {
       login (state) {
         state.isLogin = true
+      },
+      initApi(state, api) {
+        state.api = api
       },
       logout (state) {
         state.isLogin = false

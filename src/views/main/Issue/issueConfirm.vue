@@ -15,8 +15,6 @@
 </template>
 <script>
 
-import api from '../../../api/index';
-
 export default {
     name: 'issue-confirm',
     data: () => ({
@@ -46,6 +44,7 @@ export default {
                 transferRate: 0
             };
 
+            var api = this.$store.state.api;
             try {
                 console.dir(api);
                 var prepare =  await api.prepareIssueSet(from, issueSet);
@@ -67,6 +66,8 @@ export default {
             } catch (e) {
                 this.$toast.error(e.message);
                 console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
             }  
         }
     }

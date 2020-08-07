@@ -31,7 +31,6 @@
 </template>
 <script>
 
-import api from '../../../api/index';
 import Parser from '../../../api/transaction-parser';
 import NoData from '../../../components/NoData';
 import * as filters from '../../../filters/Index';
@@ -66,6 +65,7 @@ export default {
     },
     async created() {
         var address = this.$store.state.address;
+        var api = this.$store.state.api;
         try {
             var height = this.$store.state.height;
             var ret = await api.getBalances(address, {ledgerVersion: Number(height)});
@@ -73,7 +73,10 @@ export default {
             var result = await api.getTransactions(address, {limit: 10});
             this.$store.commit("initTransactions", result);
         } catch (e) {
+            this.$toast.error(e.message);
             console.dir(e);
+            this.$store.commit('logout');
+            this.$router.push("./login");
         }
     },
     methods: {

@@ -133,7 +133,6 @@ export default {
         supply(newv, oldv) {
             if (!this.supply || this.supply === '') return;
             if (!this.isValidSupply(this.supply)) {
-                console.log('invalid supply');
                 this.$nextTick(() => {
                     this.supply = oldv;
                 });

@@ -82,7 +82,6 @@
 
 <script>
 // @ is an alias to /src
-import api from '../api/index';
 import Blob from '../api/Blob';
 
 export default {
@@ -104,6 +103,8 @@ export default {
     handleRegister() {
         // do something
         var wallet;
+        var api = this.$store.state.api;
+        
         if (this.key !== '') {
           if (!call.CallAPI._PRIVATE.schemaValidator.isValidSecret(this.key)) {
             this.$toast.error('Invalid secret key');
@@ -136,11 +137,9 @@ export default {
     },
     checkLogin() {
       var ret = (this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase);
-      console.log(ret);
       if (this.isShowKey) {
         ret = ret && this.key !== '';
       }
-      console.log('ret2=' + ret);
       this.canILogin = ret;
     }
   },

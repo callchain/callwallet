@@ -34,7 +34,6 @@
 
 <script>
 import utils from '../../../api/utils';
-import api from '../../../api/index';
 
 export default {
     name: 'options',
@@ -43,11 +42,11 @@ export default {
             host: '', 
             port: '', 
             ssl: false 
-        }
+        },
     }),
     created() {
         var server = this.$store.state.server;
-        this.sendData = server;
+        this.sendData = JSON.parse(JSON.stringify(server));
     },
     methods: {
         // 保存
@@ -60,11 +59,23 @@ export default {
                 this.$toast.error("Invalid port");
                 return;
             }
-            this.$store.commit('updateServer', this.sendData);
-            console.dir(api);
-            await api.disconnect();
-            this.$store.commit('logout');
-            this.$router.push("./login");
+            var server = this.$store.state.server;
+            if (server.host !== this.sendData.host || server.port !== this.sendData.port
+                    || server.ssl !== this.sendData.ssl)
+            {
+                this.$store.commit('updateServer', this.sendData);
+                var api = this.$store.state.api;
+                try {
+                    if (api.isConnected && api.isConnected()) {
+                        await api.disconnect();
+                    }
+                } catch (e) {
+                    this.$toast.error(e.message);
+                    console.dir(e);
+                }
+                this.$store.commit('logout');
+                this.$router.push("./login");
+            }
         }
     }
 }

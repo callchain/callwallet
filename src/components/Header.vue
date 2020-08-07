@@ -62,13 +62,12 @@ export default {
       return intPartFormat + pointPart + ' CALL';
     },
     handleLoginClick() {
-      console.log('点击logo')
     },
-    /// 点击设置图标
+    /// do setting
     handleSetting() {
       this.$router.push({ path: '/options'})
     },
-    /// 点击退出登录
+    /// do logout
     handleLoginOut() {
       sessionStorage.clear()
       this.$store.commit('logout')

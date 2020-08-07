@@ -81,7 +81,6 @@
 <script>
 
 import NoData from '../../../components/NoData';
-import api from '../../../api/index';
 import utils from '../../../api/utils';
 
 export default {
@@ -123,7 +122,8 @@ export default {
                 callingDisabled: true // to test
             };
 
-             try {
+            var api = this.$store.state.api;
+            try {
                 var prepare = await api.prepareTrustline(from, trustline);
                 console.dir(prepare);
                 prepare.secret = secret;
@@ -145,6 +145,8 @@ export default {
             } catch (e) {
                 this.$toast.error(e.message);
                 console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
             }
 
         },
@@ -169,7 +171,8 @@ export default {
                 callingDisabled: false
             };
 
-             try {
+            var api = this.$store.state.api;
+            try {
                 var prepare = await api.prepareTrustline(from, trustline);
                 console.dir(prepare);
                 prepare.secret = secret;
@@ -190,6 +193,8 @@ export default {
             } catch (e) {
                 this.$toast.error(e.message);
                 console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
             }
 
             this.dialog = false;
@@ -197,7 +202,6 @@ export default {
         },
          /// 下拉框输入
         handleBlur() {
-            console.log(this.select)
         },
         async checkName() {
             if (!this.name || this.name === '') return;
@@ -223,13 +227,21 @@ export default {
             }
 
             // get account issues
-            var issues = await api.getAccountIssues(this.name);
-            this.items = [];
-            this.items_map = {};
-            for (var i = 0; i < issues.lines.length; ++i) {
-                var issue = issues.lines[i];
-                this.items.push(issue.Total.currency);
-                this.items_map[issue.Total.currency] = issue.Total;
+            var api = this.$store.state.api;
+            try {
+                var issues = await api.getAccountIssues(this.name);
+                this.items = [];
+                this.items_map = {};
+                for (var i = 0; i < issues.lines.length; ++i) {
+                    var issue = issues.lines[i];
+                    this.items.push(issue.Total.currency);
+                    this.items_map[issue.Total.currency] = issue.Total;
+                }
+            } catch (e) {
+                this.$toast.error(e.message);
+                console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
             }
         }
 
@@ -250,9 +262,17 @@ export default {
         }
     },
     async created() {
-        var address = this.$store.state.address;
-        var lines = await api.getTrustlines(address);
-        this.$store.commit("initTrustlines", lines);
+        var api = this.$store.state.api;
+        try {
+            var address = this.$store.state.address;
+            var lines = await api.getTrustlines(address);
+            this.$store.commit("initTrustlines", lines);
+        } catch (e) {
+            this.$toast.error(e.message);
+            console.dir(e);
+            this.$store.commit('logout');
+            this.$router.push("./login");
+        }
     }
 }
 </script>

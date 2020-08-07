@@ -55,7 +55,6 @@
     </div>
 </template>
 <script>
-import api from '../../../api/index';
 import utils from '../../../api/utils';
 
 export default {
@@ -96,6 +95,7 @@ export default {
             };
             console.dir(payment);
 
+            var api = this.$store.state.api;
             try {
                 var prepare =  await api.preparePayment(from, payment);
                 console.dir(prepare);
@@ -117,6 +117,8 @@ export default {
             } catch (e) {
                 this.$toast.error(e.message);
                 console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
             } 
         },
         checkAddress() {

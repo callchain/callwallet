@@ -23,7 +23,6 @@
     </div>
 </template>
 <script>
-import api from '../../../api/index';
 
 export default {
     name: 'issue-list',
@@ -46,11 +45,15 @@ export default {
     },
     async created() {
         var address = this.$store.state.address;
+        var api = this.$store.state.api;
         try {
             var issues = await api.getAccountIssues(address);
             this.$store.commit('initIssues', issues);
         } catch (e) {
+            this.$toast.error(e.message);
             console.dir(e);
+            this.$store.commit('logout');
+            this.$router.push("./login");
         }
     }
 }

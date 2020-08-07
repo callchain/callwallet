@@ -147,7 +147,6 @@ export default {
             {
                 if (contacts[this.name]) {
                     this.dialog = true;
-                    console.log('name 1')
                     this.warn_text = 'Same name exists';
                     return;
                 }
@@ -155,7 +154,6 @@ export default {
                     var value = contacts[key];
                     if (value === this.address) {
                         this.dialog = true;
-                        console.log('address 1')
                         this.warn_text = 'Same address exists';
                         return;
                     }
@@ -171,9 +169,6 @@ export default {
                 }
                 if (this.currentItem.title !== this.name && contacts[this.name]) {
                     this.dialog = true;
-                    console.log('name 2')
-                    console.dir(this.currentItem);
-                    console.log(this.name);
                     this.warn_text = 'Same name exists';
                     return;
                 }
@@ -182,8 +177,6 @@ export default {
                         var value = contacts[key];
                         if (value === this.address) {
                             this.dialog = true;
-                            console.log('address 2')
-                            console.dir(this.currentItem);
                             this.warn_text = 'Same address exists';
                             return;
                         }

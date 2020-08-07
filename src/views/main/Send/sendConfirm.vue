@@ -15,8 +15,6 @@
 </template>
 <script>
 
-import api from '../../../api/index';
-
 export default {
     name: 'send-confirm',
     data: () => ({
@@ -59,6 +57,7 @@ export default {
             };
             console.dir(payment);
 
+            var api = this.$store.state.api;
             try {
                 var prepare =  await api.preparePayment(from, payment);
                 console.dir(prepare);
@@ -81,6 +80,8 @@ export default {
             } catch (e) {
                 this.$toast.error(e.message);
                 console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
             }  
         }
     }

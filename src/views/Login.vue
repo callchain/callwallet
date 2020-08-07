@@ -52,7 +52,7 @@
 // @ is an alias to /src
 
 import Blob from '../api/Blob';
-import api from '../api/index';
+import CreateApi from '../api/index';
 
 export default {
   name: 'Login',
@@ -85,14 +85,18 @@ export default {
     }
   },
   created() {
-    var state = api.isConnected();
+    var api = this.$store.state.api;
+
+    var state = api.isConnected && api.isConnected();
     console.log('api connected?' + state);
     var self = this;
     if (!state) {
-      console.dir(api);
+      var server = this.$store.state.server;
+      api = CreateApi(server)
       api.connect().then(function() {
           console.log('api connected');
           self.$store.commit('online');
+          self.$store.commit('initApi', api);
       }).catch(function(e) {
           console.log('fail to connect api: ');
           self.$store.commit('offline');

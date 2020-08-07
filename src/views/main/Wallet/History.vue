@@ -32,7 +32,6 @@
 </template>
 <script>
 
-import api from '../../../api/index';
 import NoData from '../../../components/NoData';
 import * as filters from '../../../filters/Index';
 
@@ -74,8 +73,16 @@ export default {
                 return;
             }
 
-            var result = await api.getTransactions(address, {limit: 10, marker: marker});
-            this.$store.commit('updateTransactions', result);
+            var api = this.$store.state.api;
+            try {
+                var result = await api.getTransactions(address, {limit: 10, marker: marker});
+                this.$store.commit('updateTransactions', result);
+            } catch (e) {
+                this.$toast.error(e.message);
+                console.dir(e);
+                this.$store.commit('logout');
+                this.$router.push("./login");
+            }
         }
     }
 }
