@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+      // api: new call.CallAPI({ server: 'wss://s1.callchain.live:5020' }),
       isLogin: false,
       isOffline: false,
       username: '',
@@ -12,7 +13,7 @@ const store = new Vuex.Store({
       address: '',
       blob: {},
       height: 24997812,
-      server: {host: 's1.callchain.live', port: 5020, ssl: true},
+      server: {host: 's1.callchain.live', port: '5020', ssl: true},
       balance_list: [],
       transactions: [],
       marker: {},
@@ -85,6 +86,10 @@ const store = new Vuex.Store({
         }
         state.trustlines = lines;
         console.dir(state.trustlines)
+      },
+
+      updateServer(state, server) {
+        state.server = server;
       },
 
 

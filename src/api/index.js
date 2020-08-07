@@ -1,6 +1,10 @@
-const server = 'wss://s1.callchain.live:5020';
+import store from '../store/Index';
+var alib = require('async');
+
+var server = store.state.server;
+const url = (server.ssl ? 'wss://' : 'ws://') + server.host + ':' + server.port;
 var api = new call.CallAPI({
-    server: server
+    server: url
 });
 
 api.on('error', function(code, msg) {
@@ -8,15 +12,14 @@ api.on('error', function(code, msg) {
 });
 
 api.on('connected', function() {
+    store.commit('online');
     console.log('connect it');
 });
 
 api.on('disconnected', function() {
+    store.commit('offline');
     console.log('server disconnect');
 });
-
-import store from '../store/Index';
-var alib = require('async');
 
 /**
  * {
@@ -59,13 +62,6 @@ api.on('ledger', async function(ledger) {
 
 api.on('transactions', function(tx) {
     console.dir(tx);
-});
-
-api.connect().then(async function() {
-    console.log('api connected');
-}).catch(function(e) {
-    console.log('fail to connect api: ');
-    console.dir(e);
 });
 
 export default api;

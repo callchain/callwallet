@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import utils from '../../../api/utils';
+import api from '../../../api/index';
+
 export default {
     name: 'options',
     data: () => ({
@@ -48,8 +51,20 @@ export default {
     },
     methods: {
         // 保存
-        handleSave() {
-
+        async handleSave() {
+            if (!utils.isValidDomain(this.sendData.host)) {
+                this.$toast.error("Invalid host name");
+                return;
+            }
+            if (!utils.isValidPort(this.sendData.port)) {
+                this.$toast.error("Invalid port");
+                return;
+            }
+            this.$store.commit('updateServer', this.sendData);
+            console.dir(api);
+            await api.disconnect();
+            this.$store.commit('logout');
+            this.$router.push("./login");
         }
     }
 }

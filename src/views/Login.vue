@@ -84,6 +84,22 @@ export default {
       this.$router.push('./main');
     }
   },
+  created() {
+    var state = api.isConnected();
+    console.log('api connected?' + state);
+    var self = this;
+    if (!state) {
+      console.dir(api);
+      api.connect().then(function() {
+          console.log('api connected');
+          self.$store.commit('online');
+      }).catch(function(e) {
+          console.log('fail to connect api: ');
+          self.$store.commit('offline');
+          console.dir(e);
+      });
+    }
+  },
   watch: {
     passphrase(a, b) {
       if(this.walletName != '' && this.passphrase != ''){
