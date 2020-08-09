@@ -9,7 +9,8 @@
                     :headers="headers"
                     :items="trustlines"
                     sort-by="calories"
-                    :items-per-page="10"
+                    disable-sort
+                    :items-per-page="-1"
                     hide-default-footer>   
                     <template v-slot:item.actions="{ item }">
                         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -228,12 +229,13 @@ export default {
             var api = this.$store.state.api;
             try {
                 var issues = await api.getAccountIssues(this.name);
+                console.dir(issues);
                 this.items = [];
                 this.items_map = {};
-                for (var i = 0; i < issues.lines.length; ++i) {
-                    var issue = issues.lines[i];
-                    this.items.push(issue.Total.currency);
-                    this.items_map[issue.Total.currency] = issue.Total;
+                for (var i = 0; i < issues.results.length; ++i) {
+                    var issue = issues.results[i];
+                    this.items.push(issue.specification.currency);
+                    this.items_map[issue.specification.currency] = issue.specification;
                 }
             } catch (e) {
                 this.$toast.error(e.message);

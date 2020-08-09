@@ -7,6 +7,7 @@
             :headers="headers"
             :items="transactions"
             :items-per-page="-1"
+            disable-sort
             hide-default-footer
         ></v-data-table>
         <v-divider></v-divider>

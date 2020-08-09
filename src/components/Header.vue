@@ -7,7 +7,7 @@
         <v-btn v-if="!isLogin" @click="handleSetting" class="mr-1" dark color="black" icon>
             <v-icon>mdi-cog</v-icon>
         </v-btn>
-        <v-card v-else color="#ffffff">
+        <v-card v-if="isLogin" color="#ffffff">
           <div style="width: 300px;" class="d-inline-flex align-center justify-space-between pt-2 pb-2 pl-2 pr-2">
             <span>{{username}}</span>
             <v-hover v-slot:default="{hover}">

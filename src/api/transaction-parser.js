@@ -109,9 +109,9 @@ function processSettings(tx, address) {
 }
 
 function processIssueSet(tx, address) {
-    var total = tx.specification.Total || tx.specification;
-    if (total !== address) return 'Passive affected issue set transaction';
-    return 'You are issuing ' + total.value + ' ' + total.currency;
+    var spec = tx.specification;
+    if (spec.issuer !== address) return 'Passive affected issue set transaction';
+    return 'You are issuing ' + spec.total + ' ' + spec.currency;
 }
 
 function processDefault(tx, address) {

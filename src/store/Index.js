@@ -61,16 +61,18 @@ const store = new Vuex.Store({
         state.transactions = state.transactions.concat(result.results)
         state.marker = result.marker
       },
+
       initIssues(state, list) {
         var issues = [];
-        for (var i = 0; i < list.lines.length; ++i) {
-          var item = list.lines[i];
+        for (var i = 0; i < list.results.length; ++i) {
+          var item = list.results[i];
           issues.push({
-            currency: item.Total.currency, 
-            total: item.Total.value, 
-            issued: item.Issued.value, 
-            fans: item.Fans, 
-            flags: item.Flags
+            currency: item.specification.currency,
+            total: item.specification.value, 
+            issued: item.state.issued, 
+            fans: item.state.fans, 
+            additional: item.specification.additional,
+            invoice: item.specification.invoice
           });
         }
         state.issue_list = issues;
@@ -88,7 +90,6 @@ const store = new Vuex.Store({
           });
         }
         state.trustlines = lines;
-        console.dir(state.trustlines)
       },
 
       updateServer(state, server) {
