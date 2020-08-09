@@ -78,46 +78,44 @@ export default {
         return;
       }
 
-      sessionStorage.setItem("islogin", true);
       this.$store.commit('setblob', {blob: data, user: this.walletName});
       this.$store.commit('login');
       this.$router.push('./main');
+    },
+    checkLogin() {
+      if(this.walletName != '' && this.passphrase != ''){
+        this.canILogin = true
+      } else {
+        this.canILogin = false
+      }
     }
   },
   created() {
+    // check connection
     var api = this.$store.state.api;
-
     var state = api.isConnected && api.isConnected();
-    console.log('api connected?' + state);
+    console.log('login api connected?' + state);
     var self = this;
     if (!state) {
       var server = this.$store.state.server;
       api = CreateApi(server)
       api.connect().then(function() {
-          console.log('api connected');
-          self.$store.commit('online');
-          self.$store.commit('initApi', api);
+        console.log('api connected');
+        self.$store.commit('online');
+        self.$store.commit('initApi', api);
       }).catch(function(e) {
-          console.log('fail to connect api: ');
-          self.$store.commit('offline');
-          console.dir(e);
+        console.log('fail to connect api: ');
+        self.$store.commit('offline');
+        console.dir(e);
       });
-    }
+    }    
   },
   watch: {
     passphrase(a, b) {
-      if(this.walletName != '' && this.passphrase != ''){
-        this.canILogin = true
-      } else {
-        this.canILogin = false
-      }
+      this.checkLogin();
     },
     walletName(a, b) {
-      if(this.walletName != '' && this.passphrase != ''){
-        this.canILogin = true
-      } else {
-        this.canILogin = false
-      }
+      this.checkLogin();
     }
   }
 }

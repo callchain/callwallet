@@ -69,9 +69,7 @@ export default {
     },
     /// do logout
     handleLoginOut() {
-      sessionStorage.clear()
-      this.$store.commit('logout')
-      this.$router.push('/login')
+      this.$store.commit('logout');
     }
   }
 }

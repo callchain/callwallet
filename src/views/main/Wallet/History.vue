@@ -75,6 +75,11 @@ export default {
             }
 
             var api = this.$store.state.api;
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
             try {
                 var result = await api.getTransactions(address, {limit: 10, marker: marker});
                 this.$store.commit('updateTransactions', result);
@@ -82,7 +87,6 @@ export default {
                 this.$toast.error(e.message);
                 console.dir(e);
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }
         }
     }

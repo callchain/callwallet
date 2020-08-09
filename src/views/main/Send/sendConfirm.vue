@@ -57,6 +57,13 @@ export default {
             };
             console.dir(payment);
 
+            // check network status
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
+
             var api = this.$store.state.api;
             try {
                 var prepare =  await api.preparePayment(from, payment);
@@ -80,7 +87,6 @@ export default {
                 this.$toast.error(e.message);
                 console.dir(e);
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }  
         }
     }

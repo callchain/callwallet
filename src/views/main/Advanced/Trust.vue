@@ -123,6 +123,13 @@ export default {
                 callingDisabled: true // to test
             };
 
+            // check network status
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
+
             var api = this.$store.state.api;
             try {
                 var prepare = await api.prepareTrustline(from, trustline);
@@ -146,7 +153,6 @@ export default {
                 this.$toast.error(e.message);
                 console.dir(e);
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }
 
         },
@@ -171,6 +177,13 @@ export default {
                 callingDisabled: false
             };
 
+            // check network status
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
+
             var api = this.$store.state.api;
             try {
                 var prepare = await api.prepareTrustline(from, trustline);
@@ -193,7 +206,6 @@ export default {
                 this.$toast.error(e.message);
                 console.dir(e);
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }
 
             this.dialog = false;
@@ -225,6 +237,13 @@ export default {
                 }
             }
 
+            // check network status
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
+
             // get account issues
             var api = this.$store.state.api;
             try {
@@ -241,7 +260,6 @@ export default {
                 this.$toast.error(e.message);
                 console.dir(e);
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }
         }
 
@@ -262,6 +280,13 @@ export default {
         }
     },
     async created() {
+        // check network status
+        var status = this.$store.getters.networkStatus;
+        if (!status) {
+            this.$store.commit('logout');
+            return;
+        }
+
         var api = this.$store.state.api;
         try {
             var address = this.$store.state.address;
@@ -271,7 +296,6 @@ export default {
             this.$toast.error(e.message);
             console.dir(e);
             this.$store.commit('logout');
-            this.$router.push("./login");
         }
     }
 }

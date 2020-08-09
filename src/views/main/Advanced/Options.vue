@@ -74,7 +74,6 @@ export default {
                     console.dir(e);
                 }
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }
         }
     }

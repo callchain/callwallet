@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import router from '../router/Index';
+
 const store = new Vuex.Store({
     state: {
       api: new call.CallAPI({ server: 'wss://s1.callchain.live:5020' }),
@@ -20,15 +22,23 @@ const store = new Vuex.Store({
       trustlines: [],
       issue_list: [],
     },
+    getters: {
+      networkStatus(state) {
+        return state.api.isConnected && state.api.isConnected()
+      }
+    },
     mutations: {
       login (state) {
         state.isLogin = true
+        sessionStorage.setItem('islogin', true)
       },
       initApi(state, api) {
         state.api = api
       },
       logout (state) {
         state.isLogin = false
+        sessionStorage.clear()
+        router.push({name: 'login'})
       },
       offline (state) {
         state.isOffline = true

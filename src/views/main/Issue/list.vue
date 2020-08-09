@@ -44,6 +44,13 @@ export default {
         }
     },
     async created() {
+        // check network status
+        var status = this.$store.getters.networkStatus;
+        if (!status) {
+            this.$store.commit('logout');
+            return;
+        }
+
         var address = this.$store.state.address;
         var api = this.$store.state.api;
         try {
@@ -54,7 +61,6 @@ export default {
             this.$toast.error(e.message);
             console.dir(e);
             this.$store.commit('logout');
-            this.$router.push("./login");
         }
     }
 }

@@ -66,9 +66,15 @@ export default {
     },
     async created() {
         var address = this.$store.state.address;
+        var status = this.$store.getters.networkStatus;
+        if (!status) {
+            this.$store.commit('logout');
+            return;
+        }
+
         var api = this.$store.state.api;
         try {
-            var height = this.$store.state.height;
+            var height = this.$store.state.height;            
             var ret = await api.getBalances(address, {ledgerVersion: Number(height)});
             this.$store.commit("initBalance", ret);
             var result = await api.getTransactions(address, {limit: 10});
@@ -77,7 +83,6 @@ export default {
             this.$toast.error(e.message);
             console.dir(e);
             this.$store.commit('logout');
-            this.$router.push("./login");
         }
     },
     methods: {

@@ -44,6 +44,13 @@ export default {
                 transferRate: 0
             };
 
+            // check network status
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
+
             var api = this.$store.state.api;
             try {
                 console.dir(api);
@@ -67,7 +74,6 @@ export default {
                 this.$toast.error(e.message);
                 console.dir(e);
                 this.$store.commit('logout');
-                this.$router.push("./login");
             }  
         }
     }
