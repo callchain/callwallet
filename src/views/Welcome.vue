@@ -14,7 +14,7 @@
       <p class="text-subtitle-1 font-weight-bold">Callchain Address:</p>
       <p class="text-subtitle-1">{{address}}</p>
       <p class="text-subtitle-1 font-weight-bold">Secret Account key:</p>
-      <div class="mb-3"><input :type="isShowKey?'text':'password'" readonly :value="key"></div>
+      <div class="mb-3"><input :type="isShowKey?'text':'password'" readonly :value="key" style="float:left; width: 100%;"></div>
       <v-btn width="300" class="mb-5" small color="orange darken-1" @click="isShowKey = !isShowKey" depressed>{{isShowKey?'Hide':'Show'}} secret account key</v-btn>
       <v-divider></v-divider>
       <p class="text-subtitle-1 font-weight-bold mt-5">Have you saved your Secret Account Key somewhere safe?</p>

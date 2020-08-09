@@ -13,7 +13,7 @@
       <p class="text-subtitle-1">Your Wallet is only as safe as your Wallet username and passphrase, used to encrypt your Wallet data. Choose a passphrase you can easily remember but others cannot guess. Hint: Mix letters, numbers, and symbols.
       </p>
       <p class="text-subtitle-1" style="color: red;">Only you have this Wallet username and passphrase and are responsible for their safekeeping. <br/> Callchain cannot recover them if you forget them!</p>
-      <div class="form-item" style="width: 400px;">
+      <div class="form-item" style="width: 45%;">
           <p class="font-weight-bold mb-1">Create Wallet username</p>
           <v-text-field
             outlined
@@ -25,7 +25,7 @@
           ></v-text-field>
       </div>
       <div class="d-flex">
-          <div class="form-item" style="width: 400px;">
+          <div class="form-item" style="width: 45%;">
             <p class="font-weight-bold mb-1">Create Wallet passphrase</p>
             <v-text-field
                 outlined
@@ -37,7 +37,7 @@
                 dense
             ></v-text-field>
             </div>
-            <div class="form-item ml-5" style="width: 400px;">
+            <div class="form-item ml-5" style="width: 45%;">
             <p class="font-weight-bold mb-1">Re-enter passphrase</p>
             <v-text-field
                 outlined
@@ -50,7 +50,7 @@
             ></v-text-field>
         </div>
       </div>
-      <div class="form-item" style="width: 400px;" v-if="isShowKey">
+      <div class="form-item" style="width: 45%;" v-if="isShowKey">
           <p class="font-weight-bold mb-1">Secret Account Key <v-hover v-slot:default="{ hover }"><span :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer;" @click="isShowKey = false; key='';">Hide</span></v-hover></p>
           <v-text-field
             outlined
@@ -61,7 +61,7 @@
             dense
           ></v-text-field>
       </div>
-      <v-btn width="400" large color="primary" depressed @click="handleRegister" :disabled="canILogin? false:true">Create Wallet</v-btn>
+      <v-btn style="width: 45%;" large color="primary" depressed @click="handleRegister" :disabled="canILogin? false:true">Create Wallet</v-btn>
       <v-card-text style="padding-left: 0;">
         <span>Already have a Wallet? </span>
         <v-hover v-slot:default="{ hover }">

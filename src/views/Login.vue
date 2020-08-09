@@ -10,7 +10,7 @@
       <v-divider></v-divider>
       <div style="width: 90%; margin-left: 5%; padding: 20px 0;">
         <p class="text-subtitle-1">Enter the Name and Passphrase used to encrypt your Wallet below.</p>
-        <div class="form-item" style="width: 400px;">
+        <div class="form-item" style="width: 45%;">
             <p class="font-weight-bold mb-1">Wallet name</p>
             <v-text-field
               outlined
@@ -21,7 +21,7 @@
               dense
             ></v-text-field>
         </div>
-        <div class="form-item" style="width: 400px;">
+        <div class="form-item" style="width: 45%;">
             <p class="font-weight-bold mb-1">Passphrase</p>
             <v-text-field
               outlined
@@ -35,7 +35,7 @@
               dense
             ></v-text-field>
         </div>
-        <v-btn @click="handleLogin" width="400" large color="primary" depressed :disabled="canILogin? false:true">Open Wallet</v-btn>
+        <v-btn @click="handleLogin" style="width: 45%;" large color="primary" depressed :disabled="canILogin? false:true">Open Wallet</v-btn>
         <v-card-text style="padding-left: 0;">
           <span>New to Callchain? </span>
           <v-hover v-slot:default="{ hover }">
