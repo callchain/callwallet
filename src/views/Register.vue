@@ -12,7 +12,11 @@
       <p class="text-subtitle-1">Callchain is global open blockchain system for everyone's token issue. One click, easy and fast asset blockchain system.</p>
       <p class="text-subtitle-1">Your Wallet is only as safe as your Wallet username and passphrase, used to encrypt your Wallet data. Choose a passphrase you can easily remember but others cannot guess. Hint: Mix letters, numbers, and symbols.
       </p>
-      <p class="text-subtitle-1" style="color: red;">Only you have this Wallet username and passphrase and are responsible for their safekeeping. <br/> Callchain cannot recover them if you forget them!</p>
+      <p class="text-subtitle-1" style="color: red;">Only you have this Wallet username and passphrase and are responsible for their safekeeping. 
+          <br/><b>CallWallet ONLY SAVE YOUR ENCRYPTED ACCOUNT INFORMATION IN THIS BROWSER LOCALLY, WHEN CHANGE BROWSER YOU CAN NOT LOGIN!</b>
+          <br/><b>KEEP YOUR SECRET KEY SAFE!</b>
+          <br/>
+          Callchain cannot recover them if you forget them!</p>
       <div class="form-item" style="width: 45%;">
           <p class="font-weight-bold mb-1">Create Wallet username</p>
           <v-text-field

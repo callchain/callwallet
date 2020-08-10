@@ -94,7 +94,7 @@ export default {
     // check connection
     var api = this.$store.state.api;
     var state = api.isConnected && api.isConnected();
-    console.log('login api connected?' + state);
+    console.log('api connected?' + state);
     var self = this;
     if (!state) {
       var server = this.$store.state.server;

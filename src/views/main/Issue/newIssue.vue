@@ -89,6 +89,8 @@ export default {
             return /^[1-9][0-9]{0,12}$/.test(s);
         },
         checkSymbol() {
+            if (!this.symbol || this.symbol === '') return;
+            
             if (!this.symbol || this.symbol.length !== 3) {
                 this.$toast.error('Symbol should have three characters');
                 return;
