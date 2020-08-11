@@ -51,7 +51,12 @@ export default {
             return this.$store.state.balance === 0
         },
         balance() {
-            return this.$store.state.balance_list
+            var list = [];
+            for (var key in this.$store.state.balance_list){
+                var item = this.$store.state.balance_list[key];
+                list.push(item);
+            }
+            return list;
         },
         transactions() {
             var list = this.$store.state.transactions.slice(0,10);
@@ -62,6 +67,7 @@ export default {
                 var tx = list[i];
                 result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type});
             }
+            console.dir(result);
             return result;
         }
     },

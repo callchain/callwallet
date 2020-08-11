@@ -28,7 +28,6 @@ export default function(server) {
     });
     
     api.on('transactions', async function(tx) {
-        console.dir(tx);
         var hash = tx.transaction.hash;
         var address = store.state.address;
         try {
@@ -42,7 +41,16 @@ export default function(server) {
             }
             vue.$toast.success(desc);
 
-            // TODO
+            console.dir(info);
+            // update balance
+            
+            // update trustline
+            if (info.type === 'trustline')
+            {
+
+            }
+
+            // update issue list
 
         } catch (e) {
             vue.$toast.error(e.message);

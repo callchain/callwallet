@@ -60,9 +60,9 @@ export default {
         currencies() {
             var ret = [];
             var list = this.$store.state.balance_list;
-            for (var i = 0; i < list.length; ++i)
+            for (var key in list)
             {
-                var item = list[i];
+                var item = list[key];
                 if (Number(item.value) < 0) continue;
                 ret.push(item.currency);
                 this.balance_map[item.currency] = item;
@@ -106,28 +106,30 @@ export default {
                 return;
             }
             if (!this.select || _.isEmpty(this.select)) return; // not select currency
+            
             var amount = newv;
             var currency = this.select;
             var issuer = this.balance_map[currency];
             var balances = this.$store.state.balance_list;
-            for (var i = 0; i < balances.length; ++i) {
-                var bal = balances[i];
-                if (bal.currency === issuer.currency && bal.counterparty === issuer.counterparty)
-                {
-                    if (issuer.currency === 'CALL') amount = Number(amount) + 0.0001;
-                    if (amount > Number(bal.value)) {
-                        this.$nextTick(() => {
-                            this.recipientReceive = oldv;
-                        });
-                        this.$toast.error("Insufficient balance for " + currency);
-                    }
-                    return;
-                }
+            var key = issuer.counterparty ? issuer.currency + '@' + issuer.counterparty : issuer.currency;
+            var bal = balances[key];
+
+            if (!bal) {
+                this.$nextTick(() => {
+                    this.recipientReceive = oldv;
+                });
+                this.$toast.error("You have no funds for " + currency);
+                return;
             }
-            this.$nextTick(() => {
-                this.recipientReceive = oldv;
-            });
-            this.$toast.error("You have no funds for " + currency);
+
+            if (issuer.currency === 'CALL') amount = Number(amount) + 0.0001;
+            if (amount > Number(bal.value)) {
+                this.$nextTick(() => {
+                    this.recipientReceive = oldv;
+                });
+                this.$toast.error("Insufficient balance for " + currency);
+                return;
+            }
         }
     }
 }

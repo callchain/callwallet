@@ -96,16 +96,12 @@ export default {
                 return;
             }
             var list = this.$store.state.issue_list;
-            for (var i = 0; i < list.length; ++i)
-            {
-                var item = list[i];
-                if (item.currency === this.symbol) {
-                    this.$toast.error('This symbol token has already issued');
+            if (list[item.currency]) {
+                this.$toast.error('This symbol token has already issued');
                     this.$nextTick(() => {
                         this.symbol = '';
                     });
-                    return;
-                }
+                return;
             }
         },
         inputSupply(e) {

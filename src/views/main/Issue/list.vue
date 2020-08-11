@@ -40,7 +40,12 @@ export default {
     },
     computed: {
         issues() {
-            return this.$store.state.issue_list;
+            var list = [];
+            for (var key in this.$store.state.issue_list) {
+                var item = this.$store.state.issue_list[key];
+                list.push(item);
+            }
+            return list;
         }
     },
     async created() {

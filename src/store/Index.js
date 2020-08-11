@@ -16,11 +16,11 @@ const store = new Vuex.Store({
       blob: {},
       height: 24997812,
       server: {host: 's1.callchain.live', port: '5020', ssl: true},
-      balance_list: [],
+      balance_list: {},
       transactions: [],
       marker: {},
-      trustlines: [],
-      issue_list: [],
+      trustlines: {},
+      issue_list: {},
     },
     getters: {
       networkStatus(state) {
@@ -55,14 +55,25 @@ const store = new Vuex.Store({
         state.height = height
       },
       initBalance(state, list) {
-        state.balance_list = list
-        for (var i = 0 ; i < list.length; ++i) {
-          if (list[i].currency === 'CALL') {
-            state.balance = list[i].value
-            break
-          }
+        var result = {};
+        for (var i = 0; i < list.length; ++i)
+        {
+          var item = list[i];
+          var key = item.counterparty ? item.currency + '@' + item.counterparty : item.currency
+          result[key] = item
+        }
+        state.balance_list = result
+
+        // it must have call balance
+        state.balance = state.balance_list['CALL'].value
+      },
+      updateBalance(state, data) {
+        state.balance_list[data.key] = data.bal
+        if (data.currency === 'CALL') {
+          state.balance = data.bal.value
         }
       },
+
       initTransactions(state, result) {
         state.transactions = result.results
         state.marker = result.marker
@@ -73,39 +84,39 @@ const store = new Vuex.Store({
       },
 
       initIssues(state, list) {
-        var issues = [];
+        var issues = {};
         for (var i = 0; i < list.results.length; ++i) {
           var item = list.results[i];
-          issues.push({
+          issues[item.specification.currency] = {
             currency: item.specification.currency,
             total: item.specification.value, 
             issued: item.state.issued, 
             fans: item.state.fans, 
             additional: item.specification.additional,
             invoice: item.specification.invoice
-          });
+          };
         }
         state.issue_list = issues;
       },
 
       initTrustlines(state, list) {
-        var lines = [];
+        var result = {};
         for (var i = 0; i < list.results.length; ++i) {
           var item = list.results[i];
-          lines.push({
+          var key = item.specification.currency + '@' + item.specification.counterparty;
+          result[key] = {
             currency: item.specification.currency,
             counterparty: item.specification.counterparty,
             limit: item.specification.limit,
             balance: item.state.balance
-          });
+          };
         }
-        state.trustlines = lines;
+        state.trustlines = result;
       },
 
       updateServer(state, server) {
         state.server = server;
       },
-
 
       newContact(state, item) {
         var contacts = state.blob.data.contacts

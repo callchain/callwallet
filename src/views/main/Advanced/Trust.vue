@@ -260,25 +260,6 @@ export default {
                 console.dir(e);
                 this.$store.commit('logout');
             }
-        },
-        async pullTrustlines() {
-            // check network status
-            var status = this.$store.getters.networkStatus;
-            if (!status) {
-                this.$store.commit('logout');
-                return;
-            }
-
-            var api = this.$store.state.api;
-            try {
-                var address = this.$store.state.address;
-                var lines = await api.getTrustlines(address);
-                this.$store.commit("initTrustlines", lines);
-            } catch (e) {
-                this.$toast.error(e.message);
-                console.dir(e);
-                this.$store.commit('logout');
-            }
         }
     },
     components: {
@@ -289,15 +270,37 @@ export default {
             return this.$store.state.balance === 0
         },
         trustlines() {
-            return this.$store.state.trustlines;
+            var list = this.$store.state.trustlines;
+            var result = [];
+            for (var key in list) {
+                var item = list[key];
+                result.push(item);
+            }
+            return result;
         },
         canTrust() {
             return this.name && utils.isValidAddr(this.name)
                 && this.select && this.select !== '';
         }
     },
-    created() {
-        this.pullTrustlines();    
+    async created() {
+        // check network status
+        var status = this.$store.getters.networkStatus;
+        if (!status) {
+            this.$store.commit('logout');
+            return;
+        }
+
+        var api = this.$store.state.api;
+        try {
+            var address = this.$store.state.address;
+            var lines = await api.getTrustlines(address);
+            this.$store.commit("initTrustlines", lines);
+        } catch (e) {
+            this.$toast.error(e.message);
+            console.dir(e);
+            this.$store.commit('logout');
+        }  
     }
 }
 </script>
