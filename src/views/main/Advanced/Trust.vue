@@ -135,7 +135,6 @@ export default {
                 var prepare = await api.prepareTrustline(from, trustline);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                console.dir(signedTx);
                 var tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 
@@ -158,7 +157,6 @@ export default {
         },
         /// 显示弹窗删除
         deleteItem (item) {
-            console.dir(item);
             if (Number(item.balance) !== 0) {
                 this.$toast.error("You hold " + item.currency + " with balance is " + item.balance);
                 return;
@@ -189,7 +187,6 @@ export default {
                 var prepare = await api.prepareTrustline(from, trustline);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                console.dir(signedTx);
                 var tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 
@@ -247,7 +244,6 @@ export default {
             var api = this.$store.state.api;
             try {
                 var issues = await api.getAccountIssues(this.name);
-                console.dir(issues);
                 this.items = [];
                 this.items_map = {};
                 for (var i = 0; i < issues.results.length; ++i) {

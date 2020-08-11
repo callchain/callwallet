@@ -55,7 +55,6 @@ export default {
                     amount: send_amount
                 }
             };
-            console.dir(payment);
 
             // check network status
             var status = this.$store.getters.networkStatus;
@@ -69,7 +68,6 @@ export default {
                 var prepare =  await api.preparePayment(from, payment);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                console.dir(signedTx);
                 var tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 

@@ -119,7 +119,6 @@ export default {
     computed: {
         contract_list() {
             var contacts = this.$store.state.blob.data.contacts;
-            console.dir(contacts);
             var result = [];
             Object.keys(contacts).forEach(function(key) {
                 result.push({title: key, content: contacts[key]});
@@ -195,7 +194,6 @@ export default {
             this.name = item.title;
             this.address = item.content;
             this.currentItem = item;
-            console.dir(item);
         },
         /// 点击显示弹窗删除
         deleteItem (item) {

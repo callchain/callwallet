@@ -53,7 +53,6 @@ export default {
 
             var api = this.$store.state.api;
             try {
-                console.dir(api);
                 var prepare =  await api.prepareIssueSet(from, issueSet);
                 prepare.secret = secret;
                 var signedTx = api.sign(prepare.txJSON, prepare.secret);
