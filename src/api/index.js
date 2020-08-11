@@ -41,13 +41,23 @@ export default function(server) {
             }
             vue.$toast.success(desc);
 
-            console.dir(info);
             // update balance
+            var balanceChanges = info.outcome.balanceChanges[address];
+            if (balanceChanges)
+            {
+                for (var i = 0; i < balanceChanges.length; ++i)
+                {
+                    var item = balanceChanges[i];
+                    var key = item.counterparty ? item.currency + '@' + item.counterparty : item.currency;
+                    store.commit('updateBalance', {key: key, change: item});
+                }
+            }
             
             // update trustline
             if (info.type === 'trustline')
             {
-
+                var key = info.specification.currency + '@' + info.specification.counterparty;
+                store.commit('updateTrustline', {key: key, change: info.specification});
             }
 
             // update issue list

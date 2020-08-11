@@ -99,14 +99,14 @@ export default {
     },
     watch: {
         recipientReceive(newv, oldv) {
-            if (!Number(newv)) {
+            if (Number(newv) === NaN) {
                 this.$nextTick(() => {
                     this.recipientReceive = '';
                 });
                 return;
             }
             if (!this.select || _.isEmpty(this.select)) return; // not select currency
-            
+
             var amount = newv;
             var currency = this.select;
             var issuer = this.balance_map[currency];

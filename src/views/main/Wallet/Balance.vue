@@ -67,7 +67,6 @@ export default {
                 var tx = list[i];
                 result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type});
             }
-            console.dir(result);
             return result;
         }
     },

@@ -68,9 +68,27 @@ const store = new Vuex.Store({
         state.balance = state.balance_list['CALL'].value
       },
       updateBalance(state, data) {
-        state.balance_list[data.key] = data.bal
-        if (data.currency === 'CALL') {
-          state.balance = data.bal.value
+        // update or add balance
+        var item = state.balance_list[data.key];
+        if (item)
+        {
+          item.value = Number(Number(item.value) + Number(data.change.value)) + '';
+          state.balance_list[data.key] = item;
+        }
+        else
+        {
+          state.balance_list[data.key] = data.change;
+        }
+
+        if (data.key === 'CALL') {
+          state.balance = state.balance_list['CALL'].value;
+        }
+
+        // update trustline balances
+        var line = state.trustlines[data.key];
+        if (line) {
+          line.balance = Number((Number(line.balance) + Number(data.change.value))) + '';
+          state.trustlines[data.key] = line;
         }
       },
 
@@ -112,6 +130,29 @@ const store = new Vuex.Store({
           };
         }
         state.trustlines = result;
+      },
+      updateTrustline(state, data) {
+        var item = state.trustlines[data.key];
+        if (item) {
+          item.limit = data.change.limit;
+          state.trustlines[data.key] = item;
+          if (item.limit === '0') {
+            var old = state.trustlines;
+            delete old[data.key];
+            state.trustlines = old;
+          }
+        }
+        else
+        {
+          var old = state.trustlines;
+          old[data.key] = {
+            currency: data.change.currency,
+            counterparty: data.change.counterparty,
+            limit: data.change.limit,
+            balance: '0'
+          };
+          state.trustlines = old;
+        }
       },
 
       updateServer(state, server) {

@@ -10,7 +10,8 @@ const numberFormat = (value) => {
 const humanDate = (timestamp) => {
     var date = new Date(timestamp);
     var now = new Date();
-    var seconds = parseInt((now - date) / 1000);
+    var seconds = Math.floor((now - date) / 1000);
+
     var units = [
       {value: 31536000, name: "year"},
       {value: 2592000, name: "month"},
@@ -23,9 +24,10 @@ const humanDate = (timestamp) => {
   
     for (var i = 0; i < units.length; ++i) {
       var unit = units[i];
-      var v = parseInt(seconds / unit.value);
+      var v = Math.floor(seconds / unit.value);
       if (v !== 0) {
-        return v + ' ' + (v === 1 ? unit.name : unit.name + 's') + ' ago';
+        var ret = v + ' ' + (v === 1 ? unit.name : unit.name + 's') + ' ago';
+        return ret;
       }
     }
 }
