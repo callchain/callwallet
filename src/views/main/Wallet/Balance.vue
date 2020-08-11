@@ -21,6 +21,7 @@
                 :headers="headers"
                 :items="transactions"
                 :items-per-page="10"
+                :item-class="rowClass"
                 disable-sort
                 hide-default-footer
             ></v-data-table>
@@ -59,7 +60,7 @@ export default {
             for (var i = 0; i < list.length; ++i)
             {
                 var tx = list[i];
-                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address)});
+                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type});
             }
             return result;
         }
@@ -86,7 +87,13 @@ export default {
         }
     },
     methods: {
-
+        rowClass(item) {
+            return ''
+        }
     }
 }
 </script>
+
+<style scoped>
+
+</style>

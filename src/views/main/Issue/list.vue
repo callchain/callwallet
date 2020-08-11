@@ -55,7 +55,6 @@ export default {
         var api = this.$store.state.api;
         try {
             var issues = await api.getAccountIssues(address);
-            console.dir(issues);
             this.$store.commit('initIssues', issues);
         } catch (e) {
             this.$toast.error(e.message);

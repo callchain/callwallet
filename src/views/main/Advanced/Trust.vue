@@ -200,7 +200,6 @@ export default {
                 else
                 {
                     this.$toast.success('The transaction was applied. Only final in a validated ledger');
-                    // re pull list or from transactions
                 }
             } catch (e) {
                 this.$toast.error(e.message);
@@ -261,8 +260,26 @@ export default {
                 console.dir(e);
                 this.$store.commit('logout');
             }
-        }
+        },
+        async pullTrustlines() {
+            // check network status
+            var status = this.$store.getters.networkStatus;
+            if (!status) {
+                this.$store.commit('logout');
+                return;
+            }
 
+            var api = this.$store.state.api;
+            try {
+                var address = this.$store.state.address;
+                var lines = await api.getTrustlines(address);
+                this.$store.commit("initTrustlines", lines);
+            } catch (e) {
+                this.$toast.error(e.message);
+                console.dir(e);
+                this.$store.commit('logout');
+            }
+        }
     },
     components: {
         NoData
@@ -279,24 +296,8 @@ export default {
                 && this.select && this.select !== '';
         }
     },
-    async created() {
-        // check network status
-        var status = this.$store.getters.networkStatus;
-        if (!status) {
-            this.$store.commit('logout');
-            return;
-        }
-
-        var api = this.$store.state.api;
-        try {
-            var address = this.$store.state.address;
-            var lines = await api.getTrustlines(address);
-            this.$store.commit("initTrustlines", lines);
-        } catch (e) {
-            this.$toast.error(e.message);
-            console.dir(e);
-            this.$store.commit('logout');
-        }
+    created() {
+        this.pullTrustlines();    
     }
 }
 </script>

@@ -58,7 +58,7 @@ export default {
             for (var i = 0; i < list.length; ++i)
             {
                 var tx = list[i];
-                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address)});
+                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type});
             }
             return result;
         }
