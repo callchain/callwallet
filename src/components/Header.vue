@@ -1,5 +1,6 @@
 <template>
   <div style="background: #f9f9f9;">
+    <v-hover v-slot:default="{ hover }">
     <v-card color="#f9f9f9" style="position: relative;" width="1200" class="mx-auto" flat>
       <div style="position: relative; max-width: 1200px; height: 100px; padding-top: 20px;" :class="!isLogin? 'd-flex mx-auto align-center justify-space-between':'d-flex mx-auto align-start justify-space-between'">
         <v-img max-width="120" @click="handleLoginClick" style="cursor: pointer;" src="../assets/logo.png"></v-img>
@@ -7,7 +8,7 @@
         <v-btn v-if="!isLogin" @click="handleSetting" class="mr-1" dark color="black" icon>
             <v-icon>mdi-cog</v-icon>
         </v-btn>
-        <v-card v-if="isLogin" color="#ffffff">
+        <v-card v-if="isLogin" color="#ffffff" :elevation="hover ? 6 : 2">
           <div style="width: 300px;" class="d-inline-flex align-center justify-space-between pt-2 pb-2 pl-2 pr-2">
             <span>{{username}}</span>
             <v-hover v-slot:default="{hover}">
@@ -20,9 +21,8 @@
         </v-card>
         <span v-if="isOffline" style="position: absolute; bottom: -55px; right: 0; width: 300px; line-height: 50px; text-align: center; z-index: 9999;" class="d-inline-block black white--text">Offline</span>
       </div>
-
-      
     </v-card>
+    </v-hover>
   </div>
 </template>
 
