@@ -86,7 +86,9 @@ export default {
             } catch (e) {
                 this.$toast.error(e.message);
                 console.dir(e);
-                this.$store.commit('logout');
+                if (e.message !== 'actNotFound') {
+                    this.$store.commit('logout');
+                }
             }
         }
     }
