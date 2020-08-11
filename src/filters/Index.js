@@ -11,6 +11,7 @@ const humanDate = (timestamp) => {
     var date = new Date(timestamp);
     var now = new Date();
     var seconds = Math.floor((now - date) / 1000);
+    if (seconds <= 0) return 'a moment ago';
 
     var units = [
       {value: 31536000, name: "year"},

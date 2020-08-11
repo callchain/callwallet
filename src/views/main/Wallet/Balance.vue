@@ -54,7 +54,9 @@ export default {
             var list = [];
             for (var key in this.$store.state.balance_list){
                 var item = this.$store.state.balance_list[key];
-                list.push(item);
+                if (Number(item.value) > 0) {
+                    list.push(item);
+                }
             }
             return list;
         },

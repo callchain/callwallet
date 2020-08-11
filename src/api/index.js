@@ -32,6 +32,8 @@ export default function(server) {
         var address = store.state.address;
         try {
             var info = await api.getTransaction(hash);
+            console.dir(info);
+            
             var parse = Parser[info.type] ? Parser[info.type] : Parser['default'];
             var desc = parse(info, address);
             if (info.outcome.result !== 'tesSUCCESS')
@@ -40,6 +42,9 @@ export default function(server) {
                 return;
             }
             vue.$toast.success(desc);
+
+            // update transaction list
+            store.commit('newTransaction', info);
 
             // update balance
             var balanceChanges = info.outcome.balanceChanges[address];

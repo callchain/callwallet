@@ -100,6 +100,9 @@ const store = new Vuex.Store({
         state.transactions = state.transactions.concat(result.results)
         state.marker = result.marker
       },
+      newTransaction(state, info) {
+        state.transactions = [info].concat(state.transactions)
+      },
 
       initIssues(state, list) {
         var issues = {};
@@ -139,6 +142,7 @@ const store = new Vuex.Store({
           if (item.limit === '0') {
             var old = state.trustlines;
             delete old[data.key];
+            state.trustlines = {};
             state.trustlines = old;
           }
         }
@@ -151,8 +155,11 @@ const store = new Vuex.Store({
             limit: data.change.limit,
             balance: '0'
           };
+          state.trustlines = {};
           state.trustlines = old;
         }
+        console.log('updated lines');
+        console.dir(state.trustlines);
       },
 
       updateServer(state, server) {
