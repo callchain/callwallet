@@ -30,3 +30,9 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## License
+
+See LICENSE file in this project.
+
+
