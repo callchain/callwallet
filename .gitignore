@@ -12,6 +12,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+callwalet-darwin-x64/
+callwallet.dmg
+
 # Editor directories and files
 .idea
 .vscode
