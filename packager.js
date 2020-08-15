@@ -4,6 +4,7 @@ const { exit } = require('process');
 const support_os = ['darwin', 'linux', 'win32'];
 const createDMG = require('electron-installer-dmg');
 const fs = require('fs');
+const nodeCmd = require('node-cmd');
 
 var packageJson = fs.readFileSync('package.json');
 var package = JSON.parse(packageJson);
@@ -33,7 +34,7 @@ async function createMacOsDMG(options) {
 
 bundleElectronApp({
   dir: ".",
-  ignore: /src|public|packager.js|package.json|node_modules|main.js|README.md|babel.config.js|.gitignore|.git|.editorconfig|LICENSE|vue.config.js/
+  ignore: /src|public|packager.js|package.json|package-lock.json|node_modules|main.js|README.md|babel.config.js|.gitignore|.git|.editorconfig|LICENSE|vue.config.js/
 });
 
 var pkg_name = package.name + '-' + os.platform() + '-' + os.arch + '-' + package.version;
@@ -44,6 +45,11 @@ if (platform === 'darwin') {
     name: pkg_name,
     overwrite: true
   });
+}
+
+if (platform === 'linux') {
+  var target = pkg_name + '.tar.gz';
+  nodeCmd.run('tar cvfz ' + target + ' callwallet-linux-x64/');
 }
 
 
