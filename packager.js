@@ -5,6 +5,7 @@ const support_os = ['darwin', 'linux', 'win32'];
 const createDMG = require('electron-installer-dmg');
 const fs = require('fs');
 const nodeCmd = require('node-cmd');
+const electronInstaller = require('electron-winstaller');
 
 var packageJson = fs.readFileSync('package.json');
 var package = JSON.parse(packageJson);
@@ -32,6 +33,15 @@ async function createMacOsDMG(options) {
   }
 }
 
+async function createWinInstaller(options) {
+  try {
+    await electronInstaller.createWindowsInstaller(options);
+    console.log('Callwallet exe create success');
+  } catch (e) {
+    console.log(`Fail to create callwallet exe: ${e.message}`);
+  }
+}
+
 bundleElectronApp({
   dir: ".",
   ignore: /src|public|packager.js|package.json|package-lock.json|node_modules|main.js|README.md|babel.config.js|.gitignore|.git|.editorconfig|LICENSE|vue.config.js/
@@ -52,4 +62,12 @@ if (platform === 'linux') {
   nodeCmd.run('tar cvfz ' + target + ' callwallet-linux-x64/');
 }
 
-
+if (platform === 'win32') {
+  var target = pkg_name + '.exe';
+  createWinInstaller({
+    appDirectory: 'callwallet-win-x64',
+    outputDirectory: './installer',
+    authors: 'Callchain Foundation',
+    exec: target
+  });
+}
