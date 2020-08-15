@@ -13,8 +13,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-callwalet-darwin-x64/
-callwallet.dmg
+callwallet-darwin-x64/
+*.dmg
 
 # Editor directories and files
 .idea
