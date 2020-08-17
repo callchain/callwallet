@@ -62,12 +62,5 @@ if (platform === 'linux') {
   nodeCmd.run('tar cvfz ' + target + ' callwallet-linux-x64/');
 }
 
-if (platform === 'win32') {
-  var target = pkg_name + '.exe';
-  createWinInstaller({
-    appDirectory: 'callwallet-win-x64',
-    outputDirectory: './installer',
-    authors: 'Callchain Foundation',
-    exec: target
-  });
-}
+
+// when win32 pack with zip

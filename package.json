@@ -7,7 +7,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "pack": "vue-cli-service build && node packager.js"
+    "pack": "vue-cli-service build && node pack.js"
   },
   "dependencies": {
     "async": "^3.2.0",
