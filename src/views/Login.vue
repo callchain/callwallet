@@ -6,7 +6,7 @@
     light
   >
     <div class="login">
-      <div class="text-center text-h4 pt-6 pb-6">Open Wallet</div>
+      <div class="text-center text-h4 pt-6 pb-6">{{$t('login.open_wallet')}}</div>
       <v-divider></v-divider>
       <div style="width: 90%; margin-left: 5%; padding: 20px 0;">
         <p class="text-subtitle-1">Enter the Name and Passphrase used to encrypt your Wallet below.</p>
