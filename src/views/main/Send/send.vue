@@ -39,6 +39,21 @@
                 ></v-select>
             </div>
         </div>
+        <!-- memo -->
+        <div style="width: 400px;" class="mb-2">
+            <p class="text-subtitle-1 font-weight-bold mb-2">Memo</p>
+            <v-text-field
+                outlined
+                v-model="memo"
+                label="Optional"
+                counter=256
+                solo
+                flat
+                dense
+                @blur="checkMemo"
+            ></v-text-field>
+        </div>
+
         <v-btn width="300" @click="handleConfrim" color="primary" :disabled="canSend ? true : false">Send {{select && select.text ? select.text : ''}}</v-btn>
     </div>
 </template>
@@ -54,7 +69,8 @@ export default {
         select: '',
         issuer: '',
         canSend: false,
-        balance_map: {}
+        balance_map: {},
+        memo: ''
     }),
     computed: {
         currencies() {
@@ -75,7 +91,7 @@ export default {
             var currency = this.select;
             var issuer = this.balance_map[currency];
             this.$router.push({name: 'sendConfirm', params: {recipient: this.recipient, amount: this.recipientReceive,
-                currency: issuer}});
+                currency: issuer, memo: this.memo}});
         },
         /// 下拉框输入
         handleBlur() {
@@ -93,6 +109,15 @@ export default {
             if (this.recipient === address) {
                 this.$toast.error("Send to yourself is not unnecessary");
                 this.recipient = '';
+                return;
+            }
+        },
+        checkMemo() {
+            this.memo = this.memo.trim();
+            if (this.memo === '') return;
+            if (this.memo.length > 256) {
+                this.$toast.error("Memo exceed limit length");
+                this.memo = this.memo.substring(0, 256);
                 return;
             }
         }

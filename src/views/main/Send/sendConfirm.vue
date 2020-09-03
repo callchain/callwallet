@@ -6,6 +6,8 @@
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2"> {{recipient}}</div>
         <p class="mb-1">They will receive</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2">{{amount}} {{issuer.currency}}</div>
+        <p class="mb-1" v-if="memo.length !== 0">With Memo</p>
+        <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2" v-if="memo.length !== 0">{{memo}}</div>
         <p>Are you sure?</p>
         <div class="d-flex">
             <v-btn width="100" @click="handleBack" outlined color="primary">Back</v-btn>
@@ -21,12 +23,14 @@ export default {
         recipient: '',
         amount: '',
         issuer: '',
+        memo: '',
     }),
     created() {
         var params = this.$route.params;
         this.recipient = params.recipient;
         this.amount = params.amount;
         this.issuer = params.currency;
+        this.memo = params.memo;
         if (!this.recipient || !this.amount || !this.issuer) {
             this.$router.push({name: 'send'});
         }
@@ -53,8 +57,15 @@ export default {
                 destination: {
                     address: this.recipient,
                     amount: send_amount
-                }
+                },
+                memos: []
             };
+            if (this.memo.length !== 0) {
+                payment.memos = [{
+                    type: 'string',
+                    data: this.memo
+                }];
+            }
 
             // check network status
             var status = this.$store.getters.networkStatus;
