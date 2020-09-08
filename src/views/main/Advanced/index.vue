@@ -34,10 +34,10 @@ export default {
                 e.isActive = false
             }
         });
-        if(this.$route.path.indexOf(this.navList[index].text) != -1){
+        if(this.$route.path.indexOf(this.navList[index].text.toLowerCase()) != -1){
             return;
         }
-        this.$router.push('./'+ this.navList[index].text);
+        this.$router.push('./'+ this.navList[index].text.toLowerCase());
     }
   },
 }

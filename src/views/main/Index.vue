@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     handleTabClick(path) {
-      this.$router.push('./'+path)
+      this.$router.push('./'+path.toLowerCase())
     }
   },
 }

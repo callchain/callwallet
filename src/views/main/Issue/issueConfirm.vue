@@ -1,5 +1,5 @@
 <template>
-    <div class="main ml-2" style="min-height: 550px;">
+    <div class="main ml-2 mt-4" style="min-height: 550px;">
         <p class="text-subtitle-1 font-weight-bold">You are issuing new token {{info.symbol}}</p>
         <v-divider></v-divider>
         <p class="text-subtitle-1 font-weight-bold mt-2 mb-1">Issue Supply</p>
@@ -8,7 +8,7 @@
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2">{{info.desc}}</div>
         <p>Are you sure?</p>
         <div class="d-flex">
-            <v-btn width="100" @click="handleBack" outlined color="primary">Back</v-btn>
+            <v-btn width="100" @click="handleBack" outlined color="primary">&lt;&lt; Back</v-btn>
             <v-btn width="150" @click="handleConfirmed" class="ml-5" color="primary">Confirm</v-btn>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="main ml-2" style="min-height: 550px;">
+    <div class="main ml-2 mt-4" style="min-height: 550px;">
         <div>
             <div class="d-flex align-center justify-space-between mb-5">
                 <span class="text-subtitle-1 font-weight-bold">Issue Token to User</span>
@@ -47,7 +47,7 @@
                     ></v-text-field>
                 </div> -->
                 <div class="">
-                    <v-btn outlined color="primary" @click="goBack()" width="10%">back</v-btn>
+                    <v-btn outlined color="primary" @click="goBack()" width="10%">&lt;&lt; back</v-btn>
                     <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canSend ? false : true">comfirm</v-btn>
                 </div>
             </div>

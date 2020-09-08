@@ -46,7 +46,7 @@
             <p>1 CALL</p>
             <p>Are you sure?</p>
             <div class="d-flex">
-                <v-btn width="100" @click="showStatus = 0" outlined color="primary">Back</v-btn>
+                <v-btn width="100" @click="showStatus = 0" outlined color="primary">&lt;&lt; Back</v-btn>
                 <v-btn width="150" @click="showStatus = 2" class="ml-5" color="primary">Confirm</v-btn>
             </div>
         </div>

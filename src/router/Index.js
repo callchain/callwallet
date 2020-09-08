@@ -45,19 +45,19 @@ const routes = [
         children: [
           {
             path: '/wallet',
-            name: 'Wallet',
+            name: 'wallet',
             redirect: '/balance',
             component: () => import('../views/main/Wallet/index.vue'),
             children: [
-              { path: '/balance', name: 'Balance', component: () => import('../views/main/Wallet/Balance.vue'), meta: {auth: true} },
-              { path: '/history', name: 'History', component: () => import('../views/main/Wallet/History.vue'), meta: {auth: true} },
-              { path: '/contacts', name: 'Contacts', component: () => import('../views/main/Wallet/Contacts.vue'), meta: {auth: true} },
-              { path: '/security', name: 'Security', component: () => import('../views/main/Wallet/Security.vue'), meta: {auth: true} }
+              { path: '/balance', name: 'balance', component: () => import('../views/main/Wallet/Balance.vue'), meta: {auth: true} },
+              { path: '/history', name: 'history', component: () => import('../views/main/Wallet/History.vue'), meta: {auth: true} },
+              { path: '/contacts', name: 'contacts', component: () => import('../views/main/Wallet/Contacts.vue'), meta: {auth: true} },
+              { path: '/security', name: 'security', component: () => import('../views/main/Wallet/Security.vue'), meta: {auth: true} }
             ]
           },
           {
             path: '/send',
-            name: 'Send',
+            name: 'send',
             component: () => import('../views/main/Send/index.vue'),
             redirect: '/send',
             children: [
@@ -69,7 +69,7 @@ const routes = [
           },
           {
             path: '/receive',
-            name: 'Receive',
+            name: 'receive',
             component: () => import('../views/main/Receive/index.vue'),
             meta: {auth: true}
           },
@@ -90,13 +90,13 @@ const routes = [
           // },
           {
             path: '/advanced',
-            name: 'Advanced',
+            name: 'advanced',
             component: () => import('../views/main/Advanced/index.vue'),
             redirect: '/issue',
             children: [
               { 
                 path: '/issue',
-                name: 'Issue', component: () => import('../views/main/Issue/index.vue'),
+                name: 'issue', component: () => import('../views/main/Issue/index.vue'),
                 meta: {auth: true},
                 redirect: '/issue',
                 children: [
@@ -108,8 +108,8 @@ const routes = [
                   { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
                 ],
               },
-              { path: '/trust', name: 'Trust', component: () => import('../views/main/Advanced/Trust.vue'), meta: {auth: true} },
-              { path: '/options', name: 'Options', component: () => import('../views/main/Advanced/Options.vue'), },
+              { path: '/trust', name: 'trust', component: () => import('../views/main/Advanced/Trust.vue'), meta: {auth: true} },
+              { path: '/options', name: 'options', component: () => import('../views/main/Advanced/Options.vue'), },
             ]
           }
         ]

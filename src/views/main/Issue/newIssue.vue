@@ -48,7 +48,7 @@
                     label="Non-Fungible Token"
                 ></v-checkbox> -->
                 <div class="">
-                    <v-btn outlined color="primary" @click="goBack()" width="10%">back</v-btn>
+                    <v-btn outlined color="primary" @click="goBack()" width="10%">&lt;&lt; back</v-btn>
                     <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canIssue ? false : true">issue</v-btn>
                 </div>
             </div>

@@ -15,6 +15,12 @@
                     <template v-slot:item.actions="{ item }">
                         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                     </template>
+                    <template v-slot:item.balance="{ item }">
+                        {{item.balance | numberFormat}}
+                    </template>
+                    <template v-slot:item.limit="{ item }">
+                        {{item.limit | numberFormat}}
+                    </template>
                     </v-data-table>
                     <v-divider></v-divider>
                     <!-- <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn> -->
@@ -45,8 +51,8 @@
                 </div>
                 
                 <div class="d-inline-flex align-center">
-                    <v-btn width="40%" @click="isShowAdd = false" outlined color="primary">Cancel</v-btn>
-                    <v-btn width="60%" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="!canTrust">Trust</v-btn>
+                    <v-btn width="50%" @click="isShowAdd = false" outlined color="primary">&lt;&lt; Back</v-btn>
+                    <v-btn width="50%" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="!canTrust">Trust</v-btn>
                 </div>
             </div>
 
