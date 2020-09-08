@@ -73,27 +73,41 @@ const routes = [
             component: () => import('../views/main/Receive/index.vue'),
             meta: {auth: true}
           },
-          {
-            path: '/issue',
-            name: 'Issue',
-            component: () => import('../views/main/Issue/index.vue'),
-            redirect: '/issue',
-            children: [
-              { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
-              { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
-              { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
-              { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
-              { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
-              { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
-            ],
-            meta: {auth: true}
-          },
+          // {
+          //   path: '/issue',
+          //   name: 'Issue',
+          //   component: () => import('../views/main/Issue/index.vue'),
+          //   redirect: '/issue',
+          //   children: [
+          //     { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
+          //     { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
+          //     { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
+          //     { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
+          //     { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
+          //     { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
+          //   ],
+          //   meta: {auth: true}
+          // },
           {
             path: '/advanced',
             name: 'Advanced',
             component: () => import('../views/main/Advanced/index.vue'),
-            redirect: '/trust',
+            redirect: '/issue',
             children: [
+              { 
+                path: '/issue',
+                name: 'Issue', component: () => import('../views/main/Issue/index.vue'),
+                meta: {auth: true},
+                redirect: '/issue',
+                children: [
+                  { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
+                  { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
+                  { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
+                  { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
+                  { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
+                  { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
+                ],
+              },
               { path: '/trust', name: 'Trust', component: () => import('../views/main/Advanced/Trust.vue'), meta: {auth: true} },
               { path: '/options', name: 'Options', component: () => import('../views/main/Advanced/Options.vue'), },
             ]
