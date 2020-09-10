@@ -44,8 +44,8 @@ export default {
       { id: 1, ico: 'wallet', text: 'Wallet' },
       { id: 2, ico: 'arrow-up-bold-box', text: 'Send' },
       { id: 3, ico: 'arrow-down-bold-box', text: 'Receive' },
-      // { id: 4, ico: 'telegram', text: 'Issue' },
-      { id: 4, ico: 'cogs', text: 'Advanced' },
+      { id: 4, ico: 'swap-vertical-bold', text: 'Trade' },
+      { id: 5, ico: 'cogs', text: 'Advanced' },
     ],
     text: 'asdasd'
   }),

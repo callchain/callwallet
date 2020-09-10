@@ -89,6 +89,12 @@ const routes = [
           //   meta: {auth: true}
           // },
           {
+            path: '/trade',
+            name: 'trade',
+            component: () => import('../views/main/Trade/index.vue'),
+            meta: {auth: true}
+          },
+          {
             path: '/advanced',
             name: 'advanced',
             component: () => import('../views/main/Advanced/index.vue'),
