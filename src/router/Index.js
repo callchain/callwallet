@@ -74,46 +74,46 @@ const routes = [
             meta: {auth: true}
           },
           // {
-          //   path: '/issue',
-          //   name: 'Issue',
-          //   component: () => import('../views/main/Issue/index.vue'),
-          //   redirect: '/issue',
-          //   children: [
-          //     { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
-          //     { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
-          //     { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
-          //     { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
-          //     { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
-          //     { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
-          //   ],
+          //   path: '/trade',
+          //   name: 'trade',
+          //   component: () => import('../views/main/Trade/index.vue'),
           //   meta: {auth: true}
           // },
           {
-            path: '/trade',
-            name: 'trade',
-            component: () => import('../views/main/Trade/index.vue'),
+            path: '/issue',
+            name: 'Issue',
+            component: () => import('../views/main/Issue/index.vue'),
+            redirect: '/issue',
+            children: [
+              { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
+              { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
+              { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
+              { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
+              { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
+              { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
+            ],
             meta: {auth: true}
           },
           {
             path: '/advanced',
             name: 'advanced',
             component: () => import('../views/main/Advanced/index.vue'),
-            redirect: '/issue',
+            redirect: '/trust',
             children: [
-              { 
-                path: '/issue',
-                name: 'issue', component: () => import('../views/main/Issue/index.vue'),
-                meta: {auth: true},
-                redirect: '/issue',
-                children: [
-                  { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
-                  { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
-                  { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
-                  { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
-                  { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
-                  { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
-                ],
-              },
+              // { 
+              //   path: '/issue',
+              //   name: 'issue', component: () => import('../views/main/Issue/index.vue'),
+              //   meta: {auth: true},
+              //   redirect: '/issue',
+              //   children: [
+              //     { path: '/issue', name: 'issue', component: () => import('../views/main/Issue/list.vue'), meta: {auth: true}},
+              //     { path: '/newIssue', name: 'newIssue', component: () => import('../views/main/Issue/newIssue.vue'), meta: {auth: true}},
+              //     { path: '/issueConfirm', name: 'issueConfirm', component: () => import('../views/main/Issue/issueConfirm.vue'), meta: {auth: true} },
+              //     { path: '/issueSubmitted', name: 'issueSubmitted', component: () => import('../views/main/Issue/issueSubmitted.vue'), meta: {auth: true} },
+              //     { path: '/issueToUser', name: 'issueToUser', component: () => import('../views/main/Issue/issueToUser.vue'), meta: {auth: true} },
+              //     { path: '/issueToUserSubmitted', name: 'issueToUserSubmitted', component: () => import('../views/main/Issue/issueToUserSubmitted.vue'), meta: {auth: true} },
+              //   ],
+              // },
               { path: '/trust', name: 'trust', component: () => import('../views/main/Advanced/Trust.vue'), meta: {auth: true} },
               { path: '/options', name: 'options', component: () => import('../views/main/Advanced/Options.vue'), },
             ]

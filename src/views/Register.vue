@@ -6,19 +6,19 @@
     light
   >
   <div class="login">
-    <div class="text-center text-h4 pt-6 pb-6">Create a Callchain Wallet</div>
+    <div class="text-center text-h4 pt-6 pb-6">{{$t('register.create_wallet')}}</div>
     <v-divider></v-divider>
     <div style="width: 90%; margin-left: 5%; padding: 20px 0;">
-      <p class="text-subtitle-1">Callchain is global open blockchain system for everyone's token issue. One click, easy and fast asset blockchain system.</p>
-      <p class="text-subtitle-1">Your Wallet is only as safe as your Wallet username and passphrase, used to encrypt your Wallet data. Choose a passphrase you can easily remember but others cannot guess. Hint: Mix letters, numbers, and symbols.
+      <p class="text-subtitle-1">{{$t('register.callchain_desc')}}</p>
+      <p class="text-subtitle-1">{{$t('register.wallet_hint')}}
       </p>
-      <p class="text-subtitle-1" style="color: red;">Only you have this Wallet username and passphrase and are responsible for their safekeeping. 
-          <br/><b>CallWallet ONLY SAVE YOUR ENCRYPTED ACCOUNT INFORMATION IN THIS BROWSER LOCALLY, WHEN CHANGE BROWSER YOU CAN NOT LOGIN!</b>
-          <br/><b>KEEP YOUR SECRET KEY SAFE!</b>
+      <p class="text-subtitle-1" style="color: red;">{{$t('register.wallet_warn1')}}
+          <br/>{{$t('register.wallet_warn2')}}<b></b>
+          <br/><b>{{$t('register.wallet_warn3')}}</b>
           <br/>
-          Callchain cannot recover them if you forget them!</p>
+          {{$t('register.wallet_warn4')}}</p>
       <div class="form-item" style="width: 45%;">
-          <p class="font-weight-bold mb-1">Create Wallet username</p>
+          <p class="font-weight-bold mb-1">{{$t('register.wallet_name')}}</p>
           <v-text-field
             outlined
             v-model="walletName"
@@ -30,7 +30,7 @@
       </div>
       <div class="d-flex">
           <div class="form-item" style="width: 45%;">
-            <p class="font-weight-bold mb-1">Create Wallet passphrase</p>
+            <p class="font-weight-bold mb-1">{{$t('register.wallet_passphrase')}}</p>
             <v-text-field
                 outlined
                 v-model="passphrase"
@@ -42,7 +42,7 @@
             ></v-text-field>
             </div>
             <div class="form-item ml-5" style="width: 45%;">
-            <p class="font-weight-bold mb-1">Re-enter passphrase</p>
+            <p class="font-weight-bold mb-1">{{$t('register.wallet_confirm_passphrase')}}</p>
             <v-text-field
                 outlined
                 v-model="repassphrase"
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="form-item" style="width: 45%;" v-if="isShowKey">
-          <p class="font-weight-bold mb-1">Secret Account Key <v-hover v-slot:default="{ hover }"><span :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer;" @click="isShowKey = false; key='';">Hide</span></v-hover></p>
+          <p class="font-weight-bold mb-1">{{$t('register.secret_key')}}<v-hover v-slot:default="{ hover }"><span :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer;" @click="isShowKey = false; key='';">{{$t('register.hide')}}</span></v-hover></p>
           <v-text-field
             outlined
             v-model="key"
@@ -65,17 +65,17 @@
             dense
           ></v-text-field>
       </div>
-      <v-btn style="width: 45%;" large color="primary" depressed @click="handleRegister" :disabled="canILogin? false:true">Create Wallet</v-btn>
+      <v-btn style="width: 45%;" large color="primary" depressed @click="handleRegister" :disabled="canILogin? false:true">{{$t('register.do_create')}}</v-btn>
       <v-card-text style="padding-left: 0;">
-        <span>Already have a Wallet? </span>
+        <span>{{$t('register.has_wallet')}}</span>
         <v-hover v-slot:default="{ hover }">
-          <span @click="handleBackLogin" :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer">Open Wallet</span>
+          <span @click="handleBackLogin" :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer">{{$t('register.do_open')}}</span>
         </v-hover>
       </v-card-text>
       <v-card-text style="padding-left: 0; padding-top: 0;" v-if="!isShowKey">
-        <span>Need to use your Secret Key? </span>
+        <span>{{$t('register.use_key')}}</span>
         <v-hover v-slot:default="{ hover }">
-          <span @click="isShowKey = true" :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer">Use Key</span>
+          <span @click="isShowKey = true" :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer">{{$t('register.do_use_key')}}</span>
         </v-hover>
       </v-card-text>
     </div>

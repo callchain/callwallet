@@ -19,8 +19,8 @@ export default {
   name: 'advanced',
   data: () => ({
       navList: [
-          { text: 'Issue', isActive: true },
-          { text: 'Trust', isActive: false },
+        //   { text: 'Issue', isActive: true },
+          { text: 'Trust', isActive: true },
           { text: 'Options', isActive: false },
       ]
    
