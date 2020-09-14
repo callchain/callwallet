@@ -51,5 +51,22 @@ module.exports = {
     service: {
         title: '服务协议',
         back: '返回'
+    },
+
+    tabs: {
+        wallet: '钱包',
+        send: '发送',
+        receive: '接收',
+        issue: '发行',
+        trade: '交易',
+        advanced: '高级'
+    },
+    wallet: {
+        balance: {
+            activity: '活动',
+            history: '历史页面查看更多',
+            date: '时间',
+            event: '事件'
+        }
     }
 }

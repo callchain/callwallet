@@ -9,12 +9,12 @@
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
                         <div class="text-h4 text-center">{{item.value | numberFormat}}</div>
-                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">(reserv: {{0.0001}})</div>
+                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">(reserve: {{0.0001}})</div>
                     </v-card-text>
                 </v-card>
             </v-hover>
         </div>
-        <div class="font-weight-bold" style="margin-top: 20px;">Activity</div>
+        <div class="font-weight-bold" style="margin-top: 20px;">{{$t('wallet.balance.activity')}}</div>
         <div>
             <v-data-table
                 calculate-widths
@@ -26,22 +26,22 @@
                 hide-default-footer
             ></v-data-table>
             <v-divider></v-divider>
-            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Go History For More Transactions</v-btn>
+            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">{{$t('wallet.balance.history')}}</v-btn>
         </div>
         </div>
     </v-card>
 </template>
 <script>
 
-import Parser from '../../../api/transaction-parser';
 import NoData from '../../../components/NoData';
 import * as filters from '../../../filters/Index';
+import i18n from './../../../plugins/i18n';
 
 export default {
     
     name: 'blance',
     data: () => ({
-        headers: [{ text: 'Date', value: 'date', width: 200 }, { text: 'Event', value: 'content' }],
+        headers: [{ text: i18n.tc('wallet.balance.date'), value: 'date', width: 200 }, { text: i18n.tc('wallet.balance.event'), value: 'content' }],
     }),
     components: {
         NoData

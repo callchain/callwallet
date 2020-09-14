@@ -51,5 +51,22 @@ module.exports = {
     service: {
         title: 'Term of Service',
         back: 'Back'
+    },
+
+    tabs: {
+        wallet: 'Wallet',
+        send: 'Send',
+        receive: 'Receive',
+        issue: 'Issue',
+        trade: 'Trade',
+        advanced: 'Advanced'
+    },
+    wallet: {
+        balance: {
+            activity: 'Activity',
+            history: 'Go History For More Transactions',
+            date: 'Date',
+            event: 'Event'
+        }
     }
 }

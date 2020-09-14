@@ -9,7 +9,7 @@
         left
       >
         <v-tabs-slider></v-tabs-slider>
-        <v-tab v-for="item in tabs" :key="item.id" @click="handleTabClick(item.text)" :href="'#tab-'+item.id">
+        <v-tab v-for="item in tabs" :key="item.id" @click="handleTabClick(item.name)" :href="'#tab-'+item.id">
           {{item.text}}
           <v-icon>mdi-{{item.ico}}</v-icon>
         </v-tab>
@@ -31,6 +31,7 @@
 <script>
 import WalletContent from './Wallet/index.vue'
 import NoData from '../../components/NoData'
+import i18n from '../../plugins/i18n';
 
 export default {
   name: 'Main',
@@ -41,12 +42,12 @@ export default {
   data: () => ({
     tab: '',
     tabs: [
-      { id: 1, ico: 'wallet', text: 'Wallet' },
-      { id: 2, ico: 'arrow-up-bold-box', text: 'Send' },
-      { id: 3, ico: 'arrow-down-bold-box', text: 'Receive' },
-      { id: 4, ico: 'telegram', text: 'Issue' },
-      // { id: 5, ico: 'swap-vertical-bold', text: 'Trade' }
-      { id: 5, ico: 'cogs', text: 'Advanced' },
+      { id: 1, ico: 'wallet', text: i18n.tc('tabs.wallet'), name: 'Wallet' },
+      { id: 2, ico: 'arrow-up-bold-box', text: i18n.tc('tabs.send'), name: 'Send' },
+      { id: 3, ico: 'arrow-down-bold-box', text: i18n.tc('tabs.receive'), name: 'Receive' },
+      { id: 4, ico: 'telegram', text: i18n.tc('tabs.issue'), name: 'Issue' },
+      { id: 5, ico: 'swap-vertical-bold', text: i18n.tc('tabs.trade'), name: 'Trade' },
+      { id: 6, ico: 'cogs', text: i18n.tc('tabs.advanced'), name: 'Advanced' },
     ],
     text: 'asdasd'
   }),
