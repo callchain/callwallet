@@ -1,5 +1,5 @@
 <template>
-    <div class="main" style="min-height: 550px;">
+    <div class="main pa-8" style="min-height: 550px;">
         <div>
             <div class="d-flex align-center justify-space-between mb-5">
                 <span class="text-subtitle-1 font-weight-bold">Issue New Token</span>

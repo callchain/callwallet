@@ -1,5 +1,5 @@
 <template>
-    <div class="main ml-2 mt-4" style="min-height: 550px;">
+    <div class="main mt-4" style="min-height: 550px;">
         <p class="text-subtitle-1 font-weight-bold">You are issuing new token {{info.symbol}}</p>
         <v-divider></v-divider>
         <p class="text-subtitle-1 font-weight-bold mt-2 mb-1">Issue Supply</p>

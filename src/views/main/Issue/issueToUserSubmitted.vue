@@ -1,5 +1,5 @@
 <template>
-    <div class="main ml-2 mt-4" style="min-height: 550px;">
+    <div class="main mt-4" style="min-height: 550px;">
         <p class="text-h4">Your transaction has been submitted.</p>
         <p>Transaction Hash: {{hash}}</p>
         <p>Your issue information wil update once the payment has cleared.</p>
