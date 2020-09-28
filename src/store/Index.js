@@ -21,6 +21,10 @@ const store = new Vuex.Store({
       marker: {},
       trustlines: {},
       issue_list: {},
+      pairs: ['CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz'],
+      pair: 'CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz',
+      ob: {asks: {}, bids: {}},
+      orders: []
     },
     getters: {
       networkStatus(state) {
@@ -160,6 +164,32 @@ const store = new Vuex.Store({
         }
         console.log('updated lines');
         console.dir(state.trustlines);
+      },
+
+      initOrderbook(state, data) {
+        // asks price use math.ceil, asks amount use math.ceil
+        var i, s, price, amount, oa;
+        for (i in data.asks) {
+          s = data.asks[i].specification;
+          price = (Math.ceil(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000).toFixed(6);
+          amount = (Math.ceil(Number(s.quantity.value) * 1000000) / 1000000).toFixed(6);
+          oa = state.ob.asks[price];
+          state.ob.asks[price] = oa ? (Number(oa) + Number(amount)).toFixed(6) : amount;
+        }
+        // bids price use math.floor, bids amount use math.ceil
+        for (i in data.bids) {
+          s = data.bids[i].specification;
+          price = (Math.floor(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000).toFixed(6);
+          amount = (Math.ceil(Number(s.quantity.value) * 1000000) / 1000000).toFixed(6);
+          state.ob.bids[price] = oa ? (Number(oa) + Number(amount)).toFixed(6) : amount;
+        }
+      },
+
+      initOrders(state, data) {
+        state.orders = data;
+      },
+      updateOrder(state, data) {
+        console.dir(data);
       },
 
       updateServer(state, server) {

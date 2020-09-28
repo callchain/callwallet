@@ -18,6 +18,10 @@ function isValidPort(port) {
         && Number(port) > 0 && Number(port) < 65535;
 }
 
+function isValidCur(cur) {
+    return /^[1-9A-Z]{3,6}$/.test(cur);
+}
+
 export default {
-    isValidAddr, isValidSec, isValidDomain, isValidPort
+    isValidAddr, isValidSec, isValidDomain, isValidPort, isValidCur
 }
