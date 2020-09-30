@@ -22,6 +22,49 @@ function isValidCur(cur) {
     return /^[1-9A-Z]{3,6}$/.test(cur);
 }
 
+function isAffected(obj, addr) {
+    for (var prop in obj) {
+        // check key
+        if (prop === addr) return true;
+
+        // check value
+        var value = obj[prop];
+        if (typeof value === 'object')
+        {
+            if (isAffected(value, addr)) return true;
+        }
+        else
+        {
+            if (value === addr) return true;
+        }
+    }
+    return false;
+}
+
+function getPair(item) {
+    var p = item.quantity.currency;
+    if (item.quantity.counterparty) {
+        p += '@' + item.quantity.counterparty;
+    }
+    p += '/';
+    p += item.totalPrice.currency;
+    if (item.totalPrice.counterparty) {
+        p += '@' + item.totalPrice.counterparty;
+    }
+    return p;
+}
+
+function getPrice(item, type) {
+    var ret = Number(item.totalPrice.value) / Number(item.quantity.value);
+    if (type === 'buy') return (Math.floor(ret * 1000000) / 1000000).toFixed(6);
+    else return (Math.ceil(ret * 1000000) / 1000000).toFixed(6);
+}
+
+function getAmount(item) {
+    return (Math.ceil(Number(item.quantity.value) * 1000000) / 1000000).toFixed(6);
+}
+
 export default {
-    isValidAddr, isValidSec, isValidDomain, isValidPort, isValidCur
+    isValidAddr, isValidSec, isValidDomain, isValidPort, isValidCur, isAffected,
+    getPair, getPrice, getAmount
 }

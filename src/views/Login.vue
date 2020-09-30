@@ -100,13 +100,13 @@ export default {
       var server = this.$store.state.server;
       api = CreateApi(server)
       api.connect().then(function() {
-        console.log('api connected');
+        self.$toast.success('Callchain Server Connected');
         self.$store.commit('online');
         self.$store.commit('initApi', api);
       }).catch(function(e) {
-        console.log('fail to connect api: ');
+        self.$toast.success('fail to connect api: ' + e);
         self.$store.commit('offline');
-        console.dir(e);
+        console.error(e);
       });
     }    
   },

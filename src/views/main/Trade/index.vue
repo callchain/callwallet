@@ -10,7 +10,7 @@
       <!-- pair select -->
       <v-row class="box align-center">
         <v-col cols="9">
-          <v-combobox v-model="selected" :items="pairs"></v-combobox>
+          <v-combobox v-model="selected" :items="pairs" @change="changePair()"></v-combobox>
         </v-col>
         <v-col class cols="2">
             <v-btn icon color="success">
@@ -29,15 +29,17 @@
               <v-col class="font-weight-bold text-right">Size({{base.currency}})</v-col>
             </v-row>
 
-            <!-- asks -->
-            <v-virtual-scroll :items="asks" :item-height="30" height="200">
-              <template v-slot="{item}">
-                <v-row class="no-gutters">
-                  <v-col class="text-left red--text">{{item[0]}}</v-col>
-                  <v-col class="text-right">{{item[1]}}</v-col>
-                </v-row>
-              </template>
-            </v-virtual-scroll>
+            <div class="scroll-box d-flex flex-column justify-end" style="height: 200px;">
+              <!-- asks -->
+              <v-virtual-scroll class="scroll-custom" :items="asks" :item-height="30" max-height="200">
+                <template v-slot="{item}">
+                  <v-row class="no-gutters priceline" @click="getObPrice(item)">
+                    <v-col class="text-left red--text">{{item[0]}}</v-col>
+                    <v-col class="text-right">{{item[1]}}</v-col>
+                  </v-row>
+                </template>
+              </v-virtual-scroll>
+            </div>
 
             <v-divider></v-divider>
             <div class="text-h6 pa-2 d-flex align-center justify-center">
@@ -50,7 +52,7 @@
             <!-- bids -->
             <v-virtual-scroll :items="bids" :item-height="30" height="200">
               <template v-slot="{item}">
-                <v-row class="no-gutters">
+                <v-row class="no-gutters priceline" @click="getObPrice(item)">
                   <v-col class="text-left green--text">{{item[0]}}</v-col>
                   <v-col class="text-right">{{item[1]}}</v-col>
                 </v-row>
@@ -107,7 +109,11 @@
                       color="success"
                       track-color="#92cf94"
                       @end="updatePercent()"
+                      @click="updatePercent()"
                       thumb-label
+                      step="25"
+                      :tick-labels="['0%','25%','50%','75%', '100%']"
+                      tick-size="1"
                     ></v-slider>
                   </div>
 
@@ -168,7 +174,13 @@
                   </div>
 
                   <div class="form-item mb-2">
-                    <v-slider v-model="percent" min="0" max="100" label="Percent" thumb-label @end="updatePercent()"></v-slider>
+                    <v-slider 
+                      v-model="percent" min="0" max="100" label="Percent" thumb-label @end="updatePercent()"
+                      @click="updatePercent()"
+                      step="25"
+                      :tick-labels="['0%','25%','50%','75%', '100%']"
+                      tick-size="1"
+                      ></v-slider>
                   </div>
 
                   <v-btn block large color="#c91c46" class="white--text" @click="toConfirm()">SELL {{base.currency}}</v-btn>
@@ -214,12 +226,6 @@
               :items-per-page="5"
               disable-sort
             >
-              <template v-slot:item.specification.quantity="{ item }">
-                {{item | orderPair}}
-              </template>
-              <template v-slot:item.specification.totalPrice="{ item }">
-                {{item | orderPrice}}
-              </template>
               <template v-slot:item.Action="{ item }">
                 <v-btn text dense color="error" @click="cancelOrder(item)">Cancel</v-btn>
               </template>
@@ -238,7 +244,7 @@ import utils from '../../../api/utils'
 export default {
   name: "trade",
   data: () => ({
-    selected: 'CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz',
+    selected: '',
     price: '0',
     change: 0,
 
@@ -254,14 +260,14 @@ export default {
     orders: {
       headers: 
       [
-        { text: "Type", value: "specification.direction", align: "start" },
+        { text: "Type", value: "type", align: "start" },
         {
           text: "Pair",
-          value: "specification.quantity",
+          value: "pair",
           align: "start",
         },
-        { text: "Price", value: "specification.totalPrice", align: "start" },
-        { text: "Amount", value: "specification.quantity.value", align: "start" },
+        { text: "Price", value: "price", align: "start" },
+        { text: "Amount", value: "amount", align: "start" },
         { text: "Action", value: "Action", align: "start" },
       ],
     },
@@ -281,25 +287,15 @@ export default {
       return ret;
     },
     asks() {
-      var ob = this.$store.state.ob.asks;
-      var result = _.toPairs(ob);
-      console.log('in ask');
-      console.dir(result);
-      result = _.sortBy(result, function(o) {return o[0]});
-      console.dir(result);
-      return result;
+      console.log('update vue asks');
+      return this.$store.getters.askList;
     },
     bids() {
-      var ob = this.$store.state.ob.bids;
-      var result = _.toPairs(ob);
-      console.log('in bid');
-      console.dir(result);
-      result = _.sortBy(result, function(o) {return -o[0]});
-      console.dir(result);
-      return result;
+      console.log('update vue bids');
+      return this.$store.getters.bidList;
     },
     orderData() {
-      return this.$store.state.orders;
+      return this.$store.getters.orderList;
     },
     baseBalance() {
       return this.getBaseBalance();
@@ -309,30 +305,49 @@ export default {
     }
   },
   created() {
+    this.selected = this.$store.state.default_pair;
     this.initData();
+    this.getPendingOrders();
   },
   methods: {
     initData() {
       this.getOrderbook();
-      this.getPendingOrders();
+    },
+    getObPrice(item) {
+      this.formPrice = item[0];
     },
     updatePercent() {
-      console.dir(this.percent);
       if (Number(this.formPrice) === 0) return;
       if (this.type === 'buy')
       {
         var cb = this.getCounterBalance();
-        var amnt = (Number(cb) * Number(this.percent) / Number(this.formPrice)).toFixed(6);
+        var amnt = (Number(cb) * Number(this.percent) / 100.0 / Number(this.formPrice)).toFixed(6);
         this.formAmount = amnt;
         this.formValue = (Number(amnt) * Number(this.formPrice)).toFixed(6);
       }
       else
       {
         var bb = this.getBaseBalance();
-        var amnt = (Number(bb) * Number(this.percent)).toFixed(6);
+        var amnt = (Number(bb) * Number(this.percent) / 100.0).toFixed(6);
         this.formAmount = amnt;
         this.formValue = (Number(amnt) * Number(this.formPrice)).toFixed(6);
       }
+    },
+    changePair() {
+      console.log('change pair ....');
+      console.dir(this.selected);
+      var _base = this.getBase();
+      var _counter = this.getCounter();
+      if (this.isEmptyCurrency(_base) || this.isEmptyCurrency(_counter))
+      {
+        this.$toast.error('Invalid Trade Pair');
+        this.selected = this.$store.state.default_pair;
+      }
+      else
+      {
+        this.$store.commit('newPair', this.selected);
+      }
+      this.initData();
     },
     toString(cur) {
       if (cur.currency === 'CALL') return 'CALL';
@@ -343,7 +358,14 @@ export default {
       var bc = this.getBase();
       var k = this.toString(bc);
       var b = bal[k];
-      if (b) return b.value;
+      if (b) {
+        if (b.currency === 'CALL') {
+          var ret = (Number(b.value) - Number(this.$store.getters.reservedCall)).toFixed(6);
+          return ret;
+        } else {
+          return b.value;
+        }
+      }
       else return 0;
     },
     getCounterBalance() {
@@ -351,7 +373,14 @@ export default {
       var cc = this.getCounter();
       var k = this.toString(cc);
       var b = bal[k];
-      if (b) return b.value;
+      if (b) {
+        if (b.currency === 'CALL') {
+          var ret = (Number(b.value) - Number(this.$store.getters.reservedCall)).toFixed(6);
+          return ret;
+        } else {
+          return b.value;
+        }
+      }
       else return 0;
     },
     checkCurrency(i) {
@@ -385,12 +414,15 @@ export default {
       this.showForm = true;
       this.showResult = false;
       this.showConfirm = false;
-      if (t) {
-        this.type = t;
+      // if (t) {
+        // this.type = t;
         this.formPrice = 0;
         this.formAmount = 0;
         this.formValue = 0;
         this.percent = 0;
+      // }
+      if (t) {
+        this.type = t;
       }
     },
     isEmptyCurrency(item) {
@@ -479,10 +511,15 @@ export default {
           "value": this.formValue
         }
       };
+      console.log('order info ...');
+      console.dir(order);
 
       try {
         var prepare = await api.prepareOrder(address, order);
         prepare.secret = secret;
+        console.log('prepare tx');
+        console.dir(prepare);
+
         var signedTx = api.sign(prepare.txJSON, prepare.secret);
         var tx = await api.submit(signedTx, true);
         console.dir(tx);
@@ -506,7 +543,7 @@ export default {
       }
     },
     async cancelOrder(item) {
-      var sequence = item.properties.sequence;
+      var sequence = item.seq;
       var address = this.$store.state.address;
       var blob = this.$store.state.blob;
       var secret = blob.data.master_seed;
@@ -604,15 +641,25 @@ export default {
 };
 </script>
 
-<style scoped>
-.act-tab::after {
-  background-color: #4caf50;
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  z-index: 999;
-}
+<style lang="less">
+  .trade {
+    .act-tab::after {
+      background-color: #4caf50;
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      z-index: 999;
+    }
+    .scroll-custom {
+      height: auto;
+      flex: 0 1 auto;
+    }
+    .priceline {
+      cursor: pointer;
+    }
+  }
+
 </style>

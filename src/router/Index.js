@@ -56,8 +56,8 @@ const routes = [
             ]
           },
           {
-            path: '/send',
-            name: 'send',
+            path: '/sendHome',
+            name: 'sendHome',
             component: () => import('../views/main/Send/index.vue'),
             redirect: '/send',
             children: [

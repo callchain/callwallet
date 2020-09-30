@@ -1,7 +1,7 @@
 const numberFormat = (value) => {
     if (!value) return '';
     var str = '' + value;
-    var intPart = Number(value).toFixed(0);
+    var intPart = Math.floor(Number(value));
     var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
     var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
     return intPartFormat + pointPart;
@@ -42,7 +42,6 @@ const txDesc = (tx, address) => {
 }
 
 const orderPair = (item) => {
-  console.dir(item);
   var s = item.specification;
   var ret = s.quantity.currency;
   if (s.quantity.counterparty) {

@@ -5,11 +5,11 @@
         <div class="d-flex align-center justify-start flex-wrap">
             <v-hover v-for="item in balance" :key="item.id" v-slot:default="{ hover }">
                 <v-card width="32.3%" height="140" :elevation="hover ? 6 : 2" style="margin: 5px 0.5%;">
-                    <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}}-{{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
+                    <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}}@{{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
                         <div class="text-h4 text-center">{{item.value | numberFormat}}</div>
-                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">(reserve: {{0.0001}})</div>
+                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">(reserve: {{reserved}})</div>
                     </v-card-text>
                 </v-card>
             </v-hover>
@@ -60,6 +60,9 @@ export default {
             }
             return list;
         },
+        reserved() {
+            return this.$store.getters.reservedCall;
+        },
         transactions() {
             var list = this.$store.state.transactions.slice(0,10);
             var address = this.$store.state.address;
@@ -87,6 +90,8 @@ export default {
             this.$store.commit("initBalance", ret);
             var result = await api.getTransactions(address, {limit: 10});
             this.$store.commit("initTransactions", result);
+            var info = await api.getAccountInfo(address);
+            this.$store.commit("initAccountInfo", info);
         } catch (e) {
             this.$toast.error(e.message);
             console.dir(e);
