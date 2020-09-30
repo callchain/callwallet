@@ -55,7 +55,7 @@ export default {
   methods: {
     balanceFormat(value) {
       if (!value) return 'Unfunded account';
-      var str = '' + value;
+      var str = '' + Number(value).toFixed(6);
       var intPart = Math.floor(Number(value));
       var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
       var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');

@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 import router from '../router/Index';
 import utils from '../api/utils'
+import { stat } from 'fs';
 
 const store = new Vuex.Store({
     state: {
@@ -30,6 +31,8 @@ const store = new Vuex.Store({
       asks: {},
       bids: {},
       orders: {},
+      price: 0,
+      change: 0
     },
     getters: {
       networkStatus(state) {
@@ -269,6 +272,14 @@ const store = new Vuex.Store({
               Vue.set(state.bids, price, total);
             else
               Vue.set(state.asks, price, total);
+          }
+
+          // new price
+          if (item.status !== 'cancelled')
+          {
+            var oldprice = state.price;
+            state.price = price;
+            state.change = ((Number(price) - Number(oldprice)) * 100).toFixed(2);
           }
         }
 

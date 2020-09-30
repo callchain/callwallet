@@ -31,7 +31,7 @@
 
             <div class="scroll-box d-flex flex-column justify-end" style="height: 200px;">
               <!-- asks -->
-              <v-virtual-scroll class="scroll-custom" :items="asks" :item-height="30" max-height="100%">
+              <v-virtual-scroll class="scroll-custom" :items="asks" :item-height="30" max-height="200px">
                 <template v-slot="{item}">
                   <v-row class="no-gutters priceline" @click="getObPrice(item)">
                     <v-col class="text-left red--text">{{item[0]}}</v-col>
@@ -43,7 +43,11 @@
 
             <v-divider></v-divider>
             <div class="text-h6 pa-2 d-flex align-center justify-center">
-              <span class="green--text">{{price}}</span>
+              <span class="green--text" v-if="change > 0">{{price}}</span>
+              <span class="red--text" v-else-if="change < 0">{{price}}</span>
+              <span class="grey--text" v-else>{{price}}</span>
+
+
               <v-icon class="green--text" v-if="change > 0">mdi-arrow-up</v-icon>
               <v-icon class="red--text" v-else-if="change < 0">mdi-arrow-down</v-icon>
             </div>
@@ -245,8 +249,6 @@ export default {
   name: "trade",
   data: () => ({
     selected: '',
-    price: '0',
-    change: 0,
 
     showForm: true,
     showConfirm: false,
@@ -286,9 +288,18 @@ export default {
       var ret = this.getCounter();
       return ret;
     },
+    price() {
+      return this.$store.state.price;
+    },
+    change() {
+      return this.$store.state.change;
+    },
     asks() {
       console.log('update vue asks');
-      return this.$store.getters.askList;
+      var ret = this.$store.getters.askList;
+      console.log('got asks');
+      console.dir(ret);
+      return ret;
     },
     bids() {
       console.log('update vue bids');
@@ -655,8 +666,8 @@ export default {
       z-index: 999;
     }
     .scroll-custom {
-      height: auto;
-      flex: 0 1 auto;
+      // height: auto;
+      // flex: 0 1 auto;
     }
     .priceline {
       cursor: pointer;
