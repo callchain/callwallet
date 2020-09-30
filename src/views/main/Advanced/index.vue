@@ -15,13 +15,15 @@
 </template>
 
 <script>
+import i18n from '../../../plugins/i18n'
+
 export default {
   name: 'advanced',
   data: () => ({
       navList: [
         //   { text: 'Issue', isActive: true },
-          { text: 'Trust', isActive: true },
-          { text: 'Options', isActive: false },
+          { text: i18n.tc('advanced.index.trust'), name: 'trust', isActive: true },
+          { text: i18n.tc('advanced.index.options'), name: 'options', isActive: false },
       ]
    
   }),
@@ -34,10 +36,10 @@ export default {
                 e.isActive = false
             }
         });
-        if(this.$route.path.indexOf(this.navList[index].text.toLowerCase()) != -1){
+        if(this.$route.path.indexOf(this.navList[index].name.toLowerCase()) != -1){
             return;
         }
-        this.$router.push('./'+ this.navList[index].text.toLowerCase());
+        this.$router.push('./'+ this.navList[index].name.toLowerCase());
     }
   },
 }

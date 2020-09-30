@@ -3,7 +3,7 @@
     <v-container>
       <v-row class="box align-center">
         <div class="title ml-2">
-          <span class="text-subtitle-1 font-weight-bold">Trade Pair</span>
+          <span class="text-subtitle-1 font-weight-bold">{{$t('trade.pair')}}</span>
         </div>
       </v-row>
 
@@ -25,8 +25,8 @@
         <v-col cols="4">
           <div class="cont">
             <v-row class="no-gutters mb-4">
-              <v-col class="font-weight-bold">Price({{counter.currency}})</v-col>
-              <v-col class="font-weight-bold text-right">Size({{base.currency}})</v-col>
+              <v-col class="font-weight-bold">{{$t('trade.price')}}({{counter.currency}})</v-col>
+              <v-col class="font-weight-bold text-right">{{$t('trade.size')}}({{base.currency}})</v-col>
             </v-row>
 
             <div class="scroll-box d-flex flex-column justify-end" style="height: 200px;">
@@ -68,18 +68,18 @@
         <!-- trade panel -->
         <v-col cols="7">
           <div class="cont pl-8">
-            <h4>Trade</h4>
+            <h4>{{$t('trade.trade')}}</h4>
             <v-tabs style="width: 70%">
-              <v-tab active-class="act-tab green--text" @click="toForm('buy')">BUY</v-tab>
-              <v-tab @click="toForm('sell')">SELL</v-tab>
+              <v-tab active-class="act-tab green--text" @click="toForm('buy')">{{$t('trade.buy')}}</v-tab>
+              <v-tab @click="toForm('sell')">{{$t('trade.sell')}}</v-tab>
               <!-- buy tab -->
               <v-tab-item>
                 <!-- buy form -->
                 <div class="form mt-4" v-show="showForm">
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">Amount</span>
-                      <span class="h4">{{counterBalance}} {{counter.currency}} available</span>
+                      <span class="h4">{{$t('trade.amount')}}</span>
+                      <span class="h4">{{counterBalance}} {{counter.currency}} {{$t('trade.avail')}}</span>
                     </div>
                     <div class="input">
                       <v-text-field dense outlined  v-model="formAmount"></v-text-field>
@@ -88,7 +88,7 @@
 
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">Price</span>
+                      <span class="h4">{{$t('trade.price')}}</span>
                     </div>
                     <div class="input">
                       <v-text-field dense outlined v-model="formPrice"></v-text-field>
@@ -97,7 +97,7 @@
 
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">Total Value</span>
+                      <span class="h4">{{$t('trade.value')}}</span>
                     </div>
                     <div class="input">
                       <v-text-field dense outlined v-model="formValue"></v-text-field>
@@ -109,7 +109,7 @@
                       v-model="percent"
                       min="0"
                       max="100"
-                      label="Percent"
+                      :label="$t('trade.percent')"
                       color="success"
                       track-color="#92cf94"
                       @end="updatePercent()"
@@ -121,27 +121,27 @@
                     ></v-slider>
                   </div>
 
-                  <v-btn block large color="#c91c46" class="success" @click="toConfirm()">BUY {{base.currency}}</v-btn>
+                  <v-btn block large color="#c91c46" class="success" @click="toConfirm()">{{$t('trade.buy')}} {{base.currency}}</v-btn>
                 </div>
 
                 <!-- buy confirm -->
                 <div class="text-center" v-show="showConfirm">
-                  <div class="mt-8">You are about to create an order to buy</div>
+                  <div class="mt-8">{{$t('trade.tobuy')}}</div>
                   <div class="text-h4 mt-8">{{formAmount}} {{base.currency}}</div>
-                  <div class="mt-8">for</div>
+                  <div class="mt-8">{{$t('trade.for')}}</div>
                   <div class="text-h4 mt-8">{{formValue}} {{counter.currency}}</div>
-                  <div class="mt-8">Are you sure?</div>
+                  <div class="mt-8">{{$t('trade.sure')}}</div>
                   <div class="mt-16">
-                    <v-btn class="mr-16" @click="toForm()">&lt;&lt; Back</v-btn>
-                    <v-btn class="primary" @click="createOrder()">Confirm</v-btn>
+                    <v-btn class="mr-16" @click="toForm()">&lt;&lt; {{$t('trade.back')}}</v-btn>
+                    <v-btn class="primary" @click="createOrder()">{{$t('trade.confirm')}}</v-btn>
                   </div>
                 </div>
 
                 <!-- buy result -->
                 <div class="mt-8" v-show="showResult">
-                  <div class="pa-4 text-h5 success">Your order is now active!</div>
+                  <div class="pa-4 text-h5 success">{{$t('trade.active')}}</div>
                   <v-divider class="mt-8"></v-divider>
-                  <a class="d-flex mt-4" style="color: #5A83BB;" @click="toForm()">Submit another order</a>
+                  <a class="d-flex mt-4" style="color: #5A83BB;" @click="toForm()">{{$t('trade.another')}}</a>
                 </div>
               </v-tab-item>
 
@@ -151,8 +151,8 @@
                 <div class="form mt-4" v-show="showForm">
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">Amount</span>
-                      <span class="h4">{{baseBalance}} {{base.currency}} available</span>
+                      <span class="h4">{{$t('trade.amount')}}</span>
+                      <span class="h4">{{baseBalance}} {{base.currency}} {{$t('trade.avail')}}</span>
                     </div>
                     <div class="input">
                       <v-text-field dense outlined v-model="formAmount"></v-text-field>
@@ -161,7 +161,7 @@
 
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">Price</span>
+                      <span class="h4">{{$t('trade.price')}}</span>
                     </div>
                     <div class="input">
                       <v-text-field dense outlined v-model="formPrice"></v-text-field>
@@ -170,7 +170,7 @@
 
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">Total Value</span>
+                      <span class="h4">{{$t('trade.value')}}</span>
                     </div>
                     <div class="input">
                       <v-text-field dense outlined v-model="formValue"></v-text-field>
@@ -179,7 +179,7 @@
 
                   <div class="form-item mb-2">
                     <v-slider 
-                      v-model="percent" min="0" max="100" label="Percent" thumb-label @end="updatePercent()"
+                      v-model="percent" min="0" max="100" :label="$t('trade.percent')" thumb-label @end="updatePercent()"
                       @click="updatePercent()"
                       step="25"
                       :tick-labels="['0%','25%','50%','75%', '100%']"
@@ -187,31 +187,31 @@
                       ></v-slider>
                   </div>
 
-                  <v-btn block large color="#c91c46" class="white--text" @click="toConfirm()">SELL {{base.currency}}</v-btn>
+                  <v-btn block large color="#c91c46" class="white--text" @click="toConfirm()">{{$t('trade.sell')}} {{base.currency}}</v-btn>
                 </div>
 
                  <!-- sell confirm -->
                 <div class="text-center" v-show="showConfirm">
-                  <div class="mt-8">You are about to create an order to sell</div>
+                  <div class="mt-8">{{$t('trade.tosell')}}</div>
                   <div class="text-h4 mt-8">{{formAmount}} {{base.currency}}</div>
                   <div class="mt-8">for</div>
                   <div class="text-h4 mt-8">{{formValue}} {{counter.currency}}</div>
-                  <div class="mt-8">Are you sure?</div>
+                  <div class="mt-8">{{$t('trade.sure')}}</div>
                   <div class="mt-16">
-                    <v-btn class="mr-16" @click="toForm()">&lt;&lt; Back</v-btn>
-                    <v-btn class="primary" @click="createOrder()">Confirm</v-btn>
+                    <v-btn class="mr-16" @click="toForm()">&lt;&lt; {{$t('trade.back')}}</v-btn>
+                    <v-btn class="primary" @click="createOrder()">{{$t('trade.confirm')}}</v-btn>
                   </div>
                 </div>
 
                 <!-- sell result -->
                 <div class="mt-8" v-show="showResult">
-                  <div class="pa-4 text-h5 success">Your order is now active!</div>
+                  <div class="pa-4 text-h5 success">{{$t('trade.active')}}</div>
                   <v-divider class="mt-8"></v-divider>
                   <a
                     class="d-flex mt-4"
                     style="color: #5A83BB;"
                     @click="toForm()"
-                  >Submit another order</a>
+                  >{{$t('trade.another')}}</a>
                 </div>
               </v-tab-item>
             </v-tabs>
@@ -223,7 +223,7 @@
       <v-row>
         <v-col cols="12">
           <div class="mt-6">
-            <h4>Pending Orders</h4>
+            <h4>{{$t('trade.pending')}}</h4>
             <v-data-table
               :headers="orders.headers"
               :items="orderData"
@@ -231,7 +231,7 @@
               disable-sort
             >
               <template v-slot:item.Action="{ item }">
-                <v-btn text dense color="error" @click="cancelOrder(item)">Cancel</v-btn>
+                <v-btn text dense color="error" @click="cancelOrder(item)">{{$t('trade.cancel')}}</v-btn>
               </template>
             </v-data-table>
           </div>
@@ -244,6 +244,8 @@
 
 <script>
 import utils from '../../../api/utils'
+import i18n from './../../../plugins/i18n';
+
 
 export default {
   name: "trade",
@@ -262,15 +264,15 @@ export default {
     orders: {
       headers: 
       [
-        { text: "Type", value: "type", align: "start" },
+        { text: i18n.tc('trade.type'), value: "type", align: "start" },
         {
-          text: "Pair",
+          text: i18n.tc('trade.pair'),
           value: "pair",
           align: "start",
         },
-        { text: "Price", value: "price", align: "start" },
-        { text: "Amount", value: "amount", align: "start" },
-        { text: "Action", value: "Action", align: "start" },
+        { text: i18n.tc('trade.price'), value: "price", align: "start" },
+        { text: i18n.tc('trade.amount'), value: "amount", align: "start" },
+        { text: i18n.tc('trade.action'), value: "Action", align: "start" },
       ],
     },
 

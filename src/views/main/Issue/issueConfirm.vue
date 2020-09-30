@@ -1,15 +1,15 @@
 <template>
     <div class="main mt-4" style="min-height: 550px;">
-        <p class="text-subtitle-1 font-weight-bold">You are issuing new token {{info.symbol}}</p>
+        <p class="text-subtitle-1 font-weight-bold">{{$t('issue.confirm.text')}} {{info.symbol}}</p>
         <v-divider></v-divider>
-        <p class="text-subtitle-1 font-weight-bold mt-2 mb-1">Issue Supply</p>
+        <p class="text-subtitle-1 font-weight-bold mt-2 mb-1">{{$t('issue.confirm.supply')}}</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2"> {{info.supply}}</div>
-        <p class="mb-1">Issue Description</p>
+        <p class="mb-1">{{$t('issue.confirm.desc')}}</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2">{{info.desc}}</div>
-        <p>Are you sure?</p>
+        <p>{{$t('issue.confirm.sure')}}</p>
         <div class="d-flex">
-            <v-btn width="100" @click="handleBack" outlined color="primary">&lt;&lt; Back</v-btn>
-            <v-btn width="150" @click="handleConfirmed" class="ml-5" color="primary">Confirm</v-btn>
+            <v-btn width="100" @click="handleBack" outlined color="primary">&lt;&lt; {{$t('issue.confirm.back')}}</v-btn>
+            <v-btn width="150" @click="handleConfirmed" class="ml-5" color="primary">{{$t('issue.confirm.confirm')}}</v-btn>
         </div>
     </div>
 </template>

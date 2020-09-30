@@ -15,15 +15,16 @@
 </template>
 
 <script>
+import i18n from './../../../plugins/i18n';
 
 export default {
   name: 'wallet',
   data: () => ({
       navList: [
-          { text: 'Balance', isActive: true },
-          { text: 'History', isActive: false },
+          { text: i18n.tc('wallet.index.balance'), name: 'balance', isActive: true },
+          { text: i18n.tc('wallet.index.history'), name: 'history', isActive: false },
         //   { text: 'Contacts', isActive: false },
-          { text: 'Security', isActive: false },
+          { text: i18n.tc('wallet.index.security'), name: 'security', isActive: false },
       ]
    
   }),
@@ -36,10 +37,10 @@ export default {
                 e.isActive = false
             }
         });
-        if(this.$route.path.indexOf(this.navList[index].text) != -1){
+        if(this.$route.path.indexOf(this.navList[index].name) != -1){
             return;
         }
-        this.$router.push('./'+ this.navList[index].text.toLowerCase());
+        this.$router.push('./'+ this.navList[index].name.toLowerCase());
     }
   },
 }

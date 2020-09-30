@@ -1,8 +1,8 @@
 <template>
     <div class="main pa-8" style="min-height: 550px;">
-        <p>This is your public address. Give this address to other users so they can send you money.</p>
+        <p>{{$t('receive.text')}}</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2">{{address}}</div>
-        <p>Tip: Select and copy using Ctrl+C (Win), Command+C (OSX).</p>
+        <p>{{$t('receive.tip')}}</p>
         <div class="qrcode" style="width: 250px; height: 250px;" ref="qrCodeUrl"></div>
     </div>
 </template>

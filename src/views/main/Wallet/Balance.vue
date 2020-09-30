@@ -9,7 +9,7 @@
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
                         <div class="text-h4 text-center">{{item.value | numberFormat}}</div>
-                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">(reserve: {{reserved}})</div>
+                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">({{$t('wallet.balance.reserve')}}: {{reserved}})</div>
                     </v-card-text>
                 </v-card>
             </v-hover>
