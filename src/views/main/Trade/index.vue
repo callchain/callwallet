@@ -31,7 +31,7 @@
 
             <div class="scroll-box d-flex flex-column justify-end" style="height: 200px;">
               <!-- asks -->
-              <v-virtual-scroll class="scroll-custom" :items="asks" :item-height="30" max-height="200">
+              <v-virtual-scroll class="scroll-custom" :items="asks" :item-height="30" max-height="100%">
                 <template v-slot="{item}">
                   <v-row class="no-gutters priceline" @click="getObPrice(item)">
                     <v-col class="text-left red--text">{{item[0]}}</v-col>
@@ -305,7 +305,7 @@ export default {
     }
   },
   created() {
-    this.selected = this.$store.state.default_pair;
+    this.selected = this.$store.state.currenct_pair;
     this.initData();
     this.getPendingOrders();
   },
@@ -342,6 +342,7 @@ export default {
       {
         this.$toast.error('Invalid Trade Pair');
         this.selected = this.$store.state.default_pair;
+        this.$store.commit('resetPair');
       }
       else
       {

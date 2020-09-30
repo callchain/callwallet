@@ -95,7 +95,11 @@ const store = new Vuex.Store({
         state.ledger = ledger
       },
       newPair(state, pair) {
-        state.pairs = state.pairs.concat(pair);
+        state.pairs = state.pairs.concat(pair)
+        state.currenct_pair = pair
+      },
+      resetPair(state) {
+        state.currenct_pair = state.default_pair
       },
       initBalance(state, list) {
         var result = {};
