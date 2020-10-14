@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 import router from '../router/Index';
+import utils from '../api/utils'
 
 const store = new Vuex.Store({
     state: {
@@ -12,19 +13,59 @@ const store = new Vuex.Store({
       isOffline: false,
       username: '',
       balance: 0,
+      account_info: {},
       address: '',
       blob: {},
       height: 24997812,
+      ledger: {"feePool":"8.719227","baseFeeCALL":"0.00001","ledgerHash":"9BCFEC2C391791822502ED52AD39F4CD1AF809203257281F5E8AAF842C7D5884","ledgerVersion":26621210,"ledgerTimestamp":"2020-09-28T10:01:32.000Z","reserveBaseCALL":"0.000001","reserveIncrementCALL":"0.000001","transactionCount":0,"validatedLedgerVersions":"11874029-26621210"},
       server: {host: 's1.callchain.live', port: '5020', ssl: true},
       balance_list: {},
       transactions: [],
       marker: {},
       trustlines: {},
       issue_list: {},
+      pairs: ['CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz'],
+      default_pair: 'CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz',
+      currenct_pair: 'CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz',
+      asks: {},
+      bids: {},
+      orders: {},
+      price: 0,
+      change: 0
     },
     getters: {
       networkStatus(state) {
         return state.api.isConnected && state.api.isConnected()
+      },
+      reservedCall(state) {
+        return utils.toFixed(Number(state.ledger.reserveBaseCALL) 
+          + Number(state.account_info.ownerCount) * Number(state.ledger.reserveIncrementCALL));
+      },
+      askList(state) {
+        console.log('get ask list');
+        var result = _.toPairs(state.asks);
+        result = _.sortBy(result, function(o) {return -o[0]});
+        console.dir(result);
+        return result;
+      },
+      bidList(state) {
+        console.log('get bid list');
+        var result = _.toPairs(state.bids);
+        result = _.sortBy(result, function(o) {return -o[0]});
+        console.dir(result);
+        return result;
+      },
+      orderList(state) {
+        console.log('get order list');
+        var result = [];
+        for (var seq in state.orders)
+        {
+          var order =  state.orders[seq];
+          result.push(order);
+        }
+        result = _.sortBy(result, function(o) {return -o.seq});
+        console.dir(result);
+        return result;
       }
     },
     mutations: {
@@ -51,8 +92,16 @@ const store = new Vuex.Store({
         state.username = msg.user
         state.address = msg.blob.data.account_id
       },
-      updateHeight(state, height) {
-        state.height = height
+      updateHeight(state, ledger) {
+        state.height = ledger.ledgerVersion
+        state.ledger = ledger
+      },
+      newPair(state, pair) {
+        state.pairs = state.pairs.concat(pair)
+        state.currenct_pair = pair
+      },
+      resetPair(state) {
+        state.currenct_pair = state.default_pair
       },
       initBalance(state, list) {
         var result = {};
@@ -158,8 +207,133 @@ const store = new Vuex.Store({
           state.trustlines = {};
           state.trustlines = old;
         }
-        console.log('updated lines');
-        console.dir(state.trustlines);
+      },
+
+      initOrderbook(state, data) {
+        console.log('init orderbook ...');
+        // asks price use math.ceil, asks amount use math.ceil
+        var i, s, price, amount, oa;
+        var asks = {};
+        var bids = {};
+        for (i in data.asks) {
+          s = data.asks[i].specification;
+          price = utils.getPrice(s, 'sell');
+          amount = utils.getAmount(s);
+          oa = asks[price];
+          asks[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
+        }
+        state.asks = asks;
+        console.dir(state.asks);
+
+        // bids price use math.floor, bids amount use math.ceil
+        for (i in data.bids) {
+          s = data.bids[i].specification;
+          price = utils.getPrice(s, 'buy');
+          amount = utils.getAmount(s);
+          bids[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
+        }
+        state.bids = bids;
+        console.dir(state.bids);
+      },
+      updateOrderbook(state, item) {
+        console.log('update orderbook ...');
+
+        var price = utils.getPrice(item, item.direction);
+        var amount = utils.getAmount(item);
+        var list = item.direction === 'buy' ? state.bids : state.asks;
+        var total = list[price];
+        if (item.status === 'created')
+        {
+          if (_.isEmpty(total)) {
+            total = 0;
+          }
+
+          total = utils.toFixed(Number(total) + Number(amount));
+          if (item.direction === 'buy')
+            Vue.set(state.bids, price, total);
+          else
+            Vue.set(state.asks, price, total);
+        }
+        // filled, partially-filled, cancelled
+        else
+        {
+          total = utils.toFixed(Number(total) - Number(amount));
+          if (Number(total) === 0)
+          {
+            if (item.direction === 'buy')
+              Vue.delete(state.bids, price);
+            else
+              Vue.delete(state.asks, price);
+          }
+          else
+          {
+            if (item.direction === 'buy')
+              Vue.set(state.bids, price, total);
+            else
+              Vue.set(state.asks, price, total);
+          }
+
+          // new price
+          if (item.status !== 'cancelled')
+          {
+            var oldprice = state.price;
+            state.price = price;
+            state.change = ((Number(price) - Number(oldprice)) * 100).toFixed(2);
+          }
+        }
+
+        console.dir(state.asks);
+        console.dir(state.bids);
+      },
+
+      initOrders(state, data) {
+        console.log('init oders ...');
+        var result = {};
+        for (var i = 0; i < data.length; ++i)
+        {
+          var item = data[i];
+          var spec = item.specification;
+          result[item.properties.sequence] = {
+            type: spec.direction,
+            pair: utils.getPair(spec),
+            price: utils.getPrice(spec, spec.direction),
+            amount: utils.getAmount(spec),
+            seq: item.properties.sequence
+          }
+        }
+        state.orders = result;
+        console.dir(state.orders);
+      },
+      updateOrder(state, data) {
+        console.log('update order ...');
+        var order;
+        if (data.status === 'created')
+        {
+          order = {
+            type: data.direction,
+            pair: utils.getPair(data),
+            price: utils.getPrice(data, data.direction),
+            amount: utils.getAmount(data),
+            seq: data.sequence
+          }
+          Vue.set(state.orders, data.sequence, order);
+        }
+        else if (data.status === 'partially-filled')
+        {
+          order = state.orders[data.sequence];
+          order.amount = utils.toFixed(Number(order.amount) - Number(utils.getAmount(data)));
+          Vue.set(state.orders, data.sequence, order);
+        }
+        // filled, cancelled
+        else
+        {
+          Vue.delete(state.orders, data.sequence);
+        }
+        console.dir(state.orders);
+      },
+
+      initAccountInfo(state, info) {
+        state.account_info = info;
       },
 
       updateServer(state, server) {

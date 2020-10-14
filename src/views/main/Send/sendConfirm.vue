@@ -1,17 +1,17 @@
 <template>
     <div class="main" style="min-height: 550px;">
-        <p class="text-subtitle-1 font-weight-bold">You are sending {{issuer.currency}} to</p>
+        <p class="text-subtitle-1 font-weight-bold">{{$t('send.confirm.sending')}} {{issuer.currency}} {{$t('send.confirm.to')}}</p>
         <v-divider></v-divider>
-        <p class="text-subtitle-1 font-weight-bold mt-2 mb-1">Recipient</p>
+        <p class="text-subtitle-1 font-weight-bold mt-2 mb-1">{{$t('send.confirm.recipient')}}</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2"> {{recipient}}</div>
-        <p class="mb-1">They will receive</p>
+        <p class="mb-1">{{$t('send.confirm.receive')}}</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2">{{amount}} {{issuer.currency}}</div>
-        <p class="mb-1" v-if="memo.length !== 0">With Memo</p>
+        <p class="mb-1" v-if="memo.length !== 0">{{$t('send.confirm.with')}}</p>
         <div style="line-height: 60px; background: rgba(211, 2, 2, .1)" class="text-h5 mb-2 pl-2" v-if="memo.length !== 0">{{memo}}</div>
-        <p>Are you sure?</p>
+        <p>{{$t('send.confirm.sure')}}</p>
         <div class="d-flex">
-            <v-btn width="100" @click="handleBack" outlined color="primary">Back</v-btn>
-            <v-btn width="150" @click="handleConfirmed" class="ml-5" color="primary">Confirm</v-btn>
+            <v-btn width="100" @click="handleBack" outlined color="primary">&lt;&lt; {{$t('send.confirm.back')}}</v-btn>
+            <v-btn width="150" @click="handleConfirmed" class="ml-5" color="primary">{{$t('send.confirm.confirm')}}</v-btn>
         </div>
     </div>
 </template>

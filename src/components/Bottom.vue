@@ -9,16 +9,32 @@
 </template>
 
 <script>
+import i18n from '../plugins/i18n'
+
 export default {
   name: 'Bottom',
   data: () => ({
-      list: ['Term of Service', 'Callchain', 'English', '中文']
+      list: [i18n.tc('home.term'), 'Callchain', 'English', '中文']
   }),
   methods: {
     handleListClick(i) {
-      if(i == 0){
-        this.$router.push('./service')
+      switch(i) {
+        case 0:
+          this.$router.push('./service');
+          break;
+        case 1:
+          window.open("http://callchain.live");
+          break;
+        case 2:
+          this.$i18n.locale = 'en_US';
+          this.$store.commit('logout');
+          break;
+        case 3:
+          this.$i18n.locale = 'zh_CN';
+          this.$store.commit('logout');
+          break;
       }
+
     }
   }
 }

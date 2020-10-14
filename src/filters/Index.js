@@ -1,7 +1,7 @@
 const numberFormat = (value) => {
     if (!value) return '';
     var str = '' + value;
-    var intPart = Number(value).toFixed(0);
+    var intPart = Math.floor(Number(value));
     var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
     var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
     return intPartFormat + pointPart;
@@ -34,6 +34,7 @@ const humanDate = (timestamp) => {
 }
 
 import Parser from '../api/transaction-parser';
+import utils from '../api/utils';
 
 const txDesc = (tx, address) => {
     var type = tx.type;
@@ -41,9 +42,38 @@ const txDesc = (tx, address) => {
     return parser(tx, address);
 }
 
+const orderPair = (item) => {
+  var s = item.specification;
+  var ret = s.quantity.currency;
+  if (s.quantity.counterparty) {
+    ret += '@' + s.quantity.counterparty;
+  }
+  ret += '/' + s.totalPrice.currency;
+  if (s.totalPrice.counterparty) {
+    ret += '@' + s.totalPrice.counterparty;
+  }
+  return ret;
+}
+
+const orderPrice = (item) => {
+  var s = item.specification;
+  var price;
+  if (s.direction === 'buy')
+  {
+    price = utils.toFixed(Math.floor(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000);
+  }
+  else
+  {
+    price = utils.toFixed(Math.ceil(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000);
+  }
+  return price;
+}
+
 export {
     numberFormat,
     humanDate,
-    txDesc
+    txDesc,
+    orderPair,
+    orderPrice
 }
   

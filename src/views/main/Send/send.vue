@@ -1,9 +1,9 @@
 <template>
     <div class="main" style="min-height: 550px;">
-       <p class="text-subtitle-1 font-weight-bold">Send Money</p>
+       <p class="text-subtitle-1 font-weight-bold">{{$t('send.send.sendmoney')}}</p>
         <v-divider></v-divider>
         <div style="width: 400px;" class="mt-5">
-            <p class="text-subtitle-1 font-weight-bold mb-2">Recipient</p>
+            <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('send.send.recipient')}}</p>
             <v-text-field
                 outlined
                 v-model="recipient"
@@ -15,7 +15,7 @@
             ></v-text-field>
         </div>
         <div style="width: 400px;">
-            <p class="text-subtitle-1 font-weight-bold mb-2">Recipient will receive {{issuer}}</p>
+            <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('send.send.willreceive')}} {{issuer}}</p>
             <div class="d-inline-flex justify-space-between">
                 <v-text-field
                     style="width: 242px;"
@@ -41,7 +41,7 @@
         </div>
         <!-- memo -->
         <div style="width: 400px;" class="mb-2">
-            <p class="text-subtitle-1 font-weight-bold mb-2">Memo</p>
+            <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('send.send.memo')}}</p>
             <v-text-field
                 outlined
                 v-model="memo"
@@ -54,7 +54,7 @@
             ></v-text-field>
         </div>
 
-        <v-btn width="300" @click="handleConfrim" color="primary" :disabled="canSend ? true : false">Send {{select && select.text ? select.text : ''}}</v-btn>
+        <v-btn width="300" @click="handleConfrim" color="primary" :disabled="canSend ? true : false">{{$t('send.send.send')}} {{select && select.text ? select.text : ''}}</v-btn>
     </div>
 </template>
 <script>
@@ -88,7 +88,22 @@ export default {
     },
     methods: {
         handleConfrim(){
+            if (!this.recipient || this.recipient.length === 0) {
+                this.$toast.error("Invalid Recipient");
+                return;
+            }
+
+            if (!this.recipientReceive || this.recipientReceive.length === 0) {
+                this.$toast.error("Invalid Amount");
+                return;
+            }
+
             var currency = this.select;
+            if (!currency || currency.length === 0) {
+                this.$toast.error("Invalid Currency");
+                return;
+            }
+
             var issuer = this.balance_map[currency];
             this.$router.push({name: 'sendConfirm', params: {recipient: this.recipient, amount: this.recipientReceive,
                 currency: issuer, memo: this.memo}});
@@ -98,19 +113,20 @@ export default {
         },
         checkReceipt() {
             this.recipient = this.recipient.trim();
-            if (this.recipient === '') return;
+            if (this.recipient === '') return false;
             if (!utils.isValidAddr(this.recipient))
             {
                 this.$toast.error("Invalid recipient address");
                 this.recipient = '';
-                return;
+                return false;
             }
             var address = this.$store.state.address;
             if (this.recipient === address) {
                 this.$toast.error("Send to yourself is not unnecessary");
                 this.recipient = '';
-                return;
+                return false;
             }
+            return true;
         },
         checkMemo() {
             this.memo = this.memo.trim();

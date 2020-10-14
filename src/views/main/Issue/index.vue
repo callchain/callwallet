@@ -1,5 +1,5 @@
 <template>
-    <div class="main pa-8" style="min-height: 550px;">
+    <div class="main ma-4" style="min-height: 550px;">
         <NoData v-if="nofund"></NoData>
         <router-view  v-if="!nofund" />
     </div>

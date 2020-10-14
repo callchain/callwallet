@@ -1,12 +1,12 @@
 <template>
-    <div class="main" style="min-height: 550px;">
-        <p class="text-h4">Your transaction has been submitted.</p>
-        <p>Transaction Hash: {{hash}}</p>
-        <p>Your issue information wil update once the payment has cleared.</p>
+    <div class="main mt-4" style="min-height: 550px;">
+        <p class="text-h4">{{$t('issue.touserok.submitted')}}</p>
+        <p>{{$t('issue.touserok.hash')}} {{hash}}</p>
+        <p>{{$t('issue.touserok.update')}}</p>
         <v-divider></v-divider>
         <div></div>
         <v-hover v-slot:default="{ hover }">
-            <div @click="backIssue" :class="hover? 'primary--text':'primary--text text-decoration-underline'" style="display: inline-block; cursor: pointer; line-height: 40px;">Back to Issue List</div>
+            <div @click="backIssue" :class="hover? 'primary--text':'primary--text text-decoration-underline'" style="display: inline-block; cursor: pointer; line-height: 40px;">{{$t('issue.touserok.back')}}</div>
         </v-hover>
     </div>
 </template>

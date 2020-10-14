@@ -1,14 +1,14 @@
 <template>
-    <div class="main pa-8" style="min-height: 550px;">
+    <div class="main ma-4" style="min-height: 550px;">
         <div>
             <div class="d-flex align-center justify-space-between mb-5">
-                <span class="text-subtitle-1 font-weight-bold">Issue Token to User</span>
+                <span class="text-subtitle-1 font-weight-bold">{{$t('issue.touser.text')}}</span>
             </div>
             <v-divider></v-divider>
 
             <div>
                 <div style="width: 35%;">
-                    <p class="text-subtitle-1 font-weight-bold mb-2">Recipient</p>
+                    <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('issue.touser.recipient')}}</p>
                     <v-text-field
                         outlined
                         v-model="recipient"
@@ -20,7 +20,7 @@
                     ></v-text-field>
                 </div>
                 <div style="width: 35%;">
-                    <p class="text-subtitle-1 font-weight-bold mb-2">Recipient will receive</p>
+                    <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('issue.touser.willreceive')}}</p>
                     <div class="d-inline-flex" style="width: 90%;">
                         <v-text-field
                             outlined
@@ -47,8 +47,8 @@
                     ></v-text-field>
                 </div> -->
                 <div class="">
-                    <v-btn outlined color="primary" @click="goBack()" width="10%">back</v-btn>
-                    <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canSend ? false : true">comfirm</v-btn>
+                    <v-btn outlined color="primary" @click="goBack()" width="10%">&lt;&lt; {{$t('issue.touser.back')}}</v-btn>
+                    <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canSend ? false : true">{{$t('issue.touser.confirm')}}</v-btn>
                 </div>
             </div>
         </div>

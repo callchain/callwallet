@@ -6,12 +6,12 @@
     light
   >
     <div class="login">
-      <div class="text-center text-h4 pt-6 pb-6">Open Wallet</div>
+      <div class="text-center text-h4 pt-6 pb-6">{{$t('login.open_wallet')}}</div>
       <v-divider></v-divider>
       <div style="width: 90%; margin-left: 5%; padding: 20px 0;">
-        <p class="text-subtitle-1">Enter the Name and Passphrase used to encrypt your Wallet below.</p>
+        <p class="text-subtitle-1">{{$t('login.login_label')}}</p>
         <div class="form-item" style="width: 45%;">
-            <p class="font-weight-bold mb-1">Wallet name</p>
+            <p class="font-weight-bold mb-1">{{$t('login.wallet_name')}}</p>
             <v-text-field
               outlined
               v-model="walletName"
@@ -22,7 +22,7 @@
             ></v-text-field>
         </div>
         <div class="form-item" style="width: 45%;">
-            <p class="font-weight-bold mb-1">Passphrase</p>
+            <p class="font-weight-bold mb-1">{{$t('login.passphrase')}}</p>
             <v-text-field
               outlined
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -35,11 +35,11 @@
               dense
             ></v-text-field>
         </div>
-        <v-btn @click="handleLogin" style="width: 45%;" large color="primary" depressed :disabled="canILogin? false:true">Open Wallet</v-btn>
+        <v-btn @click="handleLogin" style="width: 45%;" large color="primary" depressed :disabled="canILogin? false:true">{{$t('login.open_wallet')}}</v-btn>
         <v-card-text style="padding-left: 0;">
-          <span>New to Callchain? </span>
+          <span>{{$t('login.new_to_call')}}</span>
           <v-hover v-slot:default="{ hover }">
-            <span @click="handleRegister" :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer">Create Wallet</span>
+            <span @click="handleRegister" :class="hover ? 'primary--text text-decoration-underline': 'primary--text'" style="cursor: pointer">{{$t('login.create_wallet')}}</span>
           </v-hover>
         </v-card-text>
       </div>
@@ -100,13 +100,13 @@ export default {
       var server = this.$store.state.server;
       api = CreateApi(server)
       api.connect().then(function() {
-        console.log('api connected');
+        self.$toast.success('Callchain Server Connected');
         self.$store.commit('online');
         self.$store.commit('initApi', api);
       }).catch(function(e) {
-        console.log('fail to connect api: ');
+        self.$toast.success('fail to connect api: ' + e);
         self.$store.commit('offline');
-        console.dir(e);
+        console.error(e);
       });
     }    
   },

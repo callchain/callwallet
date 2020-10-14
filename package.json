@@ -17,6 +17,7 @@
     "qrcodejs2": "0.0.2",
     "sjcl": "^1.0.8",
     "vue": "^2.6.11",
+    "vue-i18n": "^8.21.0",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
     "vuetify-toast-snackbar": "^0.6.1",

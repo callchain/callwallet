@@ -11,7 +11,7 @@
             hide-default-footer
         ></v-data-table>
         <v-divider></v-divider>
-        <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center" @click="loadMore">Load More</v-btn>
+        <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center" @click="loadMore">{{$t('wallet.history.loadmore')}}</v-btn>
         </div>
 
         <v-dialog v-model="dialog" max-width="300">
@@ -23,7 +23,8 @@
                     color="primary"
                     @click="dialog=false"
                     >
-                    OK
+                    {{$t('wallet.history.ok')}}
+                    
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -35,12 +36,13 @@
 
 import NoData from '../../../components/NoData';
 import * as filters from '../../../filters/Index';
+import i18n from './../../../plugins/i18n';
 
 
 export default {
     name: 'history',
     data: () => ({
-        headers: [{ text: 'Date', value: 'date', width: 200 }, { text: 'Description', value: 'content' }],
+        headers: [{ text: i18n.tc('wallet.history.date'), value: 'date', width: 200 }, { text: i18n.tc('wallet.history.desc'), value: 'content' }],
         dialog: false,
         warn_text: ''
     }),

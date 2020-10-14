@@ -5,16 +5,16 @@
         <div class="d-flex align-center justify-start flex-wrap">
             <v-hover v-for="item in balance" :key="item.id" v-slot:default="{ hover }">
                 <v-card width="32.3%" height="140" :elevation="hover ? 6 : 2" style="margin: 5px 0.5%;">
-                    <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}}-{{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
+                    <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}}@{{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
                         <div class="text-h4 text-center">{{item.value | numberFormat}}</div>
-                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">(reserv: {{0.0001}})</div>
+                        <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">({{$t('wallet.balance.reserve')}}: {{reserved}})</div>
                     </v-card-text>
                 </v-card>
             </v-hover>
         </div>
-        <div class="font-weight-bold" style="margin-top: 20px;">Activity</div>
+        <div class="font-weight-bold" style="margin-top: 20px;">{{$t('wallet.balance.activity')}}</div>
         <div>
             <v-data-table
                 calculate-widths
@@ -26,22 +26,22 @@
                 hide-default-footer
             ></v-data-table>
             <v-divider></v-divider>
-            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Go History For More Transactions</v-btn>
+            <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">{{$t('wallet.balance.history')}}</v-btn>
         </div>
         </div>
     </v-card>
 </template>
 <script>
 
-import Parser from '../../../api/transaction-parser';
 import NoData from '../../../components/NoData';
 import * as filters from '../../../filters/Index';
+import i18n from './../../../plugins/i18n';
 
 export default {
     
     name: 'blance',
     data: () => ({
-        headers: [{ text: 'Date', value: 'date', width: 200 }, { text: 'Event', value: 'content' }],
+        headers: [{ text: i18n.tc('wallet.balance.date'), value: 'date', width: 200 }, { text: i18n.tc('wallet.balance.event'), value: 'content' }],
     }),
     components: {
         NoData
@@ -59,6 +59,9 @@ export default {
                 }
             }
             return list;
+        },
+        reserved() {
+            return this.$store.getters.reservedCall;
         },
         transactions() {
             var list = this.$store.state.transactions.slice(0,10);
@@ -82,11 +85,15 @@ export default {
 
         var api = this.$store.state.api;
         try {
-            var height = this.$store.state.height;            
-            var ret = await api.getBalances(address, {ledgerVersion: Number(height)});
+            var height = this.$store.state.height;
+            console.log('address=' + address + ', height=' + height);
+            // , {ledgerVersion: Number(height)}
+            var ret = await api.getBalances(address);
             this.$store.commit("initBalance", ret);
             var result = await api.getTransactions(address, {limit: 10});
             this.$store.commit("initTransactions", result);
+            var info = await api.getAccountInfo(address);
+            this.$store.commit("initAccountInfo", info);
         } catch (e) {
             this.$toast.error(e.message);
             console.dir(e);

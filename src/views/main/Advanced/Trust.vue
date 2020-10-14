@@ -2,7 +2,7 @@
     <div>
         <NoData v-if="nofund"></NoData>
         <v-card flat style="position: relative;" v-if="!nofund">
-            <v-btn style="position: absolute; right: 15px; top: 0;" @click="isShowAdd = true" color="primary" :disabled="isShowAdd? true: false">Add Trust</v-btn>
+            <v-btn style="position: absolute; right: 15px; top: 0;" @click="isShowAdd = true" color="primary" :disabled="isShowAdd? true: false">{{$t('advanced.trust.add')}}</v-btn>
             <div v-if="!isShowAdd">
                 <v-data-table 
                     calculate-widths
@@ -15,13 +15,19 @@
                     <template v-slot:item.actions="{ item }">
                         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                     </template>
+                    <template v-slot:item.balance="{ item }">
+                        {{item.balance | numberFormat}}
+                    </template>
+                    <template v-slot:item.limit="{ item }">
+                        {{item.limit | numberFormat}}
+                    </template>
                     </v-data-table>
                     <v-divider></v-divider>
                     <!-- <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center">Load More</v-btn> -->
                 </div>
             <div v-else class="add-edit ml-3 mt-1">
                 <div style="width: 40%;">
-                    <div class="text-subtitle-1 font-weight-bold">Issuer Callchain address</div>
+                    <div class="text-subtitle-1 font-weight-bold">{{$t('advanced.trust.issuer')}}</div>
                     <v-text-field
                     outlined
                     v-model="name"
@@ -33,7 +39,7 @@
                     ></v-text-field>
                 </div>
                 <div style="width: 40%;">
-                    <div class="text-subtitle-1 font-weight-bold">Token</div>
+                    <div class="text-subtitle-1 font-weight-bold">{{$t('advanced.trust.token')}}</div>
                     <v-select
                         v-model="select"
                         :items="items"
@@ -45,8 +51,8 @@
                 </div>
                 
                 <div class="d-inline-flex align-center">
-                    <v-btn width="40%" @click="isShowAdd = false" outlined color="primary">Cancel</v-btn>
-                    <v-btn width="60%" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="!canTrust">Trust</v-btn>
+                    <v-btn width="50%" @click="isShowAdd = false" outlined color="primary">&lt;&lt; {{$t('advanced.trust.back')}}</v-btn>
+                    <v-btn width="50%" @click="handleAddConfirm" color="primary" class="ml-5" :disabled="!canTrust">{{$t('advanced.trust.trust')}}</v-btn>
                 </div>
             </div>
 
@@ -57,7 +63,7 @@
                 >
                 <v-card>
                     <v-card-title></v-card-title>
-                    <v-card-text class="text-center">Are you want to delete this item?</v-card-text>
+                    <v-card-text class="text-center">{{$t('advanced.trust.sure')}}</v-card-text>
                     <v-card-actions class="d-flex align-center justify-center pb-5">
                         <v-btn
                             color="primary"
@@ -65,13 +71,14 @@
                             text
                             @click="dialog = false"
                         >
-                            No
+                            {{$t('advanced.trust.no')}}
                         </v-btn>
                         <v-btn
                             color="primary"
                             @click="handleDialogConfirm"
                         >
-                            Yes, delete
+                            {{$t('advanced.trust.yes')}}
+                            
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -83,6 +90,7 @@
 
 import NoData from '../../../components/NoData';
 import utils from '../../../api/utils';
+import i18n from '../../../plugins/i18n'
 
 export default {
     name: 'contacts',
@@ -90,11 +98,11 @@ export default {
         isShowAdd: false, /// 是否能点击添加按钮
         dialog: false, /// 是否显示弹窗
         headers: [
-            { text: 'Currency', value: 'currency', sortable: false }, 
-            { text: 'Counterparty', value: 'counterparty' }, 
-            { text: 'Limit', value: 'limit' }, 
-            { text: 'Balance', value: 'balance' }, 
-            { text: 'Actions', value: 'actions', align: 'center', sortable: false }
+            { text: i18n.tc('advanced.trust.currency'), value: 'currency', sortable: false }, 
+            { text: i18n.tc('advanced.trust.counterparty'), value: 'counterparty' }, 
+            { text: i18n.tc('advanced.trust.limit'), value: 'limit' }, 
+            { text: i18n.tc('advanced.trust.balance'), value: 'balance' }, 
+            { text: i18n.tc('advanced.trust.actions'), value: 'actions', align: 'center', sortable: false }
         ],
 
         items: [],

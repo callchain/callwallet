@@ -12,14 +12,14 @@
           <div style="width: 300px;" class="d-inline-flex align-center justify-space-between pt-2 pb-2 pl-2 pr-2">
             <span>{{username}}</span>
             <v-hover v-slot:default="{hover}">
-              <span @click="handleLoginOut" style="cursor: pointer;" :class="hover? 'primary--text':'primary--text'">logout</span>
+              <span @click="handleLoginOut" style="cursor: pointer;" :class="hover? 'primary--text':'primary--text'">{{$t("header.logout")}}</span>
             </v-hover>
             
           </div>
           <v-divider></v-divider>
           <span class="d-block pl-2 pt-2 pb-2">{{balance}}</span>
         </v-card>
-        <span v-if="isOffline" style="position: absolute; bottom: -55px; right: 0; width: 300px; line-height: 50px; text-align: center; z-index: 9999;" class="d-inline-block black white--text">Offline</span>
+        <span v-if="isOffline" style="position: absolute; bottom: -55px; right: 0; width: 300px; line-height: 50px; text-align: center; z-index: 9999;" class="d-inline-block black white--text">{{$t("header.offline")}}</span>
       </div>
     </v-card>
     </v-hover>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import utils from './../api/utils';
+
 export default {
   name: 'Header',
 
@@ -55,8 +57,8 @@ export default {
   methods: {
     balanceFormat(value) {
       if (!value) return 'Unfunded account';
-      var str = '' + value;
-      var intPart = Number(value).toFixed(0);
+      var str = '' + utils.toFixed(Number(value));
+      var intPart = Math.floor(Number(value));
       var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
       var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
       return intPartFormat + pointPart + ' CALL';

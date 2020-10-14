@@ -1,14 +1,14 @@
 <template>
-    <div class="main pa-8" style="min-height: 550px;">
+    <div class="main ma-4" style="min-height: 550px;">
         <div>
             <div class="d-flex align-center justify-space-between mb-5">
-                <span class="text-subtitle-1 font-weight-bold">Issue New Token</span>
+                <span class="text-subtitle-1 font-weight-bold">{{$t('issue.new.issue')}}</span>
             </div>
             <v-divider></v-divider>
 
             <div class="mt-3">
                 <div style="width: 30%;">
-                    <p class="text-subtitle-1 font-weight-bold mb-2">Symbol</p>
+                    <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('issue.new.symbol')}}</p>
                     <v-text-field
                         outlined
                         v-model="symbol"
@@ -20,7 +20,7 @@
                     ></v-text-field>
                 </div>
                 <div style="width: 30%;">
-                    <p class="text-subtitle-1 font-weight-bold mb-2">Total Supply</p>
+                    <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('issue.new.supply')}}</p>
                     <v-text-field
                         outlined
                         v-model="supply"
@@ -33,7 +33,7 @@
                     ></v-text-field>
                 </div>
                 <div style="width: 30%;">
-                    <p class="text-subtitle-1 font-weight-bold mb-2">Description</p>
+                    <p class="text-subtitle-1 font-weight-bold mb-2">{{$t('issue.new.desc')}}</p>
                     <v-textarea
                         outlined
                         no-resize
@@ -48,8 +48,8 @@
                     label="Non-Fungible Token"
                 ></v-checkbox> -->
                 <div class="">
-                    <v-btn outlined color="primary" @click="goBack()" width="10%">back</v-btn>
-                    <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canIssue ? false : true">issue</v-btn>
+                    <v-btn outlined color="primary" @click="goBack()" width="10%">&lt;&lt; {{$t('issue.new.back')}}</v-btn>
+                    <v-btn class="ml-5" color="primary" @click="confirmIssue()" width="15%" :disabled="canIssue ? false : true">{{$t('issue.new.ok')}}</v-btn>
                 </div>
             </div>
 
@@ -96,7 +96,7 @@ export default {
                 return;
             }
             var list = this.$store.state.issue_list;
-            if (list[item.currency]) {
+            if (list[this.symbol]) {
                 this.$toast.error('This symbol token has already issued');
                     this.$nextTick(() => {
                         this.symbol = '';
