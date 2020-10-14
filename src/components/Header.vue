@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import utils from './../api/utils';
+
 export default {
   name: 'Header',
 
@@ -55,7 +57,7 @@ export default {
   methods: {
     balanceFormat(value) {
       if (!value) return 'Unfunded account';
-      var str = '' + Number(value).toFixed(6);
+      var str = '' + utils.toFixed(Number(value));
       var intPart = Math.floor(Number(value));
       var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
       var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');

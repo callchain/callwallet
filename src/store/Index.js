@@ -5,7 +5,6 @@ Vue.use(Vuex)
 
 import router from '../router/Index';
 import utils from '../api/utils'
-import { stat } from 'fs';
 
 const store = new Vuex.Store({
     state: {
@@ -39,8 +38,8 @@ const store = new Vuex.Store({
         return state.api.isConnected && state.api.isConnected()
       },
       reservedCall(state) {
-        return (Number(state.ledger.reserveBaseCALL) 
-          + Number(state.account_info.ownerCount) * Number(state.ledger.reserveIncrementCALL)).toFixed(6);
+        return utils.toFixed(Number(state.ledger.reserveBaseCALL) 
+          + Number(state.account_info.ownerCount) * Number(state.ledger.reserveIncrementCALL));
       },
       askList(state) {
         console.log('get ask list');
@@ -221,7 +220,7 @@ const store = new Vuex.Store({
           price = utils.getPrice(s, 'sell');
           amount = utils.getAmount(s);
           oa = asks[price];
-          asks[price] = oa ? (Number(oa) + Number(amount)).toFixed(6) : amount;
+          asks[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
         }
         state.asks = asks;
         console.dir(state.asks);
@@ -231,7 +230,7 @@ const store = new Vuex.Store({
           s = data.bids[i].specification;
           price = utils.getPrice(s, 'buy');
           amount = utils.getAmount(s);
-          bids[price] = oa ? (Number(oa) + Number(amount)).toFixed(6) : amount;
+          bids[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
         }
         state.bids = bids;
         console.dir(state.bids);
@@ -249,7 +248,7 @@ const store = new Vuex.Store({
             total = 0;
           }
 
-          total = (Number(total) + Number(amount)).toFixed(6);
+          total = utils.toFixed(Number(total) + Number(amount));
           if (item.direction === 'buy')
             Vue.set(state.bids, price, total);
           else
@@ -258,7 +257,7 @@ const store = new Vuex.Store({
         // filled, partially-filled, cancelled
         else
         {
-          total = (Number(total) - Number(amount)).toFixed(6);
+          total = utils.toFixed(Number(total) - Number(amount));
           if (Number(total) === 0)
           {
             if (item.direction === 'buy')
@@ -322,7 +321,7 @@ const store = new Vuex.Store({
         else if (data.status === 'partially-filled')
         {
           order = state.orders[data.sequence];
-          order.amount = (Number(order.amount) - Number(utils.getAmount(data))).toFixed(6);
+          order.amount = utils.toFixed(Number(order.amount) - Number(utils.getAmount(data)));
           Vue.set(state.orders, data.sequence, order);
         }
         // filled, cancelled

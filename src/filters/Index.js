@@ -34,6 +34,7 @@ const humanDate = (timestamp) => {
 }
 
 import Parser from '../api/transaction-parser';
+import utils from '../api/utils';
 
 const txDesc = (tx, address) => {
     var type = tx.type;
@@ -59,11 +60,11 @@ const orderPrice = (item) => {
   var price;
   if (s.direction === 'buy')
   {
-    price = (Math.floor(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000).toFixed(6);
+    price = utils.toFixed(Math.floor(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000);
   }
   else
   {
-    price = (Math.ceil(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000).toFixed(6);
+    price = utils.toFixed(Math.ceil(Number(s.totalPrice.value) / Number(s.quantity.value) * 1000000) / 100000);
   }
   return price;
 }

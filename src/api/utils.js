@@ -54,17 +54,21 @@ function getPair(item) {
     return p;
 }
 
+function toFixed(num) {
+    return num.toFixed(6).replace(/[.]?0+$/, '');
+}
+
 function getPrice(item, type) {
     var ret = Number(item.totalPrice.value) / Number(item.quantity.value);
-    if (type === 'buy') return (Math.floor(ret * 1000000) / 1000000).toFixed(6);
-    else return (Math.ceil(ret * 1000000) / 1000000).toFixed(6);
+    if (type === 'buy') return toFixed(Math.floor(ret * 1000000) / 1000000);
+    else return toFixed(Math.ceil(ret * 1000000) / 1000000);
 }
 
 function getAmount(item) {
-    return (Math.ceil(Number(item.quantity.value) * 1000000) / 1000000).toFixed(6);
+    return toFixed(Math.ceil(Number(item.quantity.value) * 1000000) / 1000000);
 }
 
 export default {
     isValidAddr, isValidSec, isValidDomain, isValidPort, isValidCur, isAffected,
-    getPair, getPrice, getAmount
+    getPair, getPrice, getAmount,toFixed
 }

@@ -334,16 +334,16 @@ export default {
       if (this.type === 'buy')
       {
         var cb = this.getCounterBalance();
-        var amnt = (Number(cb) * Number(this.percent) / 100.0 / Number(this.formPrice)).toFixed(6);
+        var amnt = utils.toFixed(Number(cb) * Number(this.percent) / 100.0 / Number(this.formPrice));
         this.formAmount = amnt;
-        this.formValue = (Number(amnt) * Number(this.formPrice)).toFixed(6);
+        this.formValue = utils.toFixed(Number(amnt) * Number(this.formPrice));
       }
       else
       {
         var bb = this.getBaseBalance();
-        var amnt = (Number(bb) * Number(this.percent) / 100.0).toFixed(6);
+        var amnt = utils.toFixed(Number(bb) * Number(this.percent) / 100.0);
         this.formAmount = amnt;
-        this.formValue = (Number(amnt) * Number(this.formPrice)).toFixed(6);
+        this.formValue = utils.toFixed(Number(amnt) * Number(this.formPrice));
       }
     },
     changePair() {
@@ -374,7 +374,7 @@ export default {
       var b = bal[k];
       if (b) {
         if (b.currency === 'CALL') {
-          var ret = (Number(b.value) - Number(this.$store.getters.reservedCall)).toFixed(6);
+          var ret = utils.toFixed(Number(b.value) - Number(this.$store.getters.reservedCall));
           return ret;
         } else {
           return b.value;
@@ -389,7 +389,7 @@ export default {
       var b = bal[k];
       if (b) {
         if (b.currency === 'CALL') {
-          var ret = (Number(b.value) - Number(this.$store.getters.reservedCall)).toFixed(6);
+          var ret = utils.toFixed(Number(b.value) - Number(this.$store.getters.reservedCall));
           return ret;
         } else {
           return b.value;
@@ -605,17 +605,17 @@ export default {
       if (Number(this.formAmount) !== 0)
       {
         this.$nextTick(() => {
-          this.formValue = (Number(this.formAmount)* Number(this.formPrice)).toFixed(6);
+          this.formValue = utils.toFixed(Number(this.formAmount)* Number(this.formPrice));
         });
       }
       else if (this.formValue !== 0)
       {
         this.$nextTick(() => {
-          this.formAmount = (Number(this.formValue) / Number(this.formPrice)).toFixed(6);
+          this.formAmount = utils.toFixed(Number(this.formValue) / Number(this.formPrice));
         });
       }
 
-      this.formPrice = Number(this.formPrice).toFixed(6);
+      this.formPrice = utils.toFixed(Number(this.formPrice));
     },
     formAmount(newv, oldv) {
       if (isNaN(Number(newv))) {
@@ -628,11 +628,11 @@ export default {
 
       if (Number(this.formPrice) !== 0) {
         this.$nextTick(() => {
-          this.formValue = (Number(this.formAmount) * Number(this.formPrice)).toFixed(6);
+          this.formValue = utils.toFixed(Number(this.formAmount) * Number(this.formPrice));
         });
       }
 
-      this.formAmount = Number(this.formAmount).toFixed(6);
+      this.formAmount = utils.toFixed(Number(this.formAmount));
     },
     formValue(newv, oldV) {
       if (isNaN(Number(newv))) {
@@ -645,11 +645,11 @@ export default {
 
       if (Number(this.formPrice) !== 0) {
          this.$nextTick(() => {
-          this.formAmount = (Number(this.formValue) / Number(this.formPrice)).toFixed(6);
+          this.formAmount = utils.toFixed(Number(this.formValue) / Number(this.formPrice));
         });
       }
 
-      this.formValue = Number(this.formValue).toFixed(6);
+      this.formValue = utils.toFixed(Number(this.formValue));
     }
   }
 };
