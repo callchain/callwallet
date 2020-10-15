@@ -84,7 +84,7 @@ export default {
                 
                 if (tx.resultCode !== 'tesSUCCESS')
                 {
-                    this.$toast.error('Fail tansaction: ' + tx.resultCode);
+                    this.$toast.error('Fail transaction: ' + tx.resultCode);
                     this.$router.go(-1);
                 }
                 else

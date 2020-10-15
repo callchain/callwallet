@@ -24,13 +24,14 @@ const store = new Vuex.Store({
       marker: {},
       trustlines: {},
       issue_list: {},
-      pairs: ['CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz'],
-      default_pair: 'CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz',
-      currenct_pair: 'CALL/CNY@cEJNrFNcTA6BxiSY6TKvtxT7Kg7vrVq9hz',
+      pairs: ['CALL/CNY@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7'],
+      default_pair: 'CALL/CNY@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7',
+      currenct_pair: 'CALL/CNY@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7',
       asks: {},
       bids: {},
       orders: {},
       price: 0,
+      open_price: 0,
       change: 0
     },
     getters: {
@@ -42,21 +43,16 @@ const store = new Vuex.Store({
           + Number(state.account_info.ownerCount) * Number(state.ledger.reserveIncrementCALL));
       },
       askList(state) {
-        console.log('get ask list');
         var result = _.toPairs(state.asks);
         result = _.sortBy(result, function(o) {return -o[0]});
-        console.dir(result);
         return result;
       },
       bidList(state) {
-        console.log('get bid list');
         var result = _.toPairs(state.bids);
         result = _.sortBy(result, function(o) {return -o[0]});
-        console.dir(result);
         return result;
       },
       orderList(state) {
-        console.log('get order list');
         var result = [];
         for (var seq in state.orders)
         {
@@ -64,7 +60,6 @@ const store = new Vuex.Store({
           result.push(order);
         }
         result = _.sortBy(result, function(o) {return -o.seq});
-        console.dir(result);
         return result;
       }
     },
@@ -210,7 +205,6 @@ const store = new Vuex.Store({
       },
 
       initOrderbook(state, data) {
-        console.log('init orderbook ...');
         // asks price use math.ceil, asks amount use math.ceil
         var i, s, price, amount, oa;
         var asks = {};
@@ -223,7 +217,6 @@ const store = new Vuex.Store({
           asks[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
         }
         state.asks = asks;
-        console.dir(state.asks);
 
         // bids price use math.floor, bids amount use math.ceil
         for (i in data.bids) {
@@ -233,11 +226,8 @@ const store = new Vuex.Store({
           bids[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
         }
         state.bids = bids;
-        console.dir(state.bids);
       },
       updateOrderbook(state, item) {
-        console.log('update orderbook ...');
-
         var price = utils.getPrice(item, item.direction);
         var amount = utils.getAmount(item);
         var list = item.direction === 'buy' ? state.bids : state.asks;
@@ -276,18 +266,14 @@ const store = new Vuex.Store({
           // new price
           if (item.status !== 'cancelled')
           {
-            var oldprice = state.price;
             state.price = price;
-            state.change = ((Number(price) - Number(oldprice)) * 100).toFixed(2);
+            if (Number(state.open_price) === 0) state.open_price = price;
+            state.change = ((Number(price) - Number(state.open_price)) * 100).toFixed(2);
           }
         }
-
-        console.dir(state.asks);
-        console.dir(state.bids);
       },
 
       initOrders(state, data) {
-        console.log('init oders ...');
         var result = {};
         for (var i = 0; i < data.length; ++i)
         {
@@ -302,10 +288,8 @@ const store = new Vuex.Store({
           }
         }
         state.orders = result;
-        console.dir(state.orders);
       },
       updateOrder(state, data) {
-        console.log('update order ...');
         var order;
         if (data.status === 'created')
         {
@@ -329,7 +313,12 @@ const store = new Vuex.Store({
         {
           Vue.delete(state.orders, data.sequence);
         }
-        console.dir(state.orders);
+      },
+
+      initPrice(state, data) {
+        state.price = data.c;
+        state.open_price = data.o;
+        state.change = ((Number(state.price) - Number(state.open_price)) * 100).toFixed(2);
       },
 
       initAccountInfo(state, info) {
@@ -353,6 +342,7 @@ const store = new Vuex.Store({
         contacts[item.title] = item.content
         state.blob.data.contacts = contacts
       }
+
     }
 });
 
