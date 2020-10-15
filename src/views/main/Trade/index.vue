@@ -244,7 +244,8 @@
 
 <script>
 import utils from '../../../api/utils'
-import i18n from './../../../plugins/i18n';
+import i18n from './../../../plugins/i18n'
+import axios from 'axios'
 
 
 export default {
@@ -297,14 +298,9 @@ export default {
       return this.$store.state.change;
     },
     asks() {
-      console.log('update vue asks');
-      var ret = this.$store.getters.askList;
-      console.log('got asks');
-      console.dir(ret);
-      return ret;
+      return this.$store.getters.askList;
     },
     bids() {
-      console.log('update vue bids');
       return this.$store.getters.bidList;
     },
     orderData() {
@@ -450,6 +446,7 @@ export default {
         return;
       }
 
+      // get orderbook
       var api = this.$store.state.api;
       var _base = this.getBase();
       var _counter = this.getCounter();
@@ -464,8 +461,6 @@ export default {
 
       try {
         var result = await api.getOrderbook(address, ob);
-        console.log('---ob result---');
-        console.dir(result);
         this.$store.commit('initOrderbook', result);
       } catch (e) {
         this.$toast.error(e.message);
@@ -473,6 +468,16 @@ export default {
         if (e.message !== 'actNotFound') {
           this.$store.commit('logout');
         }
+      }
+
+      // get orderbook price
+      var the_pair = this.selected;
+      the_pair = the_pair.replace('/', '_');
+      try {
+        var ret = await axios.get("http://data.callchain.live/price/latest/" + the_pair);
+        this.$store.commit('initPrice', ret.data.data);
+      } catch (e) {
+        console.error(e);
       }
 
     },
@@ -488,8 +493,6 @@ export default {
 
       try {
         var result = await api.getOrders(address);
-        console.log('---pending order result---');
-        console.dir(result);
         this.$store.commit('initOrders', result.results);
       } catch (e) {
         this.$toast.error(e.message);
@@ -509,6 +512,24 @@ export default {
         return;
       }
 
+      // check balance
+      if (this.type === 'buy')
+      {
+        var cb = this.getCounterBalance();
+        if (Number(this.formValue) > Number(cb)) {
+          this.$toast.error('Counter balance not enough');
+          return;
+        }
+      }
+      else
+      {
+        var bb = this.getBaseBalance();
+        if (Number(this.formAmount) > Number(bb)) {
+          this.$toast.error('Base balance not enough');
+          return;
+        }
+      }
+
       var api = this.$store.state.api;
       var _base = this.getBase();
       var _counter = this.getCounter();
@@ -525,8 +546,6 @@ export default {
           "value": this.formValue
         }
       };
-      console.log('order info ...');
-      console.dir(order);
 
       try {
         var prepare = await api.prepareOrder(address, order);
@@ -539,7 +558,7 @@ export default {
         console.dir(tx);
         if (tx.resultCode !== 'tesSUCCESS')
         {
-          this.$toast.error('Fail tansaction: ' + tx.resultCode);
+          this.$toast.error('Fail transaction: ' + tx.resultCode);
         }
         else
         {
@@ -576,7 +595,7 @@ export default {
         console.dir(tx);
         if (tx.resultCode !== 'tesSUCCESS')
         {
-          this.$toast.error('Fail tansaction: ' + tx.resultCode);
+          this.$toast.error('Fail transaction: ' + tx.resultCode);
         }
         else
         {
@@ -602,6 +621,10 @@ export default {
       }
       if (Number(this.formPrice) === 0) return;
 
+      this.$nextTick(() => {
+        this.formPrice = (this.formPrice + '').match(/^\d+(?:\.\d{0,6})?/)[0];
+      });
+
       if (Number(this.formAmount) !== 0)
       {
         this.$nextTick(() => {
@@ -615,7 +638,7 @@ export default {
         });
       }
 
-      this.formPrice = utils.toFixed(Number(this.formPrice));
+      // this.formPrice = utils.toFixed(Number(this.formPrice));
     },
     formAmount(newv, oldv) {
       if (isNaN(Number(newv))) {

@@ -85,9 +85,6 @@ export default {
 
         var api = this.$store.state.api;
         try {
-            var height = this.$store.state.height;
-            console.log('address=' + address + ', height=' + height);
-            // , {ledgerVersion: Number(height)}
             var ret = await api.getBalances(address);
             this.$store.commit("initBalance", ret);
             var result = await api.getTransactions(address, {limit: 10});
