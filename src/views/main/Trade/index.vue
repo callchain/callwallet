@@ -474,7 +474,7 @@ export default {
       var the_pair = this.selected;
       the_pair = the_pair.replace('/', '_');
       try {
-        var ret = await axios.get("http://data.callchain.live/price/latest/" + the_pair);
+        var ret = await axios.get("http://data.callchain.cc/price/latest/" + the_pair);
         this.$store.commit('initPrice', ret.data.data);
       } catch (e) {
         console.error(e);

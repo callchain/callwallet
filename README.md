@@ -7,7 +7,7 @@ CallWallet is an open-source web client for Callchain system that helps user to 
 
 While in using CallWallet, secret should be keep safe. It is very important.
 
-Production Wallet Url: [https://wallet.callchain.live](https://wallet.callchain.live)
+Production Wallet Url: [https://wallet.callchain.cc](https://wallet.callchain.cc)
 
 
 ## Getting Started

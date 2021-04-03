@@ -8,7 +8,7 @@ import utils from '../api/utils'
 
 const store = new Vuex.Store({
     state: {
-      api: new call.CallAPI({ server: 'wss://s1.callchain.live:5020' }),
+      api: new call.CallAPI({ server: 'ws://s2.callchain.cc:5020' }),
       isLogin: false,
       isOffline: false,
       username: '',
@@ -18,7 +18,7 @@ const store = new Vuex.Store({
       blob: {},
       height: 24997812,
       ledger: {"feePool":"8.719227","baseFeeCALL":"0.00001","ledgerHash":"9BCFEC2C391791822502ED52AD39F4CD1AF809203257281F5E8AAF842C7D5884","ledgerVersion":26621210,"ledgerTimestamp":"2020-09-28T10:01:32.000Z","reserveBaseCALL":"0.000001","reserveIncrementCALL":"0.000001","transactionCount":0,"validatedLedgerVersions":"11874029-26621210"},
-      server: {host: 's1.callchain.live', port: '5020', ssl: true},
+      server: {host: 's2.callchain.cc', port: '5020', ssl: false},
       balance_list: {},
       transactions: [],
       marker: {},

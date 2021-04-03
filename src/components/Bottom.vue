@@ -23,7 +23,7 @@ export default {
           this.$router.push('./service');
           break;
         case 1:
-          window.open("http://callchain.live");
+          window.open("http://callchain.cc");
           break;
         case 2:
           this.$i18n.locale = 'en_US';
