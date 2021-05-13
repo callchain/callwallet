@@ -83,7 +83,7 @@ export default {
             this.$router.go(-1);
         },
         isValidSymbol(s) {
-            return /^[1-9A-HJ-NP-Za-km-z]{1,3}$/.test(s);
+            return /^[1-9A-Za-z]{1,3}$/.test(s);
         },
         isValidSupply(s) {
             return /^[1-9][0-9]{0,12}$/.test(s);
