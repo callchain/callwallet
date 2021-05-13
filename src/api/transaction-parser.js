@@ -7,7 +7,11 @@ function kMark(value) {
     return intPartFormat + pointPart;
 }
 
-function humanAmount(amount) {
+function humanAmount(tx, amount) {
+    if (!amount) {
+        return ', but failed with result: ' + tx.outcome.result;
+    }
+
     if (amount.currency === 'CALL')
         return kMark(amount.value) + ' CALL';
     else
@@ -19,12 +23,12 @@ function processPayment(tx, address) {
     if (tx.address === address)
     {
         var result = 'You sent ' + tx.specification.destination.address
-            + ' ' + humanAmount(outcome.deliveredAmount);
+            + ' ' + humanAmount(tx, outcome.deliveredAmount);
         return result;
     }
     else
     {
-        var result = tx.address + ' sent you ' + humanAmount(outcome.deliveredAmount);
+        var result = tx.address + ' sent you ' + humanAmount(tx, outcome.deliveredAmount);
         return result;
     }
 }
@@ -41,7 +45,7 @@ function processOrder(tx, address) {
     if (tx.address === address)
     {
         var result = "You created an offer to " + spec.direction + ' '
-            + humanAmount(spec.quantity) + ' for ' + humanAmount(spec.totalPrice);
+            + humanAmount(tx, spec.quantity) + ' for ' + humanAmount(tx, spec.totalPrice);
         var filled = 0;
         for (var key in changes) {
             var items = changes[key];
@@ -74,7 +78,7 @@ function processOrder(tx, address) {
         for (var i = 0; i < items.length; ++i) {
             if (i !== 0) result += ';';
             var item = items[i];
-            result += 'You ' + pastAction(item.direction) + ' ' + humanAmount(item.quantity) + ' at price ' + item.makerExchangeRate;
+            result += 'You ' + pastAction(item.direction) + ' ' + humanAmount(tx, item.quantity) + ' at price ' + item.makerExchangeRate;
         }
         return result;
     }
@@ -86,7 +90,7 @@ function processOrderCancellation(tx, address) {
         return 'Passive affected order cancellation transaction';
     }
     var change = changes[0];
-    var result = 'You cancelled to ' + change.direction + ' ' + humanAmount(change.quantity) + ' for ' + humanAmount(change.totalPrice);
+    var result = 'You cancelled to ' + change.direction + ' ' + humanAmount(tx, change.quantity) + ' for ' + humanAmount(tx, change.totalPrice);
     return result;
 }
 
