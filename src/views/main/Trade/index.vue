@@ -76,6 +76,16 @@
               <v-tab-item>
                 <!-- buy form -->
                 <div class="form mt-4" v-show="showForm">
+                  
+                  <div class="form-item">
+                    <div class="form-item-label d-flex justify-space-between mb-2">
+                      <span class="h4">{{$t('trade.price')}}</span>
+                    </div>
+                    <div class="input">
+                      <v-text-field dense outlined v-model="formPrice"></v-text-field>
+                    </div>
+                  </div>
+
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
                       <span class="h4">{{$t('trade.amount')}}</span>
@@ -83,15 +93,6 @@
                     </div>
                     <div class="input">
                       <v-text-field dense outlined  v-model="formAmount"></v-text-field>
-                    </div>
-                  </div>
-
-                  <div class="form-item">
-                    <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">{{$t('trade.price')}}</span>
-                    </div>
-                    <div class="input">
-                      <v-text-field dense outlined v-model="formPrice"></v-text-field>
                     </div>
                   </div>
 
@@ -149,15 +150,6 @@
               <v-tab-item>
                 <!-- sell form -->
                 <div class="form mt-4" v-show="showForm">
-                  <div class="form-item">
-                    <div class="form-item-label d-flex justify-space-between mb-2">
-                      <span class="h4">{{$t('trade.amount')}}</span>
-                      <span class="h4">{{baseBalance}} {{base.currency}} {{$t('trade.avail')}}</span>
-                    </div>
-                    <div class="input">
-                      <v-text-field dense outlined v-model="formAmount"></v-text-field>
-                    </div>
-                  </div>
 
                   <div class="form-item">
                     <div class="form-item-label d-flex justify-space-between mb-2">
@@ -165,6 +157,16 @@
                     </div>
                     <div class="input">
                       <v-text-field dense outlined v-model="formPrice"></v-text-field>
+                    </div>
+                  </div>
+
+                  <div class="form-item">
+                    <div class="form-item-label d-flex justify-space-between mb-2">
+                      <span class="h4">{{$t('trade.amount')}}</span>
+                      <span class="h4">{{baseBalance}} {{base.currency}} {{$t('trade.avail')}}</span>
+                    </div>
+                    <div class="input">
+                      <v-text-field dense outlined v-model="formAmount"></v-text-field>
                     </div>
                   </div>
 
