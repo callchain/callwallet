@@ -78,7 +78,8 @@ function processOrder(tx, address) {
         for (var i = 0; i < items.length; ++i) {
             if (i !== 0) result += ';';
             var item = items[i];
-            result += 'You ' + pastAction(item.direction) + ' ' + humanAmount(tx, item.quantity) + ' at price ' + item.makerExchangeRate;
+            result += 'You passive ' + pastAction(item.direction) + ' ' + humanAmount(tx, item.quantity) + ' at price ' 
+                + (Number(1) / item.makerExchangeRate).toFixed(6);
         }
         return result;
     }

@@ -9,7 +9,11 @@
             :items-per-page="-1"
             disable-sort
             hide-default-footer
-        ></v-data-table>
+        >
+            <template v-slot:item.content="{item}">
+                <a :href="'http://block.callchain.cc/#/transaction/' + item.id" target="_blank">{{item.content}}</a>
+            </template>
+        </v-data-table>
         <v-divider></v-divider>
         <v-btn text style="cursor: pointer;" class="mb-5 mt-5 primary--text text-center" @click="loadMore">{{$t('wallet.history.loadmore')}}</v-btn>
         </div>
@@ -60,7 +64,7 @@ export default {
             for (var i = 0; i < list.length; ++i)
             {
                 var tx = list[i];
-                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type});
+                result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type, id: tx.id});
             }
             return result;
         }
