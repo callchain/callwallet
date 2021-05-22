@@ -223,6 +223,7 @@ const store = new Vuex.Store({
           s = data.bids[i].specification;
           price = utils.getPrice(s, 'buy');
           amount = utils.getAmount(s);
+          oa = bids[price];
           bids[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
         }
         state.bids = bids;
