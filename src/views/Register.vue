@@ -106,8 +106,8 @@ export default {
     // 注册
     handleRegister() {
         // do something
-        var wallet;
-        var api = this.$store.state.api;
+        let wallet;
+        let api = this.$store.state.api;
         
         if (this.key !== '') {
           if (!call.CallAPI._PRIVATE.schemaValidator.isValidSecret(this.key)) {
@@ -121,7 +121,7 @@ export default {
            wallet = api.generateAddress();
         }
         
-        var blob = {
+        let blob = {
           data: {
             master_seed: wallet.secret,
             account_id: wallet.address,
@@ -132,7 +132,7 @@ export default {
             modified: (new Date()).toJSON()
           }
         };
-        var ret = Blob.encrypt(this.walletName, this.passphrase, blob);
+        let ret = Blob.encrypt(this.walletName, this.passphrase, blob);
         if (ret !== 'OK') {
           this.$toast.error(ret);
           return;
@@ -140,7 +140,7 @@ export default {
         this.$router.push({name: 'welcome', params: wallet});
     },
     checkLogin() {
-      var ret = (this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase);
+      let ret = (this.walletName != '' && this.passphrase != '' && this.passphrase === this.repassphrase);
       if (this.isShowKey) {
         ret = ret && this.key !== '';
       }

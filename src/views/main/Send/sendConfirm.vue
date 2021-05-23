@@ -26,7 +26,7 @@ export default {
         memo: '',
     }),
     created() {
-        var params = this.$route.params;
+        let params = this.$route.params;
         this.recipient = params.recipient;
         this.amount = params.amount;
         this.issuer = params.currency;
@@ -41,15 +41,15 @@ export default {
         },
         async handleConfirmed() {
             // submit tx
-            var blob = this.$store.state.blob;
-            var from = blob.data.account_id;
-            var secret = blob.data.master_seed;
-            var send_amount = {
+            let blob = this.$store.state.blob;
+            let from = blob.data.account_id;
+            let secret = blob.data.master_seed;
+            let send_amount = {
                 value: this.amount, 
                 currency: this.issuer.currency, 
                 issuer: this.issuer.counterparty ? this.issuer.counterparty : ''
             };
-            var payment = {
+            let payment = {
                 source: {
                     address: from,
                     maxAmount: send_amount
@@ -68,18 +68,18 @@ export default {
             }
 
             // check network status
-            var status = this.$store.getters.networkStatus;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
 
-            var api = this.$store.state.api;
+            let api = this.$store.state.api;
             try {
-                var prepare =  await api.preparePayment(from, payment);
+                let prepare =  await api.preparePayment(from, payment);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                var tx = await api.submit(signedTx, true);
+                let signedTx = api.sign(prepare.txJSON, prepare.secret);
+                let tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 
                 if (tx.resultCode !== 'tesSUCCESS')

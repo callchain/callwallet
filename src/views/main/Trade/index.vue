@@ -15,7 +15,7 @@
         </v-col>
         <v-col class cols="2">
             <v-btn icon color="success">
-                <v-icon>mdi-chart-line-variant</v-icon>
+                <v-icon>mdi-chart-line-letiant</v-icon>
             </v-btn>
         </v-col>
       </v-row>
@@ -233,7 +233,7 @@
               :items-per-page="5"
               disable-sort
             >
-              <template v-slot:item.Action="{ item }">
+              <template v-slot:[`item.Action`]="{ item }">
                 <v-btn text dense color="error" @click="cancelOrder(item)">{{$t('trade.cancel')}}</v-btn>
               </template>
             </v-data-table>
@@ -246,11 +246,15 @@
 </template>
 
 <script>
-import NoData from '../../../components/NoData';
-import utils from '../../../api/utils'
-import i18n from './../../../plugins/i18n'
-import axios from 'axios'
+import BN from 'bignumber.js';
+const ZERO = new BN(0);
 
+import NoData from '../../../components/NoData';
+import utils from '../../../api/utils';
+import i18n from './../../../plugins/i18n';
+import axios from 'axios';
+
+const EMPTY_CURRENCY = {currency: '', counterparty: ''};
 
 export default {
   name: "trade",
@@ -280,16 +284,15 @@ export default {
         { text: i18n.tc('trade.action'), value: "Action", align: "start" },
       ],
     },
-
     percent: 0,
-    emptyCurrency: {currency: '', counterparty: ''}
+
   }),
   components: {
     NoData
   },
   computed: {
     nofund() {
-      return this.$store.state.balance === 0
+      return this.$store.state.balance.isEqualTo(ZERO);
     },
     pairs() {
       return this.$store.state.pairs
@@ -298,8 +301,7 @@ export default {
       return this.getBase();
     },
     counter() {
-      var ret = this.getCounter();
-      return ret;
+      return this.getCounter();
     },
     price() {
       return this.$store.state.price;
@@ -336,27 +338,27 @@ export default {
       this.formPrice = item[0];
     },
     updatePercent() {
-      if (Number(this.formPrice) === 0) return;
+      let bp = new BN(this.formPrice);
+      if (bp.isEqualTo(ZERO)) return;
+
       if (this.type === 'buy')
       {
-        var cb = this.getCounterBalance();
-        var amnt = utils.toFixed(Number(cb) * Number(this.percent) / 100.0 / Number(this.formPrice));
-        this.formAmount = amnt;
-        this.formValue = utils.toFixed(Number(amnt) * Number(this.formPrice));
+        let cb = this.getCounterBalance();
+        let amnt = cb.times(this.percent).div(100).div(bp);
+        this.formAmount = amnt.toNumber()
+        this.formValue = amnt.times(bp).toNumber();
       }
       else
       {
-        var bb = this.getBaseBalance();
-        var amnt = utils.toFixed(Number(bb) * Number(this.percent) / 100.0);
-        this.formAmount = amnt;
-        this.formValue = utils.toFixed(Number(amnt) * Number(this.formPrice));
+        let bb = this.getBaseBalance();
+        let amnt = bb.times(this.percent).div(100);
+        this.formAmount = amnt.toNumber();
+        this.formValue = amnt.times(bp);
       }
     },
     changePair() {
-      console.log('change pair ....');
-      console.dir(this.selected);
-      var _base = this.getBase();
-      var _counter = this.getCounter();
+      let _base = this.getBase();
+      let _counter = this.getCounter();
       if (this.isEmptyCurrency(_base) || this.isEmptyCurrency(_counter))
       {
         this.$toast.error('Invalid Trade Pair');
@@ -373,48 +375,42 @@ export default {
       if (cur.currency === 'CALL') return 'CALL';
       return cur.currency  + '@' + cur.counterparty;
     },
+    // return BN
     getBaseBalance() {
-      var bal = this.$store.state.balance_list;
-      var bc = this.getBase();
-      var k = this.toString(bc);
-      var b = bal[k];
+      let bal = this.$store.state.balance_list;
+      let bc = this.getBase();
+      let k = this.toString(bc);
+      let b = bal[k];
       if (b) {
-        if (b.currency === 'CALL') {
-          var ret = utils.toFixed(Number(b.value) - Number(this.$store.getters.reservedCall));
-          return ret;
-        } else {
-          return b.value;
-        }
+        return b.currency === 'CALL' 
+            ? b.value.minus(this.$store.getters.reservedCall) : b.value;
       }
-      else return 0;
+      else return ZERO;
     },
+    // return BN
     getCounterBalance() {
-      var bal = this.$store.state.balance_list;
-      var cc = this.getCounter();
-      var k = this.toString(cc);
-      var b = bal[k];
+      let bal = this.$store.state.balance_list;
+      let cc = this.getCounter();
+      let k = this.toString(cc);
+      let b = bal[k];
       if (b) {
-        if (b.currency === 'CALL') {
-          var ret = utils.toFixed(Number(b.value) - Number(this.$store.getters.reservedCall));
-          return ret;
-        } else {
-          return b.value;
-        }
+        return b.currency === 'CALL' 
+            ? b.value.minus(this.$store.getters.reservedCall) : b.value;
       }
-      else return 0;
+      else return ZERO;
     },
     checkCurrency(i) {
-      var s = this.selected;
-      var parts = s.split('/');
-      if (parts.length !== 2) return this.emptyCurrency;
-      var base = parts[i];
+      let s = this.selected;
+      let parts = s.split('/');
+      if (parts.length !== 2) return EMPTY_CURRENCY;
+      let base = parts[i];
       if (base === 'CALL') return {currency: 'CALL', counterparty: ''};
-      var bases = base.split('@');
-      if (bases.length !== 2) return this.emptyCurrency;
-      var currency = bases[0];
-      if (!utils.isValidCur(currency)) return this.emptyCurrency;
-      var counterparty = bases[1];
-      if (!utils.isValidAddr(counterparty)) return this.emptyCurrency;
+      let bases = base.split('@');
+      if (bases.length !== 2) return EMPTY_CURRENCY;
+      let currency = bases[0];
+      if (!utils.isValidCur(currency)) return EMPTY_CURRENCY;
+      let counterparty = bases[1];
+      if (!utils.isValidAddr(counterparty)) return EMPTY_CURRENCY;
 
       return {currency: currency, counterparty: counterparty};
     },
@@ -449,20 +445,20 @@ export default {
       if (item.currency === '') return true;
     },
     async getOrderbook() {
-      var address = this.$store.state.address;
-      var status = this.$store.getters.networkStatus;
+      let address = this.$store.state.address;
+      let status = this.$store.getters.networkStatus;
       if (!status) {
         this.$store.commit('logout');
         return;
       }
 
       // get orderbook
-      var api = this.$store.state.api;
-      var _base = this.getBase();
-      var _counter = this.getCounter();
+      let api = this.$store.state.api;
+      let _base = this.getBase();
+      let _counter = this.getCounter();
       if (this.isEmptyCurrency(_base) || this.isEmptyCurrency(_counter)) return;
 
-      var ob = {
+      let ob = {
         base: _base,
         counter: _counter
       };
@@ -470,7 +466,7 @@ export default {
       if (ob.counter.counterparty === '') delete ob.counter.counterparty;
 
       try {
-        var result = await api.getOrderbook(address, ob);
+        let result = await api.getOrderbook(address, ob);
         this.$store.commit('initOrderbook', result);
       } catch (e) {
         this.$toast.error(e.message);
@@ -481,10 +477,10 @@ export default {
       }
 
       // get orderbook price
-      var the_pair = this.selected;
+      let the_pair = this.selected;
       the_pair = the_pair.replace('/', '_');
       try {
-        var ret = await axios.get("https://data.callchain.cc/price/latest/" + the_pair);
+        let ret = await axios.get("https://data.callchain.cc/price/latest/" + the_pair);
         this.$store.commit('initPrice', ret.data.data);
       } catch (e) {
         console.error(e);
@@ -492,17 +488,17 @@ export default {
 
     },
     async getPendingOrders() {
-      var address = this.$store.state.address;
-      var status = this.$store.getters.networkStatus;
+      let address = this.$store.state.address;
+      let status = this.$store.getters.networkStatus;
       if (!status) {
         this.$store.commit('logout');
         return;
       }
 
-      var api = this.$store.state.api;
+      let api = this.$store.state.api;
 
       try {
-        var result = await api.getOrders(address);
+        let result = await api.getOrders(address);
         this.$store.commit('initOrders', result.results);
       } catch (e) {
         this.$toast.error(e.message);
@@ -513,10 +509,10 @@ export default {
       }
     },
     async createOrder() {
-      var address = this.$store.state.address;
-      var blob = this.$store.state.blob;
-      var secret = blob.data.master_seed;
-      var status = this.$store.getters.networkStatus;
+      let address = this.$store.state.address;
+      let blob = this.$store.state.blob;
+      let secret = blob.data.master_seed;
+      let status = this.$store.getters.networkStatus;
       if (!status) {
         this.$store.commit('logout');
         return;
@@ -525,47 +521,44 @@ export default {
       // check balance
       if (this.type === 'buy')
       {
-        var cb = this.getCounterBalance();
-        if (Number(this.formValue) > Number(cb)) {
+        let cb = this.getCounterBalance();
+        if (cb.isLessThan(this.formValue)) {
           this.$toast.error('Counter balance not enough');
           return;
         }
       }
       else
       {
-        var bb = this.getBaseBalance();
-        if (Number(this.formAmount) > Number(bb)) {
+        let bb = this.getBaseBalance();
+        if (bb.isLessThan(this.formAmount)) {
           this.$toast.error('Base balance not enough');
           return;
         }
       }
 
-      var api = this.$store.state.api;
-      var _base = this.getBase();
-      var _counter = this.getCounter();
-      var order = {
-        "direction": this.type,
-        "quantity": {
-          "currency": _base.currency,
-          "counterparty": _base.counterparty,
-          "value": this.formAmount
+      let api = this.$store.state.api;
+      let _base = this.getBase();
+      let _counter = this.getCounter();
+      let order = {
+        'direction': this.type,
+        'quantity': {
+          'currency': _base.currency,
+          'counterparty': _base.counterparty,
+          'value': this.formAmount
         },
-        "totalPrice": {
-          "currency": _counter.currency,
-          "counterparty": _counter.counterparty,
-          "value": this.formValue
+        'totalPrice': {
+          'currency': _counter.currency,
+          'counterparty': _counter.counterparty,
+          'value': this.formValue
         }
       };
 
       try {
-        var prepare = await api.prepareOrder(address, order);
+        let prepare = await api.prepareOrder(address, order);
         prepare.secret = secret;
-        console.log('prepare tx');
-        console.dir(prepare);
 
-        var signedTx = api.sign(prepare.txJSON, prepare.secret);
-        var tx = await api.submit(signedTx, true);
-        console.dir(tx);
+        let signedTx = api.sign(prepare.txJSON, prepare.secret);
+        let tx = await api.submit(signedTx, true);
         if (tx.resultCode !== 'tesSUCCESS')
         {
           this.$toast.error('Fail transaction: ' + tx.resultCode);
@@ -586,23 +579,22 @@ export default {
       }
     },
     async cancelOrder(item) {
-      var sequence = item.seq;
-      var address = this.$store.state.address;
-      var blob = this.$store.state.blob;
-      var secret = blob.data.master_seed;
-      var status = this.$store.getters.networkStatus;
+      let sequence = item.seq;
+      let address = this.$store.state.address;
+      let blob = this.$store.state.blob;
+      let secret = blob.data.master_seed;
+      let status = this.$store.getters.networkStatus;
       if (!status) {
         this.$store.commit('logout');
         return;
       }
 
-      var api = this.$store.state.api;
+      let api = this.$store.state.api;
       try {
-        var prepare = await api.prepareOrderCancellation(address, { orderSequence: Number(sequence) });
+        let prepare = await api.prepareOrderCancellation(address, { orderSequence: Number(sequence) });
         prepare.secret = secret;
-        var signedTx = api.sign(prepare.txJSON, prepare.secret);
-        var tx = await api.submit(signedTx, true);
-        console.dir(tx);
+        let signedTx = api.sign(prepare.txJSON, prepare.secret);
+        let tx = await api.submit(signedTx, true);
         if (tx.resultCode !== 'tesSUCCESS')
         {
           this.$toast.error('Fail transaction: ' + tx.resultCode);
@@ -623,7 +615,7 @@ export default {
   },
   watch: {
     formPrice(newv, oldv) {
-      if (isNaN(Number(newv))) {
+      if (isNaN(newv)) {
         this.$nextTick(() => {
           this.formPrice = 0;
         });

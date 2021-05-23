@@ -10,7 +10,7 @@
             disable-sort
             hide-default-footer
         >
-            <template v-slot:item.content="{item}">
+            <template v-slot:[`item.content`]="{item}">
                 <a :href="'http://block.callchain.cc/#/transaction/' + item.id" target="_blank">{{item.content}}</a>
             </template>
         </v-data-table>
@@ -44,7 +44,7 @@ import i18n from './../../../plugins/i18n';
 
 
 export default {
-    name: 'history',
+    name: 'History',
     data: () => ({
         headers: [{ text: i18n.tc('wallet.history.date'), value: 'date', width: 200 }, { text: i18n.tc('wallet.history.desc'), value: 'content' }],
         dialog: false,
@@ -58,12 +58,12 @@ export default {
             return this.$store.state.balance === 0
         },
         transactions() {
-            var list = this.$store.state.transactions;
-            var address = this.$store.state.address;
-            var result = [];
-            for (var i = 0; i < list.length; ++i)
+            let list = this.$store.state.transactions;
+            let address = this.$store.state.address;
+            let result = [];
+            for (let i = 0; i < list.length; ++i)
             {
-                var tx = list[i];
+                let tx = list[i];
                 result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type, id: tx.id});
             }
             return result;
@@ -71,8 +71,8 @@ export default {
     },
     methods: {
         async loadMore() {
-            var address = this.$store.state.address;
-            var marker = this.$store.state.marker;
+            let address = this.$store.state.address;
+            let marker = this.$store.state.marker;
 
             if (_.isEmpty(marker)) {
                 this.warn_text = 'No more data';
@@ -80,14 +80,14 @@ export default {
                 return;
             }
 
-            var api = this.$store.state.api;
-            var status = this.$store.getters.networkStatus;
+            let api = this.$store.state.api;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
             try {
-                var result = await api.getTransactions(address, {limit: 10, marker: marker});
+                let result = await api.getTransactions(address, {limit: 10, marker: marker});
                 this.$store.commit('updateTransactions', result);
             } catch (e) {
                 this.$toast.error(e.message);

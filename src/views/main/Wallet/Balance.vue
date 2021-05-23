@@ -8,7 +8,7 @@
                     <v-card-title :class="hover?'pt-2 pb-2 pl-2 text-body-2 cardHover white--text':'pt-2 pb-2 pl-2 text-body-2 primary white--text'">{{item.currency}}@{{item.counterparty ? item.counterparty : 'Callchain'}}</v-card-title>
                     <v-divider></v-divider>
                     <v-card-text style="height: 100px;" class="d-inline-flex flex-column justify-center">
-                        <div class="text-h4 text-center">{{item.value | numberFormat}}</div>
+                        <div class="text-h4 text-center">{{item.value.toFormat()}}</div>
                         <div class="text-body-2 text-center" v-if="item.currency === 'CALL'">({{$t('wallet.balance.reserve')}}: {{reserved}})</div>
                     </v-card-text>
                 </v-card>
@@ -25,7 +25,7 @@
                 disable-sort
                 hide-default-footer
             >
-                <template v-slot:item.content="{item}">
+                <template v-slot:[`item.content`]="{item}">
                     <a :href="'http://block.callchain.cc/#/transaction/' + item.id" target="_blank">{{item.content}}</a>
                 </template>
             </v-data-table>
@@ -37,13 +37,15 @@
 </template>
 <script>
 
+import BN from 'bignumber.js';
+const ZERO = new BN(0);
+
 import NoData from '../../../components/NoData';
 import * as filters from '../../../filters/Index';
 import i18n from './../../../plugins/i18n';
 
 export default {
-    
-    name: 'blance',
+    name: 'Balance',
     data: () => ({
         headers: [{ text: i18n.tc('wallet.balance.date'), value: 'date', width: 200 }, { text: i18n.tc('wallet.balance.event'), value: 'content' }],
     }),
@@ -52,13 +54,13 @@ export default {
     },
     computed: {
         nofund() {
-            return this.$store.state.balance === 0
+            return this.$store.state.balance.isEqualTo(ZERO);
         },
         balance() {
-            var list = [];
-            for (var key in this.$store.state.balance_list){
-                var item = this.$store.state.balance_list[key];
-                if (Number(item.value) > 0) {
+            let list = [];
+            for (let key in this.$store.state.balance_list){
+                let item = this.$store.state.balance_list[key];
+                if (item.value.isGreaterThan(ZERO)) {
                     list.push(item);
                 }
             }
@@ -68,32 +70,32 @@ export default {
             return this.$store.getters.reservedCall;
         },
         transactions() {
-            var list = this.$store.state.transactions.slice(0,10);
-            var address = this.$store.state.address;
-            var result = [];
-            for (var i = 0; i < list.length; ++i)
+            let list = this.$store.state.transactions.slice(0,10);
+            let address = this.$store.state.address;
+            let result = [];
+            for (let i = 0; i < list.length; ++i)
             {
-                var tx = list[i];
+                let tx = list[i];
                 result.push({date: filters.humanDate(tx.outcome.timestamp), content: filters.txDesc(tx, address), type: tx.type, id: tx.id});
             }
             return result;
         }
     },
     async created() {
-        var address = this.$store.state.address;
-        var status = this.$store.getters.networkStatus;
+        let address = this.$store.state.address;
+        let status = this.$store.getters.networkStatus;
         if (!status) {
             this.$store.commit('logout');
             return;
         }
 
-        var api = this.$store.state.api;
+        let api = this.$store.state.api;
         try {
-            var ret = await api.getBalances(address);
+            let ret = await api.getBalances(address);
             this.$store.commit("initBalance", ret);
-            var result = await api.getTransactions(address, {limit: 10});
+            let result = await api.getTransactions(address, {limit: 10});
             this.$store.commit("initTransactions", result);
-            var info = await api.getAccountInfo(address);
+            let info = await api.getAccountInfo(address);
             this.$store.commit("initAccountInfo", info);
         } catch (e) {
             this.$toast.error(e.message);

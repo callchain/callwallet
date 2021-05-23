@@ -6,8 +6,8 @@ Vue.use(Vuex);
 import router from '../router/Index';
 import utils from '../api/utils'
 
-// import BN from "bignumber.js";
-// const ZERO = new BN(0);
+import BN from "bignumber.js";
+const ZERO = new BN(0);
 
 const LEDGER_TMPL = {"feePool":"10.769998","baseFeeCALL":"0.001","ledgerHash":"80294B177352A4B99E0DEE0362F78AD759E0EAE53920FAFDB46004FCF2AE99F0","ledgerVersion":33428815,"ledgerTimestamp":"2021-05-23T00:44:41.000Z","reserveBaseCALL":"1","reserveIncrementCALL":"0.1","transactionCount":0,"validatedLedgerVersions":"11874029-33428815"};
 const DEFAULT_SERVER = {host: 's1.callchain.live', port: '5020', ssl: true};
@@ -19,7 +19,7 @@ const store = new Vuex.Store({
       isLogin: false,
       isOffline: false,
       username: '',
-      balance: 0,
+      balance: ZERO,
       account_info: {},
       address: '',
       blob: {},
@@ -37,33 +37,34 @@ const store = new Vuex.Store({
       asks: {},
       bids: {},
       orders: {},
-      price: 0,
-      open_price: 0,
-      change: 0
+      price: ZERO,
+      open_price: ZERO,
+      change: ZERO
     },
     getters: {
       networkStatus(state) {
-        return state.api.isConnected && state.api.isConnected()
+        return state.api.isConnected && state.api.isConnected();
       },
+      // BN
       reservedCall(state) {
-        return utils.toFixed(Number(state.ledger.reserveBaseCALL) 
-          + Number(state.account_info.ownerCount) * Number(state.ledger.reserveIncrementCALL));
+        return new BN(state.ledger.reserveIncrementCALL).times(state.account_info.ownerCount)
+          .plus(state.ledger.reserveBaseCALL);
       },
       askList(state) {
-        var result = _.toPairs(state.asks);
+        let result = _.toPairs(state.asks);
         result = _.sortBy(result, function(o) {return -o[0]});
         return result;
       },
       bidList(state) {
-        var result = _.toPairs(state.bids);
+        let result = _.toPairs(state.bids);
         result = _.sortBy(result, function(o) {return -o[0]});
         return result;
       },
       orderList(state) {
-        var result = [];
-        for (var seq in state.orders)
+        let result = [];
+        for (let seq in state.orders)
         {
-          var order =  state.orders[seq];
+          let order =  state.orders[seq];
           result.push(order);
         }
         result = _.sortBy(result, function(o) {return -o.seq});
@@ -72,93 +73,93 @@ const store = new Vuex.Store({
     },
     mutations: {
       login (state) {
-        state.isLogin = true
-        sessionStorage.setItem('islogin', true)
+        state.isLogin = true;
+        sessionStorage.setItem('islogin', true);
       },
       initApi(state, api) {
-        state.api = api
+        state.api = api;
       },
       logout (state) {
-        state.isLogin = false
-        sessionStorage.clear()
-        router.push({name: 'login'})
+        state.isLogin = false;
+        sessionStorage.clear();
+        router.push({name: 'login'});
       },
       offline (state) {
-        state.isOffline = true
+        state.isOffline = true;
       },
       online (state) {
-        state.isOffline = false
+        state.isOffline = false;
       },
       setblob (state, msg) {
-        state.blob = msg.blob
-        state.username = msg.user
-        state.address = msg.blob.data.account_id
+        state.blob = msg.blob;
+        state.username = msg.user;
+        state.address = msg.blob.data.account_id;
       },
       updateLedger(state, ledger) {
-        // state.height = ledger.ledgerVersion
-        state.ledger = ledger
+        state.ledger = ledger;
       },
       newPair(state, pair) {
-        state.pairs = state.pairs.concat(pair)
-        state.current_pair = pair
+        state.pairs = state.pairs.concat(pair);
+        state.current_pair = pair;
       },
       resetPair(state) {
-        state.current_pair = state.default_pair
+        state.current_pair = state.default_pair;
       },
       initBalance(state, list) {
-        var result = {};
-        for (var i = 0; i < list.length; ++i)
+        let result = {};
+        for (let i = 0; i < list.length; ++i)
         {
-          var item = list[i];
-          var key = item.counterparty ? item.currency + '@' + item.counterparty : item.currency
-          result[key] = item
+          let item = list[i];
+          let key = item.counterparty ? item.currency + '@' + item.counterparty : item.currency;
+          result[key] = item;
+          result[key].value = new BN(item.value);
         }
-        state.balance_list = result
+        state.balance_list = result;
 
         // it must have call balance
-        state.balance = state.balance_list['CALL'].value
+        state.balance = state.balance_list['CALL'].value;
       },
       updateBalance(state, data) {
         // update or add balance
-        var item = state.balance_list[data.key];
+        let item = state.balance_list[data.key];
         if (item)
         {
-          item.value = Number(Number(item.value) + Number(data.change.value)) + '';
+          item.value = item.value.plus(data.change.value);
           state.balance_list[data.key] = item;
         }
         else
         {
-          state.balance_list[data.key] = data.change;
+          state.balance_list[data.key] = new BN(data.change);
         }
 
         if (data.key === 'CALL') {
-          state.balance = state.balance_list['CALL'].value;
+          state.balance =state.balance_list['CALL'].value;
         }
 
         // update trustline balances
-        var line = state.trustlines[data.key];
+        let line = state.trustlines[data.key];
         if (line) {
-          line.balance = Number((Number(line.balance) + Number(data.change.value))) + '';
+          line.balance = line.balance.plus(data.change.value);
           state.trustlines[data.key] = line;
         }
       },
 
       initTransactions(state, result) {
-        state.transactions = result.results
-        state.marker = result.marker
+        state.transactions = result.results;
+        state.marker = result.marker;
       },
       updateTransactions(state, result) {
-        state.transactions = state.transactions.concat(result.results)
-        state.marker = result.marker
+        state.transactions = state.transactions.concat(result.results);
+        state.marker = result.marker;
       },
       newTransaction(state, info) {
-        state.transactions = [info].concat(state.transactions)
+        state.transactions = [info].concat(state.transactions);
       },
 
       initIssues(state, list) {
-        var issues = {};
-        for (var i = 0; i < list.results.length; ++i) {
-          var item = list.results[i];
+        let issues = {};
+        for (let i = 0; i < list.results.length; ++i) {
+          let item = list.results[i];
           issues[item.specification.currency] = {
             currency: item.specification.currency,
             total: item.specification.value, 
@@ -172,39 +173,39 @@ const store = new Vuex.Store({
       },
 
       initTrustlines(state, list) {
-        var result = {};
-        for (var i = 0; i < list.results.length; ++i) {
-          var item = list.results[i];
-          var key = item.specification.currency + '@' + item.specification.counterparty;
+        let result = {};
+        for (let i = 0; i < list.results.length; ++i) {
+          let item = list.results[i];
+          let key = item.specification.currency + '@' + item.specification.counterparty;
           result[key] = {
             currency: item.specification.currency,
             counterparty: item.specification.counterparty,
-            limit: item.specification.limit,
-            balance: item.state.balance
+            limit: new BN(item.specification.limit),
+            balance: new BN(item.state.balance)
           };
         }
         state.trustlines = result;
       },
       updateTrustline(state, data) {
-        var item = state.trustlines[data.key];
+        let item = state.trustlines[data.key];
         if (item) {
-          item.limit = data.change.limit;
+          item.limit = new BN(data.change.limit);
           state.trustlines[data.key] = item;
-          if (item.limit === '0') {
-            var old = state.trustlines;
-            delete old[data.key];
-            state.trustlines = {};
-            state.trustlines = old;
+          if (item.limit.isEqualTo(ZERO)) {
+            let old = state.trustlines
+            delete old[data.key]
+            state.trustlines = {}
+            state.trustlines = old
           }
         }
         else
         {
-          var old = state.trustlines;
+          let old = state.trustlines;
           old[data.key] = {
             currency: data.change.currency,
             counterparty: data.change.counterparty,
-            limit: data.change.limit,
-            balance: '0'
+            limit: new BN(data.change.limit),
+            balance: ZERO
           };
           state.trustlines = {};
           state.trustlines = old;
@@ -212,41 +213,39 @@ const store = new Vuex.Store({
       },
 
       initOrderbook(state, data) {
-        // asks price use math.ceil, asks amount use math.ceil
-        var i, s, price, amount, oa;
-        var asks = {};
-        var bids = {};
-        for (i in data.asks) {
-          s = data.asks[i].specification;
-          price = utils.getPrice(s, 'sell');
-          amount = utils.getAmount(s);
-          oa = asks[price];
-          asks[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
+        let asks = {};
+        let bids = {};
+        for (let i in data.asks) {
+          let s = data.asks[i].specification;
+          let price = new BN(s.totalPrice.value).div(s.quantity.value);
+          let amount = new BN(s.quantity.value);
+          let oa = asks[price];
+          asks[price] = oa ? oa.plus(amount) : amount;
         }
         state.asks = asks;
 
         // bids price use math.floor, bids amount use math.ceil
-        for (i in data.bids) {
-          s = data.bids[i].specification;
-          price = utils.getPrice(s, 'buy');
-          amount = utils.getAmount(s);
-          oa = bids[price];
-          bids[price] = oa ? utils.toFixed(Number(oa) + Number(amount)) : amount;
+        for (let i in data.bids) {
+          let s = data.bids[i].specification;
+          let price = new BN(s.totalPrice.value).div(s.quantity.value);
+          let amount = new BN(s.quantity.value);
+          let ob = bids[price];
+          bids[price] = ob ? ob.plus(amount) : amount;
         }
         state.bids = bids;
       },
       updateOrderbook(state, item) {
-        var price = utils.getPrice(item, item.direction);
-        var amount = utils.getAmount(item);
-        var list = item.direction === 'buy' ? state.bids : state.asks;
-        var total = list[price];
+        let price = new BN(item.totalPrice.value).div(item.quantity.value);
+        let amount = new BN(item.quantity.value);
+        let list = item.direction === 'buy' ? state.bids : state.asks;
+        let total = list[price];
         if (item.status === 'created')
         {
           if (_.isEmpty(total)) {
-            total = 0;
+            total = ZERO;
           }
 
-          total = utils.toFixed(Number(total) + Number(amount));
+          total = total.plus(amount);
           if (item.direction === 'buy')
             Vue.set(state.bids, price, total);
           else
@@ -255,7 +254,7 @@ const store = new Vuex.Store({
         // filled, partially-filled, cancelled
         else
         {
-          total = utils.toFixed(Number(total) - Number(amount));
+          total = total.minus(amount);
           if (Number(total) === 0)
           {
             if (item.direction === 'buy')
@@ -275,37 +274,37 @@ const store = new Vuex.Store({
           if (item.status !== 'cancelled')
           {
             state.price = price;
-            if (Number(state.open_price) === 0) state.open_price = price;
-            state.change = ((Number(price) - Number(state.open_price)) * 100).toFixed(2);
+            if (state.open_price.isEqualTo(ZERO)) state.open_price = price;
+            state.change = price.minus(state.open_price).times(100);
           }
         }
       },
 
       initOrders(state, data) {
-        var result = {};
-        for (var i = 0; i < data.length; ++i)
+        let result = {};
+        for (let i = 0; i < data.length; ++i)
         {
-          var item = data[i];
-          var spec = item.specification;
+          let item = data[i];
+          let spec = item.specification;
           result[item.properties.sequence] = {
             type: spec.direction,
             pair: utils.getPair(spec),
-            price: utils.getPrice(spec, spec.direction),
-            amount: utils.getAmount(spec),
+            price: new BN(spec.totalPrice.value).div(spec.quantity.value),
+            amount: new BN(spec.quantity.value),
             seq: item.properties.sequence
           }
         }
         state.orders = result;
       },
       updateOrder(state, data) {
-        var order;
+        let order;
         if (data.status === 'created')
         {
           order = {
             type: data.direction,
             pair: utils.getPair(data),
-            price: utils.getPrice(data, data.direction),
-            amount: utils.getAmount(data),
+            price: new BN(data.totalPrice.value).div(data.quantity.value),
+            amount: new BN(data.quantity.value),
             seq: data.sequence
           }
           Vue.set(state.orders, data.sequence, order);
@@ -313,7 +312,7 @@ const store = new Vuex.Store({
         else if (data.status === 'partially-filled')
         {
           order = state.orders[data.sequence];
-          order.amount = utils.toFixed(Number(order.amount) - Number(utils.getAmount(data)));
+          order.amount = order.amount.minus(data.quantity.value);
           Vue.set(state.orders, data.sequence, order);
         }
         // filled, cancelled
@@ -324,9 +323,9 @@ const store = new Vuex.Store({
       },
 
       initPrice(state, data) {
-        state.price = data.c;
-        state.open_price = data.o;
-        state.change = ((Number(state.price) - Number(state.open_price)) * 100).toFixed(2);
+        state.price = new BN(data.c);
+        state.open_price = new BN(data.o);
+        state.change = state.price.minus(state.open_price).times(100);
       },
 
       initAccountInfo(state, info) {
@@ -338,17 +337,17 @@ const store = new Vuex.Store({
       },
 
       newContact(state, item) {
-        var contacts = state.blob.data.contacts
-        contacts[item.title] = item.content
-        state.blob.data.contacts = contacts
+        let contacts = state.blob.data.contacts;
+        contacts[item.title] = item.content;
+        state.blob.data.contacts = contacts;
       },
       updateContact(state, msg) {
         if (msg.delBefIns) {
-          delete state.blob.data.contacts[msg.oldtitle]
+          delete state.blob.data.contacts[msg.oldtitle];
         }
-        var contacts = state.blob.data.contacts
-        contacts[item.title] = item.content
-        state.blob.data.contacts = contacts
+        let contacts = state.blob.data.contacts;
+        contacts[msg.title] = msg.content;
+        state.blob.data.contacts = contacts;
       }
 
     }

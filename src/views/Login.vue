@@ -72,7 +72,7 @@ export default {
     },
     /// 登录
     handleLogin() {
-      var data = Blob.decrypt(this.walletName, this.passphrase);
+      let data = Blob.decrypt(this.walletName, this.passphrase);
       if (typeof data === 'string') {
         this.$toast.error(data);
         return;
@@ -83,21 +83,17 @@ export default {
       this.$router.push('./main');
     },
     checkLogin() {
-      if(this.walletName != '' && this.passphrase != ''){
-        this.canILogin = true
-      } else {
-        this.canILogin = false
-      }
+      this.canILogin = this.walletName !== '' && this.passphrase !== '';
     }
   },
   created() {
     // check connection
-    var api = this.$store.state.api;
-    var state = api.isConnected && api.isConnected();
+    let api = this.$store.state.api;
+    let state = api.isConnected && api.isConnected();
     console.log('api connected?' + state);
-    var self = this;
+    let self = this;
     if (!state) {
-      var server = this.$store.state.server;
+      let server = this.$store.state.server;
       api = CreateApi(server)
       api.connect().then(function() {
         self.$toast.success('Callchain Server Connected');

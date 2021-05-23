@@ -20,7 +20,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Welcome',
+  name: 'TermOfService',
   data: () => ({
    
   }),

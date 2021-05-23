@@ -29,15 +29,11 @@
 </template>
 
 <script>
-import WalletContent from './Wallet/index.vue'
-import NoData from '../../components/NoData'
 import i18n from '../../plugins/i18n';
 
 export default {
   name: 'Main',
   components: {
-    WalletContent,
-    NoData
   },
   data: () => ({
     tab: '',

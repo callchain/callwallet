@@ -45,7 +45,7 @@ export default {
         },
     }),
     created() {
-        var server = this.$store.state.server;
+        let server = this.$store.state.server;
         this.sendData = JSON.parse(JSON.stringify(server));
     },
     methods: {
@@ -59,12 +59,12 @@ export default {
                 this.$toast.error("Invalid port");
                 return;
             }
-            var server = this.$store.state.server;
+            let server = this.$store.state.server;
             if (server.host !== this.sendData.host || server.port !== this.sendData.port
                     || server.ssl !== this.sendData.ssl)
             {
                 this.$store.commit('updateServer', this.sendData);
-                var api = this.$store.state.api;
+                let api = this.$store.state.api;
                 try {
                     if (api.isConnected && api.isConnected()) {
                         await api.disconnect();

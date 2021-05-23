@@ -27,14 +27,11 @@
 </template>
 
 <script>
-import utils from './../api/utils';
 
 export default {
   name: 'Header',
 
   data: () => ({
-    // 是否登录
-    offline: true
   }),
   created() {    
   },
@@ -49,19 +46,15 @@ export default {
       return this.$store.state.username
     },
     balance() {
-      var bal = this.$store.state.balance;
-      var ret = this.balanceFormat(bal);
+      let bal = this.$store.state.balance;
+      let ret = this.balanceFormat(bal);
       return ret;
     }
   },
   methods: {
     balanceFormat(value) {
       if (!value) return 'Unfunded account';
-      var str = '' + utils.toFixed(Number(value));
-      var intPart = Math.floor(Number(value));
-      var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
-      var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
-      return intPartFormat + pointPart + ' CALL';
+      return value.toFormat() + ' CALL';
     },
     handleLoginClick() {
     },

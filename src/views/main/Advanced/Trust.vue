@@ -12,13 +12,13 @@
                     disable-sort
                     :items-per-page="-1"
                     hide-default-footer>   
-                    <template v-slot:item.actions="{ item }">
+                    <template v-slot:[`item.actions`]="{ item }">
                         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                     </template>
-                    <template v-slot:item.balance="{ item }">
+                    <template v-slot:[`item.balance`]="{ item }">
                         {{item.balance | numberFormat}}
                     </template>
-                    <template v-slot:item.limit="{ item }">
+                    <template v-slot:[`item.limit`]="{ item }">
                         {{item.limit | numberFormat}}
                     </template>
                     </v-data-table>
@@ -87,6 +87,8 @@
     </div>
 </template>
 <script>
+import BN from 'bignumber.js';
+const ZERO = new BN(0);
 
 import NoData from '../../../components/NoData';
 import utils from '../../../api/utils';
@@ -113,18 +115,15 @@ export default {
         currentItem: {}
 
     }),
-    created() {
-        this.isShowAdd = false;
-    },
     methods: {
         /// 确认新增
         async handleAddConfirm() {
-            var from = this.$store.state.address;
-            var currency = this.select;
-            var issuer = this.name;
-            var limit = this.items_map[currency].value;
-            var secret = this.$store.state.blob.data.master_seed;
-            var trustline = {
+            let from = this.$store.state.address;
+            let currency = this.select;
+            let issuer = this.name;
+            let limit = this.items_map[currency].value;
+            let secret = this.$store.state.blob.data.master_seed;
+            let trustline = {
                 currency: currency,
                 counterparty: issuer,
                 limit: limit,
@@ -132,19 +131,18 @@ export default {
             };
 
             // check network status
-            var status = this.$store.getters.networkStatus;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
 
-            var api = this.$store.state.api;
+            let api = this.$store.state.api;
             try {
-                var prepare = await api.prepareTrustline(from, trustline);
+                let prepare = await api.prepareTrustline(from, trustline);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                var tx = await api.submit(signedTx, true);
-                console.dir(tx);
+                let signedTx = api.sign(prepare.txJSON, prepare.secret);
+                let tx = await api.submit(signedTx, true);
                 
                 if (tx.resultCode !== 'tesSUCCESS')
                 {
@@ -167,8 +165,8 @@ export default {
         },
         /// 显示弹窗删除
         deleteItem (item) {
-            if (Number(item.balance) !== 0) {
-                this.$toast.error("You hold " + item.currency + " with balance is " + item.balance);
+            if (!item.balance.isEqualTo(ZERO)) {
+                this.$toast.error("You hold " + item.currency + " with balance is " + item.balance.toFormat());
                 return;
             }
             this.currentItem = item;
@@ -176,9 +174,9 @@ export default {
         },
         /// 确认删除
         async handleDialogConfirm() {
-            var from = this.$store.state.address;
-            var secret = this.$store.state.blob.data.master_seed;
-            var trustline = {
+            let from = this.$store.state.address;
+            let secret = this.$store.state.blob.data.master_seed;
+            let trustline = {
                 currency: this.currentItem.currency,
                 counterparty: this.currentItem.counterparty,
                 limit: '0',
@@ -186,18 +184,18 @@ export default {
             };
 
             // check network status
-            var status = this.$store.getters.networkStatus;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
 
-            var api = this.$store.state.api;
+            let api = this.$store.state.api;
             try {
-                var prepare = await api.prepareTrustline(from, trustline);
+                let prepare = await api.prepareTrustline(from, trustline);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                var tx = await api.submit(signedTx, true);
+                let signedTx = api.sign(prepare.txJSON, prepare.secret);
+                let tx = await api.submit(signedTx, true);
                 console.dir(tx);
                 
                 if (tx.resultCode !== 'tesSUCCESS')
@@ -234,7 +232,7 @@ export default {
                 return;
             }
 
-            var address = this.$store.state.address;
+            let address = this.$store.state.address;
             if (this.name === address) {
                 if (!utils.isValidAddr(this.name)) {
                     this.$toast.error("Should not trust yourself");
@@ -246,20 +244,20 @@ export default {
             }
 
             // check network status
-            var status = this.$store.getters.networkStatus;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
 
             // get account issues
-            var api = this.$store.state.api;
+            let api = this.$store.state.api;
             try {
-                var issues = await api.getAccountIssues(this.name);
+                let issues = await api.getAccountIssues(this.name);
                 this.items = [];
                 this.items_map = {};
-                for (var i = 0; i < issues.results.length; ++i) {
-                    var issue = issues.results[i];
+                for (let i = 0; i < issues.results.length; ++i) {
+                    let issue = issues.results[i];
                     this.items.push(issue.specification.currency);
                     this.items_map[issue.specification.currency] = issue.specification;
                 }
@@ -277,13 +275,14 @@ export default {
     },
     computed: {
         nofund() {
-            return this.$store.state.balance === 0
+            return this.$store.state.balance.isEqualTo(ZERO);
         },
+        // convert obj to array
         trustlines() {
-            var list = this.$store.state.trustlines;
-            var result = [];
-            for (var key in list) {
-                var item = list[key];
+            let list = this.$store.state.trustlines;
+            let result = [];
+            for (let key in list) {
+                let item = list[key];
                 result.push(item);
             }
             return result;
@@ -294,17 +293,19 @@ export default {
         }
     },
     async created() {
+        this.isShowAdd = false;
+
         // check network status
-        var status = this.$store.getters.networkStatus;
+        let status = this.$store.getters.networkStatus;
         if (!status) {
             this.$store.commit('logout');
             return;
         }
 
-        var api = this.$store.state.api;
+        let api = this.$store.state.api;
         try {
-            var address = this.$store.state.address;
-            var lines = await api.getTrustlines(address);
+            let address = this.$store.state.address;
+            let lines = await api.getTrustlines(address);
             this.$store.commit("initTrustlines", lines);
         } catch (e) {
             this.$toast.error(e.message);

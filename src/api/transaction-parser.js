@@ -1,34 +1,28 @@
-function kMark(value) {
-    if (!value) return '';
-    var str = '' + value;
-    var intPart = Number(value).toFixed(0);
-    var pointPart = str.substring(str.lastIndexOf('.') === -1 ? str.length : str.lastIndexOf('.'));
-    var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
-    return intPartFormat + pointPart;
-}
+import BN from "bignumber.js";
+const ONE = new BN(1);
 
 function humanAmount(tx, amount) {
     if (!amount) {
         return ', but failed with result: ' + tx.outcome.result;
     }
-
+    let val = new BN(amount.value);
     if (amount.currency === 'CALL')
-        return kMark(amount.value) + ' CALL';
+        return val.toFormat() + ' CALL';
     else
-        return kMark(amount.value) + ' ' + amount.currency;
+        return val.toFormat() + ' ' + amount.currency;
 }
 
 function processPayment(tx, address) {
-    var outcome = tx.outcome;
+    let outcome = tx.outcome;
     if (tx.address === address)
     {
-        var result = 'You sent ' + tx.specification.destination.address
+        let result = 'You sent ' + tx.specification.destination.address
             + ' ' + humanAmount(tx, outcome.deliveredAmount);
         return result;
     }
     else
     {
-        var result = tx.address + ' sent you ' + humanAmount(tx, outcome.deliveredAmount);
+        let result = tx.address + ' sent you ' + humanAmount(tx, outcome.deliveredAmount);
         return result;
     }
 }
@@ -39,19 +33,19 @@ function pastAction(act) {
 }
 
 function processOrder(tx, address) {
-    var changes = tx.outcome.orderbookChanges;
-    var spec = tx.specification;
+    let changes = tx.outcome.orderbookChanges;
+    let spec = tx.specification;
 
     if (tx.address === address)
     {
-        var result = "You created an offer to " + spec.direction + ' '
+        let result = "You created an offer to " + spec.direction + ' '
             + humanAmount(tx, spec.quantity) + ' for ' + humanAmount(tx, spec.totalPrice);
-        var filled = 0;
-        for (var key in changes) {
-            var items = changes[key];
-            for (var i = 0; i < items.length; ++i)
+        let filled = 0;
+        for (let key in changes) {
+            let items = changes[key];
+            for (let i = 0; i < items.length; ++i)
             {
-                var item = items[i];
+                let item = items[i];
                 if (item.type === 'filled' || item.type === 'partially-filled')
                     filled += Number(item.quantity.value);
             }
@@ -72,49 +66,49 @@ function processOrder(tx, address) {
     }
     else
     {
-        var items = changes[address];
+        let items = changes[address];
         if (!items) return 'Passive affected order transaction';
-        var result = '';
-        for (var i = 0; i < items.length; ++i) {
+        let result = '';
+        for (let i = 0; i < items.length; ++i) {
             if (i !== 0) result += ';';
-            var item = items[i];
-            result += 'You passive ' + pastAction(item.direction) + ' ' + humanAmount(tx, item.quantity) + ' at price ' 
-                + (Number(1) / item.makerExchangeRate).toFixed(6);
+            let item = items[i];
+            result += 'You passive ' + (item.direction === 'sell' ? 'sold' : 'bought') + ' ' + humanAmount(tx, item.quantity) + ' at price ' 
+                 + ONE.div(item.makerExchangeRate).toFormat();
         }
         return result;
     }
 }
 
 function processOrderCancellation(tx, address) {
-    var changes = tx.outcome.orderbookChanges[address];
+    let changes = tx.outcome.orderbookChanges[address];
     if (!changes) {
         return 'Passive affected order cancellation transaction';
     }
-    var change = changes[0];
-    var result = 'You cancelled to ' + change.direction + ' ' + humanAmount(tx, change.quantity) + ' for ' + humanAmount(tx, change.totalPrice);
+    let change = changes[0];
+    let result = 'You cancelled to ' + change.direction + ' ' + humanAmount(tx, change.quantity) + ' for ' + humanAmount(tx, change.totalPrice);
     return result;
 }
 
 function processTrustline(tx, address) {
-    var spec = tx.specification;
+    let spec = tx.specification;
     if (tx.address === address)
     {
-        var result = 'You are trusting ' + spec.counterparty + ' for ' + spec.limit + ' ' + spec.currency;
+        let result = 'You are trusting ' + spec.counterparty + ' for ' + spec.limit + ' ' + spec.currency;
         return result;
     }
 
     if (spec.counterparty !== address) return 'Passive trust transaction';
 
-    var result = 'You have been trust by ' + tx.address + ' for ' + spec.limit + ' ' + spec.currency;
+    let result = 'You have been trust by ' + tx.address + ' for ' + spec.limit + ' ' + spec.currency;
     return result;
 }
 
 function processSettings(tx, address) {
-    return 'todo: account setting tx';
+    return 'Todo: account setting tx';
 }
 
 function processIssueSet(tx, address) {
-    var spec = tx.specification;
+    let spec = tx.specification;
     if (spec.issuer !== address) return 'Passive affected issue set transaction';
     return 'You are issuing ' + spec.total + ' ' + spec.currency;
 }
@@ -126,7 +120,7 @@ function processDefault(tx, address) {
 /**
  * return transaction description
  */
-var Parser = {
+let Parser = {
     'payment': processPayment,
     'order': processOrder,
     'orderCancellation': processOrderCancellation,

@@ -30,11 +30,7 @@ export default {
   methods: {
     handleTabClick(index) {
         this.navList.forEach((e, i) => {
-            if(i == index){
-                e.isActive = true
-            } else {
-                e.isActive = false
-            }
+          e.isActive = (i === index);
         });
         if(this.$route.path.indexOf(this.navList[index].name.toLowerCase()) != -1){
             return;

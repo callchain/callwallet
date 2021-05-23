@@ -15,7 +15,7 @@ module.exports = {
     login:{
         open_wallet: 'Open Wallet',
         login_label: 'Enter the name and passphrase used to encrypt your wallet below.',
-        wallet_name: 'Wallet name',
+        wallet_name: 'Wallet Name',
         passphrase: 'Passphrase',
         new_to_call: 'New to Callchain? ',
         create_wallet: 'Create Wallet'

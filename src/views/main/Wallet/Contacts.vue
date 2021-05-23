@@ -10,7 +10,7 @@
             :items-per-page="-1"
             hide-default-footer
             >   
-                <template v-slot:item.actions="{ item }">
+                <template v-slot:[`item.actions`]="{ item }">
                     <v-icon
                         small
                         class="mr-2"
@@ -118,8 +118,8 @@ export default {
     },
     computed: {
         contract_list() {
-            var contacts = this.$store.state.blob.data.contacts;
-            var result = [];
+            let contacts = this.$store.state.blob.data.contacts;
+            let result = [];
             Object.keys(contacts).forEach(function(key) {
                 result.push({title: key, content: contacts[key]});
             });
@@ -141,7 +141,7 @@ export default {
         },
         /// 新增
         handleConfirm() {
-            var contacts = this.$store.state.blob.data.contacts;
+            let contacts = this.$store.state.blob.data.contacts;
             if (this.mode === 'add')
             {
                 if (contacts[this.name]) {
@@ -149,8 +149,8 @@ export default {
                     this.warn_text = 'Same name exists';
                     return;
                 }
-                for (var key in contacts) {
-                    var value = contacts[key];
+                for (let key in contacts) {
+                    let value = contacts[key];
                     if (value === this.address) {
                         this.dialog = true;
                         this.warn_text = 'Same address exists';
@@ -172,8 +172,8 @@ export default {
                     return;
                 }
                 if (this.currentItem.content !== this.address) {
-                    for (var key in contacts) {
-                        var value = contacts[key];
+                    for (let key in contacts) {
+                        let value = contacts[key];
                         if (value === this.address) {
                             this.dialog = true;
                             this.warn_text = 'Same address exists';

@@ -5,6 +5,9 @@
     </div>
 </template>
 <script>
+import BN from 'bignumber.js';
+const ZERO = new BN(0);
+
 import NoData from '../../../components/NoData';
 
 export default {
@@ -17,7 +20,7 @@ export default {
     },
     computed: {
         nofund() {
-            return this.$store.state.balance === 0
+            return this.$store.state.balance.isEqualTo(ZERO);
         }
     },
     methods: {

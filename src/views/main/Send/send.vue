@@ -58,6 +58,8 @@
     </div>
 </template>
 <script>
+import BN from 'bignumber.js';
+const ZERO = new BN(0);
 
 import utils from '../../../api/utils';
 
@@ -69,21 +71,22 @@ export default {
         select: '',
         issuer: '',
         canSend: false,
-        balance_map: {},
         memo: ''
     }),
     computed: {
         currencies() {
-            var ret = [];
-            var list = this.$store.state.balance_list;
-            for (var key in list)
+            let ret = [];
+            let list = this.$store.state.balance_list;
+            for (let key in list)
             {
-                var item = list[key];
-                if (Number(item.value) < 0) continue;
-                ret.push(item.currency);
-                this.balance_map[item.currency] = item;
+                let item = list[key];
+                if (item.value.isLessThan(ZERO)) continue;
+                ret.push(key);
             }
             return ret;
+        },
+        reserved() {
+            return this.$store.getters.reservedCall;
         }
     },
     methods: {
@@ -98,13 +101,13 @@ export default {
                 return;
             }
 
-            var currency = this.select;
+            let currency = this.select;
             if (!currency || currency.length === 0) {
                 this.$toast.error("Invalid Currency");
                 return;
             }
 
-            var issuer = this.balance_map[currency];
+            let issuer = this.$store.state.balance_list[currency];
             this.$router.push({name: 'sendConfirm', params: {recipient: this.recipient, amount: this.recipientReceive,
                 currency: issuer, memo: this.memo}});
         },
@@ -120,7 +123,7 @@ export default {
                 this.recipient = '';
                 return false;
             }
-            var address = this.$store.state.address;
+            let address = this.$store.state.address;
             if (this.recipient === address) {
                 this.$toast.error("Send to yourself is not unnecessary");
                 this.recipient = '';
@@ -140,7 +143,7 @@ export default {
     },
     watch: {
         recipientReceive(newv, oldv) {
-            if (Number(newv) === NaN) {
+            if (isNaN(newv)) {
                 this.$nextTick(() => {
                     this.recipientReceive = '';
                 });
@@ -148,12 +151,9 @@ export default {
             }
             if (!this.select || _.isEmpty(this.select)) return; // not select currency
 
-            var amount = newv;
-            var currency = this.select;
-            var issuer = this.balance_map[currency];
-            var balances = this.$store.state.balance_list;
-            var key = issuer.counterparty ? issuer.currency + '@' + issuer.counterparty : issuer.currency;
-            var bal = balances[key];
+            let amount = new BN(newv);
+            let currency = this.select;
+            let bal = this.$store.state.balance_list[currency];
 
             if (!bal) {
                 this.$nextTick(() => {
@@ -163,8 +163,12 @@ export default {
                 return;
             }
 
-            if (issuer.currency === 'CALL') amount = Number(amount) + 0.0001;
-            if (amount > Number(bal.value)) {
+            // add reserved call
+            if (bal.currency === 'CALL') {
+                amount = amount.plus(this.reserved);
+            }
+
+            if (amount.isGreaterThan(bal.value)) {
                 this.$nextTick(() => {
                     this.recipientReceive = oldv;
                 });

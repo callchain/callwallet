@@ -1,9 +1,10 @@
+import BN from 'bignumber.js';
+
 function isValidAddr(addr) {
     return /^c[1-9A-HJ-NP-Za-km-z]{25,34}$/.test(addr);
 }
 
 const cutils = call.CallAPI._PRIVATE;
-
 
 function isValidSec(seed) {
     return cutils.schemaValidator.isValidSecret(seed);
@@ -23,12 +24,12 @@ function isValidCur(cur) {
 }
 
 function isAffected(obj, addr) {
-    for (var prop in obj) {
+    for (let prop in obj) {
         // check key
         if (prop === addr) return true;
 
         // check value
-        var value = obj[prop];
+        let value = obj[prop];
         if (typeof value === 'object')
         {
             if (isAffected(value, addr)) return true;
@@ -42,7 +43,7 @@ function isAffected(obj, addr) {
 }
 
 function getPair(item) {
-    var p = item.quantity.currency;
+    let p = item.quantity.currency;
     if (item.quantity.counterparty) {
         p += '@' + item.quantity.counterparty;
     }
@@ -58,14 +59,19 @@ function toFixed(num) {
     return num.toFixed(6).replace(/[.]?0+$/, '');
 }
 
+/**
+ * return price
+ * 
+ * @param {*} item 
+ * @param {*} type 
+ * @returns 
+ */
 function getPrice(item, type) {
-    var ret = Number(item.totalPrice.value) / Number(item.quantity.value);
-    if (type === 'buy') return toFixed(Math.floor(ret * 1000000) / 1000000);
-    else return toFixed(Math.ceil(ret * 1000000) / 1000000);
+    return new BN(item.totalPrice.value).div(item.quantity.value);
 }
 
 function getAmount(item) {
-    return toFixed(Math.ceil(Number(item.quantity.value) * 1000000) / 1000000);
+    return new BN(item.quantity.value);
 }
 
 export default {

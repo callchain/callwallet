@@ -21,7 +21,7 @@ export default {
         info: {}
     }),
     created() {
-        var params = this.$route.params;
+        let params = this.$route.params;
         this.info = params;
         if (_.isEmpty(this.info) || !this.info.symbol || !this.info.supply) {
             this.$router.push({name: 'issue'});
@@ -33,11 +33,11 @@ export default {
         },
         async handleConfirmed() {
             // submit tx
-            var blob = this.$store.state.blob;
-            var from = blob.data.account_id;
-            var secret = blob.data.master_seed;
+            let blob = this.$store.state.blob;
+            let from = blob.data.account_id;
+            let secret = blob.data.master_seed;
             
-            var issueSet = {
+            let issueSet = {
                 total: {value: this.info.supply, currency: this.info.symbol, issuer: from},
                 editable: false,
                 nonFungible: false,
@@ -45,19 +45,18 @@ export default {
             };
 
             // check network status
-            var status = this.$store.getters.networkStatus;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
 
-            var api = this.$store.state.api;
+            let api = this.$store.state.api;
             try {
-                var prepare =  await api.prepareIssueSet(from, issueSet);
+                let prepare =  await api.prepareIssueSet(from, issueSet);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                var tx = await api.submit(signedTx, true);
-                console.dir(tx);
+                let signedTx = api.sign(prepare.txJSON, prepare.secret);
+                let tx = await api.submit(signedTx, true);
                 
                 if (tx.resultCode !== 'tesSUCCESS')
                 {

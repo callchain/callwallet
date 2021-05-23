@@ -95,7 +95,7 @@ export default {
                 this.$toast.error('Symbol should have three characters');
                 return;
             }
-            var list = this.$store.state.issue_list;
+            let list = this.$store.state.issue_list;
             if (list[this.symbol]) {
                 this.$toast.error('This symbol token has already issued');
                     this.$nextTick(() => {

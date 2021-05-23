@@ -55,6 +55,8 @@
     </div>
 </template>
 <script>
+import BN from 'bignumber.js';
+const ZERO = new BN(0);
 import utils from '../../../api/utils';
 
 export default {
@@ -72,18 +74,18 @@ export default {
         },
         async confirmIssue() {
             // send token to user
-            var blob = this.$store.state.blob;
-            var from = blob.data.account_id;
-            var issuer = from;
-            var currency = this.currentIssue.currency;
-            var secret = blob.data.master_seed;
+            let blob = this.$store.state.blob;
+            let from = blob.data.account_id;
+            let issuer = from;
+            let currency = this.currentIssue.currency;
+            let secret = blob.data.master_seed;
 
-            var send_amount = {
+            let send_amount = {
                 value: this.amount, 
                 currency: currency, 
                 issuer: issuer
             };
-            var payment = {
+            let payment = {
                 source: {
                     address: from,
                     maxAmount: send_amount
@@ -95,19 +97,18 @@ export default {
             };
 
             // check network status
-            var status = this.$store.getters.networkStatus;
+            let status = this.$store.getters.networkStatus;
             if (!status) {
                 this.$store.commit('logout');
                 return;
             }
 
-            var api = this.$store.state.api;
+            let api = this.$store.state.api;
             try {
-                var prepare =  await api.preparePayment(from, payment);
+                let prepare =  await api.preparePayment(from, payment);
                 prepare.secret = secret;
-                var signedTx = api.sign(prepare.txJSON, prepare.secret);
-                var tx = await api.submit(signedTx, true);
-                console.dir(tx);
+                let signedTx = api.sign(prepare.txJSON, prepare.secret);
+                let tx = await api.submit(signedTx, true);
                 
                 if (tx.resultCode !== 'tesSUCCESS')
                 {
@@ -136,7 +137,7 @@ export default {
                     this.recipient = '';
                 });
             }
-            var address = this.$store.state.address;
+            let address = this.$store.state.address;
             if (this.recipient === address) {
                 this.$toast.error("Cannot issue token to youself");
                 this.$nextTick(() => {
@@ -161,12 +162,12 @@ export default {
     },
     computed: {
         canSend() {
-            var address = this.$store.state.address;
+            let address = this.$store.state.address;
             return utils.isValidAddr(this.recipient) && this.recipient !== address && Number(this.amount) > 0;
         }
     },
     created() {
-        var params = this.$route.params;
+        let params = this.$route.params;
         this.currentIssue = params;
         if (_.isEmpty(this.currentIssue) || !this.currentIssue.currency)
         {
@@ -175,15 +176,17 @@ export default {
     },
     watch: {
         amount(newv, oldv) {
-            if (!this.amount || this.amount === '') return;
-            if (!Number(this.amount) || Number(this.amount) < 0) {
+            if (!this.amount || this.amount === '' || isNaN(this.amount)) return;
+
+            let an = new BN(this.amount);
+            if (an.isLessThanOrEqualTo(ZERO)) {
                 this.$toast.error('Only postive number is allowed');
                 this.$nextTick(() => {
                     this.amount = oldv;
                 });
             }
-            var left = Number(this.currentIssue.total) - Number(this.currentIssue.issued);
-            if (Number(this.amount) > left) {
+            let left = new BN(this.currentIssue.total).minus(this.currentIssue.issued);
+            if (an.isGreaterThan(left)) {
                 this.$toast.error('Left issue quota for ' + this.currentIssue.currency + ' is ' + left);
                 this.$nextTick(() => {
                     this.amount = oldv;

@@ -40,9 +40,9 @@ export default {
     },
     computed: {
         issues() {
-            var list = [];
-            for (var key in this.$store.state.issue_list) {
-                var item = this.$store.state.issue_list[key];
+            let list = [];
+            for (let key in this.$store.state.issue_list) {
+                let item = this.$store.state.issue_list[key];
                 list.push(item);
             }
             return list;
@@ -50,16 +50,16 @@ export default {
     },
     async created() {
         // check network status
-        var status = this.$store.getters.networkStatus;
+        let status = this.$store.getters.networkStatus;
         if (!status) {
             this.$store.commit('logout');
             return;
         }
 
-        var address = this.$store.state.address;
-        var api = this.$store.state.api;
+        let address = this.$store.state.address;
+        let api = this.$store.state.api;
         try {
-            var issues = await api.getAccountIssues(address);
+            let issues = await api.getAccountIssues(address);
             this.$store.commit('initIssues', issues);
         } catch (e) {
             this.$toast.error(e.message);

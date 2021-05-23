@@ -17,7 +17,7 @@ export default {
         hash: ''
     }),
     created() {
-        var params = this.$route.params;
+        let params = this.$route.params;
         if (_.isEmpty(params.id)) {
             this.$router.push('newIssue')
         } else {

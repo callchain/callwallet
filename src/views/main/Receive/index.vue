@@ -22,8 +22,8 @@ export default {
     },
     methods: {
         creatQrCode() {
-            var text = this.$store.state.address;
-            var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+            let text = this.$store.state.address;
+            new QRCode(this.$refs.qrCodeUrl, {
                 text: text,
                 width: 250,
                 height: 250,

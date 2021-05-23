@@ -15,7 +15,7 @@ import vHeader from '../components/Header'
 import vBottom from '../components/Bottom'
 
 export default {
-  name: 'App',
+  name: 'Home',
 
   components: {
     vHeader,

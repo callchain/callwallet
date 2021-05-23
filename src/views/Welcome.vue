@@ -35,7 +35,7 @@ export default {
     isShowKey: false
   }),
   created() {
-    var params = this.$route.params;
+    let params = this.$route.params;
     this.address = params.address;
     this.key = params.secret;
   },

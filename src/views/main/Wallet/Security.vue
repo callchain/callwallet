@@ -45,7 +45,7 @@
 </template>
 <script>
 export default {
-    name: 'security',
+    name: 'Security',
     data: () => ({
         isShowKey: false,
         isShow: false,
