@@ -285,7 +285,7 @@ export default {
       ],
     },
     percent: 0,
-
+    noBubble: false
   }),
   components: {
     NoData
@@ -615,66 +615,85 @@ export default {
   },
   watch: {
     formPrice(newv, oldv) {
+      if (this.noBubble) {
+        this.noBubble = !this.noBubble;
+        return;
+      }
+
       if (isNaN(newv)) {
         this.$nextTick(() => {
           this.formPrice = 0;
         });
         return;
       }
-      if (Number(this.formPrice) === 0) return;
+      let bp = new BN(this.formPrice);
+      let ba = new BN(this.formAmount);
+      let bv = new BN(this.formValue);
+
+      if (bp.isEqualTo(ZERO)) return;
 
       this.$nextTick(() => {
         this.formPrice = (this.formPrice + '').match(/^\d+(?:\.\d{0,6})?/)[0];
       });
 
-      if (Number(this.formAmount) !== 0)
+      if (!ba.isEqualTo(ZERO))
       {
         this.$nextTick(() => {
-          this.formValue = utils.toFixed(Number(this.formAmount)* Number(this.formPrice));
+          this.formValue = ba.times(bp).toNumber();
         });
       }
-      else if (this.formValue !== 0)
+      else if (!bv.isEqualTo(ZERO))
       {
         this.$nextTick(() => {
-          this.formAmount = utils.toFixed(Number(this.formValue) / Number(this.formPrice));
+          this.formAmount = bv.div(bp).toNumber();
         });
       }
-
-      // this.formPrice = utils.toFixed(Number(this.formPrice));
     },
     formAmount(newv, oldv) {
-      if (isNaN(Number(newv))) {
+      if (this.noBubble) {
+        this.noBubble = !this.noBubble;
+        return;
+      }
+
+      if (isNaN(newv)) {
         this.$nextTick(() => {
           this.formPrice = 0;
         });
         return;
       }
-      if (Number(this.formAmount) === 0) return;
+      let ba = new BN(this.formAmount);
+      let bp = new BN(this.formPrice);
+      if (ba.isEqualTo(ZERO)) return;
 
-      if (Number(this.formPrice) !== 0) {
+      if (!bp.isEqualTo(ZERO)) {
         this.$nextTick(() => {
-          this.formValue = utils.toFixed(Number(this.formAmount) * Number(this.formPrice));
+          this.formValue = ba.times(bp).toNumber();
         });
       }
-
-      this.formAmount = utils.toFixed(Number(this.formAmount));
     },
     formValue(newv, oldV) {
-      if (isNaN(Number(newv))) {
+      if (this.noBubble) {
+        this.noBubble = !this.noBubble;
+        return;
+      }
+
+      if (isNaN(newv)) {
         this.$nextTick(() => {
           this.formPrice = 0;
         });
         return;
       }
-      if (Number(this.formValue) === 0) return;
+      let bv = new BN(this.formValue);
+      let bp = new BN(this.formPrice);
 
-      if (Number(this.formPrice) !== 0) {
+      if (bv.isEqualTo(ZERO)) return;
+
+      if (!bp.isEqualTo(ZERO)) {
          this.$nextTick(() => {
-          this.formAmount = utils.toFixed(Number(this.formValue) / Number(this.formPrice));
+           this.formAmount = bv.div(bp).toNumber();
+           this.noBubble = true;
         });
       }
-
-      this.formValue = utils.toFixed(Number(this.formValue));
     }
   }
 };
