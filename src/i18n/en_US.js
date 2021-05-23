@@ -8,7 +8,7 @@ module.exports = {
     },
     nodata: {
         welcome: 'Welcome to Callchain',
-        nofund: "You currently don't have any Call Token (CALL). To get started you can:",
+        nofund: "You currently don't have any Call Token (CALL). To get started you should have another user send you at least 1 CALL token.",
         byuser: 'Have another user send you 1 or more CALL',
         byexchange: 'Buy CALL at exchange or from gateway'
     },

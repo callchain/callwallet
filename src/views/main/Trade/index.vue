@@ -1,6 +1,7 @@
 <template>
   <div class="trade ma-4">
-    <v-container>
+    <NoData v-if="nofund"></NoData>
+    <v-container v-if="!nofund">
       <v-row class="box align-center">
         <div class="title ml-2">
           <span class="text-subtitle-1 font-weight-bold">{{$t('trade.pair')}}</span>
@@ -245,6 +246,7 @@
 </template>
 
 <script>
+import NoData from '../../../components/NoData';
 import utils from '../../../api/utils'
 import i18n from './../../../plugins/i18n'
 import axios from 'axios'
@@ -282,7 +284,13 @@ export default {
     percent: 0,
     emptyCurrency: {currency: '', counterparty: ''}
   }),
+  components: {
+    NoData
+  },
   computed: {
+    nofund() {
+      return this.$store.state.balance === 0
+    },
     pairs() {
       return this.$store.state.pairs
     },
@@ -316,7 +324,7 @@ export default {
     }
   },
   created() {
-    this.selected = this.$store.state.currenct_pair;
+    this.selected = this.$store.state.current_pair;
     this.initData();
     this.getPendingOrders();
   },

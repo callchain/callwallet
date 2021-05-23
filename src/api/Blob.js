@@ -6,7 +6,6 @@ var Blob = {};
 const PREFIX = 'callchain-';
 
 Blob.encrypt = function(username, password, data) {
-
     var username_ = ("" + username).toLowerCase().trim();
     var password_ = ("" + password).trim();
 
@@ -22,7 +21,6 @@ Blob.encrypt = function(username, password, data) {
 };
 
 Blob.decrypt = function(username, password) {
-
     var username_ = ("" + username).toLowerCase().trim();
     var password_ = ("" + password).trim();
 

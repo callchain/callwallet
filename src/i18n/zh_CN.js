@@ -8,7 +8,7 @@ module.exports = {
     },
     nodata: {
         welcome: '欢迎使用Callchain',
-        nofund: "你的当前钱包不持有CALL Token。为了使用Callchain，你可以这样开始：",
+        nofund: "你的当前钱包不持有CALL Token。为了使用Callchain，你需要请其他人给你转发至少1个CALL token。",
         byuser: '邀请你的好友给你赠送1到多个CALL Token',
         byexchange: '从交易所或者网关购买CALL Token'
     },

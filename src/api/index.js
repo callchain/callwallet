@@ -25,16 +25,15 @@ export default function(server) {
 
     api.on('ledger', function(ledger) {
         // update block number
-        store.commit('updateHeight', ledger);
+        store.commit('updateLedger', ledger);
     });
     
     api.on('transactions', async function(tx) {
         var hash = tx.transaction.hash;
         var address = store.state.address;
-        var cp = store.state.currenct_pair;
+        var cp = store.state.current_pair;
         try {
             var info = await api.getTransaction(hash);
-            console.log(JSON.stringify(info));
 
             // 1. update balance
             var balanceChanges = info.outcome.balanceChanges[address];

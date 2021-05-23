@@ -1,14 +1,21 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 import router from '../router/Index';
 import utils from '../api/utils'
 
+// import BN from "bignumber.js";
+// const ZERO = new BN(0);
+
+const LEDGER_TMPL = {"feePool":"10.769998","baseFeeCALL":"0.001","ledgerHash":"80294B177352A4B99E0DEE0362F78AD759E0EAE53920FAFDB46004FCF2AE99F0","ledgerVersion":33428815,"ledgerTimestamp":"2021-05-23T00:44:41.000Z","reserveBaseCALL":"1","reserveIncrementCALL":"0.1","transactionCount":0,"validatedLedgerVersions":"11874029-33428815"};
+const DEFAULT_SERVER = {host: 's1.callchain.live', port: '5020', ssl: true};
+const DEFAULT_PAIR = 'CALL/USD@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7';
+
 const store = new Vuex.Store({
     state: {
-      api: new call.CallAPI({ server: 'wss://s1.callchain.live:5020' }),
+      api: new call.CallAPI({ server: (DEFAULT_SERVER.ssl ? 'wss://' : 'ws://') +  DEFAULT_SERVER.host + ':' + DEFAULT_SERVER.port}),
       isLogin: false,
       isOffline: false,
       username: '',
@@ -16,17 +23,17 @@ const store = new Vuex.Store({
       account_info: {},
       address: '',
       blob: {},
-      height: 24997812,
-      ledger: {"feePool":"8.719227","baseFeeCALL":"0.00001","ledgerHash":"9BCFEC2C391791822502ED52AD39F4CD1AF809203257281F5E8AAF842C7D5884","ledgerVersion":26621210,"ledgerTimestamp":"2020-09-28T10:01:32.000Z","reserveBaseCALL":"0.000001","reserveIncrementCALL":"0.000001","transactionCount":0,"validatedLedgerVersions":"11874029-26621210"},
-      server: {host: 's1.callchain.live', port: '5020', ssl: true},
+      height: LEDGER_TMPL.ledgerVersion,
+      ledger: LEDGER_TMPL,
+      server: DEFAULT_SERVER,
       balance_list: {},
       transactions: [],
       marker: {},
       trustlines: {},
       issue_list: {},
-      pairs: ['CALL/USD@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7'],
-      default_pair: 'CALL/USD@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7',
-      currenct_pair: 'CALL/USD@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7',
+      pairs: [DEFAULT_PAIR],
+      default_pair: DEFAULT_PAIR,
+      current_pair: DEFAULT_PAIR,
       asks: {},
       bids: {},
       orders: {},
@@ -87,16 +94,16 @@ const store = new Vuex.Store({
         state.username = msg.user
         state.address = msg.blob.data.account_id
       },
-      updateHeight(state, ledger) {
-        state.height = ledger.ledgerVersion
+      updateLedger(state, ledger) {
+        // state.height = ledger.ledgerVersion
         state.ledger = ledger
       },
       newPair(state, pair) {
         state.pairs = state.pairs.concat(pair)
-        state.currenct_pair = pair
+        state.current_pair = pair
       },
       resetPair(state) {
-        state.currenct_pair = state.default_pair
+        state.current_pair = state.default_pair
       },
       initBalance(state, list) {
         var result = {};

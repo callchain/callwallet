@@ -22,7 +22,7 @@
             >
             <v-card>
                 <v-card-title></v-card-title>
-                <v-card-text class="text-center">$t('wallet.security.safewarn')</v-card-text>
+                <v-card-text class="text-center">{{$t('wallet.security.safewarn')}}</v-card-text>
                 <v-card-actions class="d-flex align-center justify-center pb-5">
                     <v-btn
                         color="primary"
@@ -30,13 +30,13 @@
                         text
                         @click="dialog = false"
                     >
-                        $t('wallet.security.no')
+                        {{$t('wallet.security.no')}}
                     </v-btn>
                     <v-btn
                         color="primary"
                         @click="handleShowKey"
                     >
-                        $t('wallet.security.yes')
+                        {{$t('wallet.security.yes')}}
                     </v-btn>
                 </v-card-actions>
             </v-card>

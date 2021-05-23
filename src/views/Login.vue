@@ -51,7 +51,7 @@
 <script>
 // @ is an alias to /src
 
-import Blob from '../api/Blob';
+import Blob from '../api/blob';
 import CreateApi from '../api/index';
 
 export default {
