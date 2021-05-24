@@ -64,7 +64,7 @@ const ZERO = new BN(0);
 import utils from '../../../api/utils';
 
 export default {
-    name: 'send',
+    name: 'Send',
     data: () => ({
         recipient: '',
         recipientReceive: '',

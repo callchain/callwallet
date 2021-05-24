@@ -257,7 +257,7 @@ import axios from 'axios';
 const EMPTY_CURRENCY = {currency: '', counterparty: ''};
 
 export default {
-  name: "trade",
+  name: "Trade",
   data: () => ({
     selected: '',
 

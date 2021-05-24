@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-    name: 'issue-submitted',
+    name: 'IssueSubmitted',
     data: () => ({
         hash: ''
     }),

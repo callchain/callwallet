@@ -59,7 +59,7 @@
 <script>
 
 export default {
-    name: 'new-issue',
+    name: 'NewIssue',
     data: () => ({
         symbol: '',
         supply: '',

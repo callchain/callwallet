@@ -95,7 +95,7 @@ import utils from '../../../api/utils';
 import i18n from '../../../plugins/i18n'
 
 export default {
-    name: 'contacts',
+    name: 'Trust',
     data: () => ({
         isShowAdd: false, /// 是否能点击添加按钮
         dialog: false, /// 是否显示弹窗

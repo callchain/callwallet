@@ -18,7 +18,7 @@
 import i18n from '../../../plugins/i18n'
 
 export default {
-  name: 'advanced',
+  name: 'Advanced',
   data: () => ({
       navList: [
         //   { text: 'Issue', isActive: true },

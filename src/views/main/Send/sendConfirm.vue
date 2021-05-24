@@ -18,7 +18,7 @@
 <script>
 
 export default {
-    name: 'send-confirm',
+    name: 'SendConfirm',
     data: () => ({
         recipient: '',
         amount: '',
@@ -80,7 +80,6 @@ export default {
                 prepare.secret = secret;
                 let signedTx = api.sign(prepare.txJSON, prepare.secret);
                 let tx = await api.submit(signedTx, true);
-                console.dir(tx);
                 
                 if (tx.resultCode !== 'tesSUCCESS')
                 {

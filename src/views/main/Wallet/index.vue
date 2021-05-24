@@ -18,7 +18,7 @@
 import i18n from './../../../plugins/i18n';
 
 export default {
-  name: 'wallet',
+  name: 'Wallet',
   data: () => ({
       navList: [
           { text: i18n.tc('wallet.index.balance'), name: 'balance', isActive: true },

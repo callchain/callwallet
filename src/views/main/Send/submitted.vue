@@ -15,7 +15,7 @@
 </template>
 <script>
 export default {
-    name: 'send-submitted',
+    name: 'SendSubmitted',
     data: () => ({
         hash: ''
     }),

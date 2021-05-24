@@ -99,7 +99,7 @@
 </template>
 <script>
 export default {
-    name: 'contacts',
+    name: 'Contacts',
     data: () => ({
         isShowAdd: false, /// 是否能点击添加按钮
         canIAdd: false, /// 填完 name address 才能添加

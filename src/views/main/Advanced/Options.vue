@@ -36,7 +36,7 @@
 import utils from '../../../api/utils';
 
 export default {
-    name: 'options',
+    name: 'Options',
     data: () => ({
         sendData: { 
             host: '', 

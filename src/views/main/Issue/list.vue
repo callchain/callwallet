@@ -25,7 +25,7 @@
 <script>
 
 export default {
-    name: 'issue-list',
+    name: 'IssueList',
     data: () => ({
     }),
     methods: {

@@ -10,7 +10,7 @@ const ZERO = new BN(0);
 import NoData from '../../../components/NoData';
 
 export default {
-    name: 'issue',
+    name: 'Issue',
     data: () => ({
         
     }),

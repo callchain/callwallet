@@ -11,7 +11,7 @@ const ZERO = new BN(0);
 import NoData from '../../../components/NoData';
 
 export default {
-    name: 'send-index',
+    name: 'SendIndex',
     data: () => ({
         
     }),
