@@ -14,8 +14,9 @@
           <v-combobox v-model="selected" :items="pairs" @change="changePair()"></v-combobox>
         </v-col>
         <v-col class cols="2">
-            <v-btn icon color="success">
-                <v-icon>mdi-chart-line-letiant</v-icon>
+            <v-btn icon color="success" @click="goToKline">
+                <!-- KLINE -->
+                <v-icon>mdi-chart-line</v-icon>
             </v-btn>
         </v-col>
       </v-row>
@@ -336,6 +337,9 @@ export default {
     },
     getObPrice(item) {
       this.formPrice = item[0];
+    },
+    goToKline() {
+      window.open('https://data.callchain.cc', '_blank');
     },
     updatePercent() {
       let bp = new BN(this.formPrice);
