@@ -1,5 +1,7 @@
 # CallWallet
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e6a7dad7-e2c8-408b-b5b2-1e53188b9bad/deploy-status)](https://app.netlify.com/sites/callwallet/deploys)
+
 
 ## Overview
 
