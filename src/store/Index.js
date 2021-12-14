@@ -10,7 +10,7 @@ import BN from "bignumber.js";
 const ZERO = new BN(0);
 
 const LEDGER_TMPL = {"feePool":"10.769998","baseFeeCALL":"0.001","ledgerHash":"80294B177352A4B99E0DEE0362F78AD759E0EAE53920FAFDB46004FCF2AE99F0","ledgerVersion":33428815,"ledgerTimestamp":"2021-05-23T00:44:41.000Z","reserveBaseCALL":"1","reserveIncrementCALL":"0.1","transactionCount":0,"validatedLedgerVersions":"11874029-33428815"};
-const DEFAULT_SERVER = {host: 's2.callchain.live', port: '5020', ssl: false};
+const DEFAULT_SERVER = {host: 's1.callchain.cc', port: '5020', ssl: true};
 const DEFAULT_PAIR = 'CALL/USD@c9GEywsWXZroNPmMgP1k4xjr7VRF6Gp4R7';
 
 const store = new Vuex.Store({
