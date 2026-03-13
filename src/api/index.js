@@ -2,22 +2,23 @@ import store from '../store/Index';
 import Parser from './transaction-parser';
 import vue from '../main';
 import utils from './utils'
+import { CallAPI } from './call-core-wrapper'
 
 export default function(server) {
     const url = (server.ssl ? 'wss://' : 'ws://') + server.host + ':' + server.port;
-    let api = new call.CallAPI({
+    let api = new CallAPI({
         server: url
     });
 
     api.on('error', function(code, msg) {
         console.log('call connection error, code=' + code + ', msg=' + msg);
     });
-    
+
     api.on('connected', function() {
         store.commit('online');
         console.log('connect it');
     });
-    
+
     api.on('disconnected', function() {
         store.commit('offline');
         console.log('server disconnect');
@@ -27,7 +28,7 @@ export default function(server) {
         // update block number
         store.commit('updateLedger', ledger);
     });
-    
+
     api.on('transactions', async function(tx) {
         let hash = tx.transaction.hash;
         let address = store.state.address;
@@ -90,4 +91,3 @@ export default function(server) {
 
     return api;
 }
-
