@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+.DS_Store
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+dist
+.vscode
+.idea
+*.swp
+*.swo
+*~
