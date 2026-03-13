@@ -3,8 +3,10 @@
  * Provides compatibility layer between call-core-lib and legacy call-lib API
  */
 
-import { WebSocketClient, RpcClient, Wallet, parseBalanceChanges, parseOrderbookChanges } from '@callchain/call-core-lib';
 import EventEmitter from 'events';
+
+// CallCore is loaded as a global variable via script-loader
+const { WebSocketClient, RpcClient, Wallet, parseBalanceChanges, parseOrderbookChanges } = window.CallCore || {};
 
 /**
  * CallAPI - WebSocket-based API client compatible with legacy call-lib API
